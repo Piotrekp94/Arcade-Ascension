@@ -16,3 +16,4 @@ This file tracks the project's current status, including recent changes, current
 ## Open Questions/Issues
 
 *   
+2025-08-28 17:38:09 - Discussing unit test approach.
