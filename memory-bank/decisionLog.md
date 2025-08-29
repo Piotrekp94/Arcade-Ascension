@@ -56,3 +56,40 @@ Implementation Details:
 - Updated UIManager to remove upgrade menu references
 - Fixed game balance with paddle speed=5f, ball speed=5f, blocks award 10 points
 - Created backup branch 'backup-upgrade-system' before removal for potential future restoration
+
+2025-08-29 - Decision: Complete Boundary System Implementation
+Rationale: Implement proper Breakout-style boundary behavior where ball bounces off walls but is lost at bottom.
+Implementation Details:
+- Created Wall component with WallType enum (Top, Left, Right) for bouncing collisions
+- Created DeathZone component for bottom boundary that triggers ball loss detection
+- Added physics materials: BallMaterial (friction=0, bounce=1) and WallMaterial for proper bouncing
+- Ball component enhanced with wall collision detection and events (OnWallHit)
+- Comprehensive unit and integration tests for all boundary interactions
+
+2025-08-29 - Decision: Ball Respawn System with Timer
+Rationale: User requested configurable timer system where lost balls respawn attached to paddle instead of immediate game over.
+Implementation Details:
+- GameManager enhanced with respawn timer system (configurable delay, default 3 seconds)
+- Ball spawning system that creates balls attached to paddle at paddle position + offset
+- Respawn only triggers during Playing state, not during Start or GameOver states
+- Ball attachment system with kinematic physics when attached, dynamic when launched
+- PlayerPaddle enhanced with ball attachment/detachment and left-click launch mechanics
+
+2025-08-29 - Decision: Manual Game Control with UI System
+Rationale: User explicitly chose manual game control over automatic start, requiring UI buttons for game initiation.
+Implementation Details:
+- Created GameUIManager for handling UI state transitions and button interactions
+- Manual Start button to begin game and spawn initial ball attached to paddle
+- Restart button to reset game state, score, and start fresh
+- UI panels for different game states (Start, Playing, GameOver) with proper show/hide logic
+- Event-driven UI updates responding to GameManager state changes
+
+2025-08-29 - Decision: Comprehensive Test-Driven Development Approach
+Rationale: Ensure high code quality and prevent regressions with extensive test coverage using strict TDD methodology.
+Implementation Details:
+- RED-GREEN-REFACTOR cycle for all new features and bug fixes
+- Unit tests for all core components: GameManager, PlayerPaddle, Ball, Wall, DeathZone
+- Integration tests for boundary system interactions and complete gameplay flows
+- Test utility methods for manual timer updates and deterministic behavior
+- Proper test lifecycle management with GameObject creation/destruction
+- Both Edit Mode and Play Mode test coverage for comprehensive validation

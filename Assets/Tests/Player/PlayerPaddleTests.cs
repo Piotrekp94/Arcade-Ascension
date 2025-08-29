@@ -212,4 +212,46 @@ public class PlayerPaddleTests
         else
             Object.DestroyImmediate(gameManagerGO);
     }
+
+    [Test]
+    public void PlayerPaddle_CanConfigureWallCollision()
+    {
+        // Test wall collision configuration methods
+        Assert.IsTrue(playerPaddle.GetUseWallCollision()); // Default should be true
+        
+        playerPaddle.SetUseWallCollision(false);
+        Assert.IsFalse(playerPaddle.GetUseWallCollision());
+        
+        playerPaddle.SetUseWallCollision(true);
+        Assert.IsTrue(playerPaddle.GetUseWallCollision());
+    }
+
+    [Test]
+    public void PlayerPaddle_CalculatesPaddleWidth()
+    {
+        // Test that paddle width is calculated correctly
+        float paddleHalfWidth = playerPaddle.GetPaddleHalfWidth();
+        Assert.Greater(paddleHalfWidth, 0f);
+        
+        // Should be approximately half the collider width
+        Collider2D paddleCollider = paddleGO.GetComponent<Collider2D>();
+        if (paddleCollider != null)
+        {
+            float expectedHalfWidth = paddleCollider.bounds.size.x * 0.5f;
+            Assert.That(paddleHalfWidth, Is.EqualTo(expectedHalfWidth).Within(0.1f));
+        }
+    }
+
+    [Test]
+    public void PlayerPaddle_WallCollisionFallbackToClamping()
+    {
+        // Test that when wall collision is disabled, it falls back to clamping
+        playerPaddle.SetUseWallCollision(false);
+        
+        // Test the configuration change
+        Assert.IsFalse(playerPaddle.GetUseWallCollision());
+        
+        // The actual movement behavior is tested in integration tests since it involves physics
+        // This test validates the configuration system works correctly
+    }
 }

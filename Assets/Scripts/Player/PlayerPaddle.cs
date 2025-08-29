@@ -6,9 +6,13 @@ public class PlayerPaddle : MonoBehaviour
     [SerializeField]
     private float _speed = 5f;
     [SerializeField]
-    private float minX = -7.5f; // Example boundary, adjust as needed
+    private float minX = -7.5f; // Fallback boundary if walls not detected
     [SerializeField]
-    private float maxX = 7.5f;  // Example boundary, adjust as needed
+    private float maxX = 7.5f;  // Fallback boundary if walls not detected
+    
+    // Wall collision detection
+    private bool useWallCollision = true;
+    private float paddleHalfWidth;
     
     // Ball attachment and launching
     [SerializeField]
@@ -23,8 +27,26 @@ public class PlayerPaddle : MonoBehaviour
 
     void Start()
     {
+        // Calculate paddle half-width for collision detection
+        CalculatePaddleWidth();
+        
         // Register with GameManager for ball spawning
         RegisterWithGameManager();
+    }
+    
+    private void CalculatePaddleWidth()
+    {
+        // Get paddle's collider to determine its width
+        Collider2D paddleCollider = GetComponent<Collider2D>();
+        if (paddleCollider != null)
+        {
+            paddleHalfWidth = paddleCollider.bounds.size.x * 0.5f;
+        }
+        else
+        {
+            // Fallback if no collider
+            paddleHalfWidth = transform.localScale.x * 0.5f;
+        }
     }
 
     void Update()
@@ -50,10 +72,80 @@ public class PlayerPaddle : MonoBehaviour
             }
         }
 
-        Vector2 position = transform.position;
-        position.x += horizontalInput * _speed * Time.deltaTime;
-        position.x = Mathf.Clamp(position.x, minX, maxX); // Clamp position within boundaries
-        transform.position = position;
+        Vector2 currentPosition = transform.position;
+        Vector2 targetPosition = currentPosition;
+        targetPosition.x += horizontalInput * _speed * Time.deltaTime;
+        
+        // Use wall collision detection if enabled, otherwise use clamping
+        if (useWallCollision)
+        {
+            targetPosition = HandleWallCollisions(currentPosition, targetPosition, horizontalInput);
+        }
+        else
+        {
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+        }
+        
+        transform.position = targetPosition;
+    }
+    
+    private Vector2 HandleWallCollisions(Vector2 currentPos, Vector2 targetPos, float inputDirection)
+    {
+        // Only check for walls if paddle is trying to move
+        if (Mathf.Abs(inputDirection) < 0.01f)
+            return targetPos;
+            
+        // Calculate paddle edges
+        float leftEdge = targetPos.x - paddleHalfWidth;
+        float rightEdge = targetPos.x + paddleHalfWidth;
+        
+        // Check for wall collisions using raycasting
+        if (inputDirection < 0) // Moving left
+        {
+            if (CheckWallCollision(currentPos, Vector2.left, paddleHalfWidth + 0.1f))
+            {
+                // Find exact wall position and stop at it
+                float wallX = FindWallPosition(currentPos, Vector2.left);
+                if (wallX != float.MaxValue)
+                {
+                    targetPos.x = Mathf.Max(targetPos.x, wallX + paddleHalfWidth + 0.05f);
+                }
+            }
+        }
+        else if (inputDirection > 0) // Moving right
+        {
+            if (CheckWallCollision(currentPos, Vector2.right, paddleHalfWidth + 0.1f))
+            {
+                // Find exact wall position and stop at it
+                float wallX = FindWallPosition(currentPos, Vector2.right);
+                if (wallX != float.MaxValue)
+                {
+                    targetPos.x = Mathf.Min(targetPos.x, wallX - paddleHalfWidth - 0.05f);
+                }
+            }
+        }
+        
+        // Fallback to clamping if wall detection fails
+        targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
+        
+        return targetPos;
+    }
+    
+    private bool CheckWallCollision(Vector2 position, Vector2 direction, float distance)
+    {
+        // Cast a ray from paddle center in the movement direction
+        RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, LayerMask.GetMask("Default", "Wall"));
+        return hit.collider != null && hit.collider.CompareTag("Wall");
+    }
+    
+    private float FindWallPosition(Vector2 position, Vector2 direction)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(position, direction, 10f, LayerMask.GetMask("Default", "Wall"));
+        if (hit.collider != null && hit.collider.CompareTag("Wall"))
+        {
+            return hit.point.x;
+        }
+        return float.MaxValue; // No wall found
     }
 
     private void HandleBallAttachment()
@@ -161,6 +253,22 @@ public class PlayerPaddle : MonoBehaviour
     public void SetAttachmentOffset(float offset)
     {
         attachmentOffset = offset;
+    }
+    
+    // Wall collision configuration methods
+    public void SetUseWallCollision(bool useCollision)
+    {
+        useWallCollision = useCollision;
+    }
+    
+    public bool GetUseWallCollision()
+    {
+        return useWallCollision;
+    }
+    
+    public float GetPaddleHalfWidth()
+    {
+        return paddleHalfWidth;
     }
 
     // Testing methods

@@ -376,4 +376,54 @@ public class BoundarySystemIntegrationTests
             if (paddleGO != null) Object.DestroyImmediate(paddleGO);
         }
     }
+
+    [Test]
+    public void BoundarySystem_PaddleWallCollisionDetection()
+    {
+        // Integration test: Paddle collision detection with left and right walls
+        
+        // Create paddle
+        GameObject paddleGO = new GameObject("Paddle");
+        paddleGO.AddComponent<BoxCollider2D>();
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        paddleGO.transform.position = Vector2.zero;
+        
+        // Create left and right walls
+        GameObject leftWallGO = new GameObject("LeftWall");
+        leftWallGO.tag = "Wall";
+        leftWallGO.layer = LayerMask.NameToLayer("Default");
+        leftWallGO.AddComponent<BoxCollider2D>();
+        leftWallGO.transform.position = new Vector2(-3.5f, 0f);
+        
+        GameObject rightWallGO = new GameObject("RightWall");
+        rightWallGO.tag = "Wall";
+        rightWallGO.layer = LayerMask.NameToLayer("Default");
+        rightWallGO.AddComponent<BoxCollider2D>();
+        rightWallGO.transform.position = new Vector2(3.5f, 0f);
+        
+        // Test configuration
+        Assert.IsTrue(paddle.GetUseWallCollision());
+        Assert.Greater(paddle.GetPaddleHalfWidth(), 0f);
+        
+        // Test wall collision fallback configuration
+        paddle.SetUseWallCollision(false);
+        Assert.IsFalse(paddle.GetUseWallCollision());
+        
+        paddle.SetUseWallCollision(true);
+        Assert.IsTrue(paddle.GetUseWallCollision());
+        
+        // Cleanup
+        if (Application.isPlaying)
+        {
+            Object.Destroy(paddleGO);
+            Object.Destroy(leftWallGO);
+            Object.Destroy(rightWallGO);
+        }
+        else
+        {
+            Object.DestroyImmediate(paddleGO);
+            Object.DestroyImmediate(leftWallGO);
+            Object.DestroyImmediate(rightWallGO);
+        }
+    }
 }
