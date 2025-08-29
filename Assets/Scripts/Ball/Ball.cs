@@ -5,6 +5,9 @@ public class Ball : MonoBehaviour
     [SerializeField]
     private float _initialSpeed = 5f;
     private Rigidbody2D rb;
+    
+    // Public getter for testing
+    public float InitialSpeed { get { return _initialSpeed; } }
 
     void Start()
     {
