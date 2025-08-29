@@ -114,17 +114,10 @@ public class GameManager : MonoBehaviour
 
     public void OnBallLost()
     {
-        Debug.Log($"GameManager OnBallLost called. Current state: {CurrentGameState}");
-        
         // Only handle ball loss during gameplay
         if (CurrentGameState == GameState.Playing)
         {
-            Debug.Log("GameManager: Ball lost during gameplay, setting state to GameOver");
             SetGameState(GameState.GameOver);
-        }
-        else
-        {
-            Debug.Log($"GameManager: Ball lost ignored because game state is {CurrentGameState}");
         }
     }
 
