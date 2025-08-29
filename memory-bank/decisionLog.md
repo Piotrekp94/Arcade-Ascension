@@ -37,3 +37,12 @@ Implementation Details:
 - Employ mocking frameworks (e.g., NSubstitute, Moq) for external dependencies to ensure true unit isolation.
 - Organize tests in a dedicated 'Tests' folder, mirroring the project's main folder structure.
 - Aim for high code coverage, especially for critical game mechanics and upgrade systems.
+
+2025-08-29 - Decision: Component Architecture and Upgrade System Design
+Rationale: Establish clear separation of concerns and maintainable upgrade system for the arcade game.
+Implementation Details:
+- Each game component (PlayerPaddle, Ball, Block) handles its own behavior and upgrade integration
+- UpgradeManager uses FindObjectOfType for simplicity but should evolve to use references for better performance
+- Input handled directly in PlayerPaddle using Unity's new Input System with keyboard polling
+- Upgrade system uses enum-based typing with generic float values for flexibility
+- GameManager serves as central coordinator for game state, score, and currency management
