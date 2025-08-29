@@ -18,10 +18,14 @@ public class BlockTests
         GameObject gameManagerGO = new GameObject();
         gameManager = gameManagerGO.AddComponent<GameManager>();
         scoreText = new GameObject().AddComponent<TextMeshProUGUI>();
-        // Manually set private fields for testing (not ideal for production)
-        // In a real scenario, use public setters or a mocking framework.
-        // For this example, we'll assume direct access for testing.
-        // gameManager.scoreText = scoreText;
+        
+        // Set up the singleton Instance for testing
+        // This ensures GameManager.Instance is properly set for our tests
+        GameManager.SetInstanceForTesting(gameManager);
+        
+        // Ensure the GameManager is properly initialized
+        // The Start() method just initializes score to 0, so we don't need to call it
+        // The GetScore() and AddScore() methods should work without Start() being called
 
         blockGO = new GameObject();
         block = blockGO.AddComponent<Block>();
@@ -32,6 +36,9 @@ public class BlockTests
     [TearDown]
     public void Teardown()
     {
+        // Clean up singleton Instance to prevent test pollution
+        GameManager.SetInstanceForTesting(null);
+        
         // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
         if (Application.isPlaying)
         {
@@ -117,16 +124,23 @@ public class BlockTests
     [UnityTest]
     public IEnumerator Block_DestroyBlockAddsScore()
     {
-        // Arrange: Block with 1 hit point and initial score
+        // Arrange: Block with 1 hit point and ensure GameManager is properly initialized
         Assert.AreEqual(1, block.HitPoints);
-        int initialScore = gameManager.GetScore();
+        
+        // Ensure GameManager.Instance is properly set and initialized
+        Assert.IsNotNull(GameManager.Instance);
+        Assert.AreSame(gameManager, GameManager.Instance);
+        
+        int initialScore = GameManager.Instance.GetScore();
 
         // Act: Take a hit that should destroy the block and add score
         block.TakeHit();
         yield return null; // Wait a frame for Destroy and GameManager updates
 
         // Assert: Score should increase by 10
-        Assert.AreEqual(initialScore + 10, gameManager.GetScore());
+        int finalScore = GameManager.Instance.GetScore();
+        Assert.AreEqual(initialScore + 10, finalScore, 
+            $"Expected score to increase from {initialScore} to {initialScore + 10}, but got {finalScore}");
     }
 
     [Test]
@@ -156,6 +170,26 @@ public class BlockTests
         // Edge case: Setting negative hit points should be clamped to 0
         block.SetHitPoints(-1);
         Assert.AreEqual(0, block.HitPoints); // Hit points should never be negative
+    }
+
+    [Test]
+    public void GameManager_SingletonAndScoreWorkCorrectly()
+    {
+        // Test that our GameManager singleton setup works correctly in tests
+        Assert.IsNotNull(GameManager.Instance);
+        Assert.AreSame(gameManager, GameManager.Instance);
+        
+        // Test initial score
+        int initialScore = GameManager.Instance.GetScore();
+        Assert.AreEqual(0, initialScore); // Score should start at 0
+        
+        // Test adding score
+        GameManager.Instance.AddScore(10);
+        Assert.AreEqual(10, GameManager.Instance.GetScore());
+        
+        // Test adding more score
+        GameManager.Instance.AddScore(5);
+        Assert.AreEqual(15, GameManager.Instance.GetScore());
     }
 
     [Test]
