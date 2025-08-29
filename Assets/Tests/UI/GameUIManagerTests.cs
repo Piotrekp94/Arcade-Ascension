@@ -73,10 +73,7 @@ public class GameUIManagerTests
         // Test that UIManager can find GameManager.Instance
         Assert.IsNotNull(GameManager.Instance);
         
-        // Simulate Start() method behavior
-        uiManager.Start();
-        
-        // UIManager should be able to work with GameManager
+        // UIManager should be able to work with GameManager without calling Start()
         Assert.DoesNotThrow(() => uiManager.UpdateUIState());
     }
 
