@@ -15,40 +15,22 @@ public class GameManagerTests
         // Create a new GameObject for GameManager
         GameObject gameManagerGO = new GameObject();
         gameManager = gameManagerGO.AddComponent<GameManager>();
+        
+        // Set up singleton for testing
+        GameManager.SetInstanceForTesting(gameManager);
 
         // Create mock TextMeshProUGUI components
         GameObject scoreTextGO = new GameObject();
         scoreText = scoreTextGO.AddComponent<TextMeshProUGUI>();
-
-        // Use reflection or a public setter to assign the private fields
-        // For simplicity, assuming public setters or direct assignment for testing purposes
-        // In a real scenario, you might use a test-specific constructor or public properties
-        // For now, we'll directly set the private fields using reflection if necessary,
-        // or modify GameManager to have public setters for testing.
-        // For this example, let's assume we'll make them public for testing.
-        // (Note: In a real Unity project, you'd typically use [SerializeField] and assign in editor,
-        // or use a more robust mocking framework for UI elements.)
-
-        // Directly setting private fields for testing purposes (not ideal for production)
-        // This would require making the fields public or using reflection.
-        // For this example, we'll assume they are accessible for testing.
-        // gameManager.scoreText = scoreText;
-
-        // A more robust way would be to have a test-specific initialization method in GameManager
-        // or use a mocking library. For now, we'll proceed with the assumption that
-        // the GameManager's Awake and Start methods will handle initialization,
-        // and we'll check the public methods.
-
-        // Initialize GameManager (Awake and Start are called automatically by Unity Test Runner)
-        // However, for isolated unit tests, we might need to manually call them or ensure they are called.
-        // For now, we'll rely on Unity Test Runner's lifecycle.
     }
 
     [TearDown]
     public void Teardown()
     {
+        // Clean up singleton
+        GameManager.SetInstanceForTesting(null);
+        
         // Clean up GameObjects after each test
-        // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
         if (Application.isPlaying)
         {
             if (gameManager != null && gameManager.gameObject != null) Object.Destroy(gameManager.gameObject);
@@ -81,5 +63,74 @@ public class GameManagerTests
     {
         gameManager.SetGameState(GameManager.GameState.Playing);
         Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_CanHandleBallLoss()
+    {
+        // Test that GameManager can handle ball loss events
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+
+        // Simulate ball loss
+        gameManager.OnBallLost();
+
+        // Game state should change to GameOver
+        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_BallLossFromPlayingStateTriggersGameOver()
+    {
+        // Test specific transition from Playing to GameOver on ball loss
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.OnBallLost();
+        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_BallLossFromStartStateDoesNothing()
+    {
+        // Test that ball loss during Start state doesn't trigger game over
+        gameManager.SetGameState(GameManager.GameState.Start);
+        gameManager.OnBallLost();
+        
+        // Should remain in Start state (ball loss only matters during gameplay)
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_CanResetAfterGameOver()
+    {
+        // Test that game can be reset after game over
+        gameManager.SetGameState(GameManager.GameState.GameOver);
+        
+        // Reset game
+        gameManager.ResetGame();
+        
+        // Should return to Start state with score reset
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
+        Assert.AreEqual(0, gameManager.GetScore());
+    }
+
+    [Test]
+    public void GameManager_GameOverTriggersEvent()
+    {
+        // Test that game over triggers an event for UI updates
+        bool gameOverTriggered = false;
+        gameManager.OnGameOver += () => gameOverTriggered = true;
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.OnBallLost();
+        
+        Assert.IsTrue(gameOverTriggered);
+    }
+
+    [Test] 
+    public void GameManager_SingletonInstanceIsProperlySet()
+    {
+        // Test that singleton instance is properly maintained
+        Assert.IsNotNull(GameManager.Instance);
+        Assert.AreSame(gameManager, GameManager.Instance);
     }
 }

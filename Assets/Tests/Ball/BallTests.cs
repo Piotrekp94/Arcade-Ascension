@@ -13,6 +13,7 @@ public class BallTests
     public void Setup()
     {
         ballGO = new GameObject();
+        ballGO.tag = "Ball"; // Ensure ball is properly tagged
         rb = ballGO.AddComponent<Rigidbody2D>();
         ball = ballGO.AddComponent<Ball>();
 
@@ -117,5 +118,119 @@ public class BallTests
             Object.Destroy(testBallGO);
         else
             Object.DestroyImmediate(testBallGO);
+    }
+
+    [Test]
+    public void Ball_HasBallTag()
+    {
+        // Test that ball is properly tagged for detection by DeathZone
+        Assert.AreEqual("Ball", ballGO.tag);
+    }
+
+    [Test]
+    public void Ball_CanDetectWallCollisions()
+    {
+        // Test that ball can differentiate between wall types
+        GameObject wallGO = new GameObject();
+        Wall wall = wallGO.AddComponent<Wall>();
+        wall.SetWallType(Wall.WallType.Top);
+        
+        bool wallHitDetected = false;
+        ball.OnWallHit += (wallType) => {
+            wallHitDetected = true;
+            Assert.AreEqual(Wall.WallType.Top, wallType);
+        };
+
+        // Simulate wall collision
+        ball.SimulateWallCollision(wall);
+        
+        Assert.IsTrue(wallHitDetected);
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(wallGO);
+        else
+            Object.DestroyImmediate(wallGO);
+    }
+
+    [Test]
+    public void Ball_OnWallHitEventFiresForDifferentWallTypes()
+    {
+        // Test that the event fires correctly for different wall types
+        GameObject topWallGO = new GameObject();
+        Wall topWall = topWallGO.AddComponent<Wall>();
+        topWall.SetWallType(Wall.WallType.Top);
+
+        GameObject leftWallGO = new GameObject();
+        Wall leftWall = leftWallGO.AddComponent<Wall>();
+        leftWall.SetWallType(Wall.WallType.Left);
+
+        Wall.WallType detectedWallType = Wall.WallType.Top;
+        ball.OnWallHit += (wallType) => detectedWallType = wallType;
+
+        // Test top wall
+        ball.SimulateWallCollision(topWall);
+        Assert.AreEqual(Wall.WallType.Top, detectedWallType);
+
+        // Test left wall
+        ball.SimulateWallCollision(leftWall);
+        Assert.AreEqual(Wall.WallType.Left, detectedWallType);
+
+        // Cleanup
+        if (Application.isPlaying)
+        {
+            Object.Destroy(topWallGO);
+            Object.Destroy(leftWallGO);
+        }
+        else
+        {
+            Object.DestroyImmediate(topWallGO);
+            Object.DestroyImmediate(leftWallGO);
+        }
+    }
+
+    [Test]
+    public void Ball_OnlyReactsToWallComponents()
+    {
+        // Test that ball only fires wall hit events for objects with Wall component
+        GameObject nonWallGO = new GameObject();
+        nonWallGO.AddComponent<BoxCollider2D>(); // Has collider but no Wall component
+
+        bool wallHitDetected = false;
+        ball.OnWallHit += (wallType) => wallHitDetected = true;
+
+        // Simulate collision with non-wall object
+        ball.SimulateNonWallCollision(nonWallGO);
+        
+        Assert.IsFalse(wallHitDetected);
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(nonWallGO);
+        else
+            Object.DestroyImmediate(nonWallGO);
+    }
+
+    [Test]
+    public void Ball_MaintainsSpeedAfterWallCollision()
+    {
+        // Test that ball maintains its speed after bouncing off walls
+        float initialSpeed = ball.InitialSpeed;
+        ball.LaunchBall();
+        
+        GameObject wallGO = new GameObject();
+        Wall wall = wallGO.AddComponent<Wall>();
+        
+        // Simulate wall collision
+        ball.SimulateWallCollision(wall);
+        
+        // Speed should remain consistent (Unity physics will handle direction change)
+        Assert.That(rb.linearVelocity.magnitude, Is.EqualTo(initialSpeed).Within(0.1f));
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(wallGO);
+        else
+            Object.DestroyImmediate(wallGO);
     }
 }

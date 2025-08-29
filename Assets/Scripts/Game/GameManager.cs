@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro; // Assuming TextMeshPro is used for UI text
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class GameManager : MonoBehaviour
     }
 
     public GameState CurrentGameState { get; private set; }
+    
+    // Events for game state changes
+    public event Action OnGameOver;
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
@@ -82,7 +86,9 @@ public class GameManager : MonoBehaviour
 
     public void SetGameState(GameState newGameState)
     {
+        GameState previousState = CurrentGameState;
         CurrentGameState = newGameState;
+        
         switch (CurrentGameState)
         {
             case GameState.Start:
@@ -96,7 +102,36 @@ public class GameManager : MonoBehaviour
             case GameState.GameOver:
                 Debug.Log("Game State: Game Over");
                 // Show game over screen, stop ball, etc.
+                
+                // Trigger game over event if transitioning from a different state
+                if (previousState != GameState.GameOver)
+                {
+                    OnGameOver?.Invoke();
+                }
                 break;
         }
+    }
+
+    public void OnBallLost()
+    {
+        // Only handle ball loss during gameplay
+        if (CurrentGameState == GameState.Playing)
+        {
+            SetGameState(GameState.GameOver);
+        }
+    }
+
+    public void ResetGame()
+    {
+        // Reset game state and score
+        score = 0;
+        UpdateScoreUI();
+        SetGameState(GameState.Start);
+    }
+
+    public void StartGame()
+    {
+        // Start a new game
+        SetGameState(GameState.Playing);
     }
 }
