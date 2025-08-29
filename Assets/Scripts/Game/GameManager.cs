@@ -4,6 +4,12 @@ using TMPro; // Assuming TextMeshPro is used for UI text
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    
+    // Method to set Instance for testing purposes
+    public static void SetInstanceForTesting(GameManager testInstance)
+    {
+        Instance = testInstance;
+    }
 
     public enum GameState
     {
