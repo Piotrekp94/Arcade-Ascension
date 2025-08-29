@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     // Events for game state changes
     public event Action OnGameOver;
     public event Action OnBallSpawned;
+    public event Action OnGameStarted;
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
@@ -159,13 +160,29 @@ public class GameManager : MonoBehaviour
         respawnTimer = 0f;
     }
 
+    public void RestartGame()
+    {
+        // Reset game state first
+        ResetGame();
+        
+        // Then immediately start a new game
+        StartGame();
+    }
+
     public void StartGame()
     {
+        // Only start if in Start state to prevent multiple starts
+        if (CurrentGameState != GameState.Start)
+            return;
+            
         // Start a new game
         SetGameState(GameState.Playing);
         
         // Spawn initial ball attached to paddle
         SpawnInitialBallAtPaddle();
+        
+        // Fire game started event for UI updates
+        OnGameStarted?.Invoke();
     }
 
     // Ball spawning system methods
