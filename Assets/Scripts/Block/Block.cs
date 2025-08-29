@@ -7,12 +7,24 @@ public class Block : MonoBehaviour
     [SerializeField]
     private GameObject destructionEffectPrefab; // Particle effect prefab for destruction
 
+    // Public getter for testing
+    public int HitPoints { get { return hitPoints; } }
+    
+    // Public setter for testing (in production, this could be removed or made internal)
+    public void SetHitPoints(int newHitPoints)
+    {
+        hitPoints = Mathf.Max(0, newHitPoints); // Ensure hit points never go below 0
+    }
+
     public void TakeHit()
     {
-        hitPoints--;
-        if (hitPoints <= 0)
+        if (hitPoints > 0)
         {
-            DestroyBlock();
+            hitPoints--;
+            if (hitPoints <= 0)
+            {
+                DestroyBlock();
+            }
         }
     }
 

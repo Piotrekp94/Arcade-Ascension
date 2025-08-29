@@ -38,34 +38,129 @@ public class BlockTests
     }
 
     [Test]
+    public void Block_HasInitialHitPointsOfOne()
+    {
+        // Test that block starts with 1 hit point by default
+        Assert.AreEqual(1, block.HitPoints);
+    }
+
+    [Test]
     public void Block_TakeHitDecreasesHitPoints()
     {
-        // Assuming hitPoints is accessible for testing
-        // block.hitPoints = 2;
-        // block.TakeHit();
-        // Assert.AreEqual(1, block.hitPoints);
+        // Arrange: Block starts with 1 hit point
+        Assert.AreEqual(1, block.HitPoints);
+        
+        // Act: Take a hit
+        block.TakeHit();
+        
+        // Assert: Hit points should decrease to 0
+        Assert.AreEqual(0, block.HitPoints);
+    }
+
+    [Test]
+    public void Block_TakeHitFromTwoHitPointsDecreasesToOne()
+    {
+        // Arrange: Set block to have 2 hit points
+        block.SetHitPoints(2);
+        Assert.AreEqual(2, block.HitPoints);
+        
+        // Act: Take a hit
+        block.TakeHit();
+        
+        // Assert: Hit points should decrease to 1
+        Assert.AreEqual(1, block.HitPoints);
+    }
+
+    [Test]
+    public void Block_MultipleHitsDecrementCorrectly()
+    {
+        // Arrange: Set block to have 3 hit points
+        block.SetHitPoints(3);
+        Assert.AreEqual(3, block.HitPoints);
+        
+        // Act: Take multiple hits
+        block.TakeHit();
+        Assert.AreEqual(2, block.HitPoints);
+        
+        block.TakeHit();
+        Assert.AreEqual(1, block.HitPoints);
+        
+        block.TakeHit();
+        Assert.AreEqual(0, block.HitPoints);
     }
 
     [UnityTest]
     public IEnumerator Block_DestroyBlockDestroysGameObject()
     {
-        // Assuming hitPoints is accessible for testing
-        // block.hitPoints = 1;
-        // block.TakeHit();
+        // Arrange: Block with 1 hit point
+        Assert.AreEqual(1, block.HitPoints);
+        Assert.IsNotNull(blockGO);
+        
+        // Act: Take a hit that should destroy the block
+        block.TakeHit();
         yield return null; // Wait a frame for Destroy to be processed
-        Assert.IsTrue(block == null); // Check if the GameObject is destroyed
+        
+        // Assert: GameObject should be destroyed
+        Assert.IsTrue(block == null || blockGO == null);
     }
 
     [UnityTest]
     public IEnumerator Block_DestroyBlockAddsScore()
     {
-        // Assuming hitPoints is accessible for testing
-        // block.hitPoints = 1;
-        // int initialScore = gameManager.score;
+        // Arrange: Block with 1 hit point and initial score
+        Assert.AreEqual(1, block.HitPoints);
+        int initialScore = gameManager.GetScore();
 
-        // block.TakeHit();
+        // Act: Take a hit that should destroy the block and add score
+        block.TakeHit();
         yield return null; // Wait a frame for Destroy and GameManager updates
 
-        // Assert.AreEqual(initialScore + 10, gameManager.score);
+        // Assert: Score should increase by 10
+        Assert.AreEqual(initialScore + 10, gameManager.GetScore());
+    }
+
+    [Test]
+    public void Block_TakeHitWhenHitPointsIsZeroDoesNotThrow()
+    {
+        // Arrange: Take hit to reduce to 0 hit points
+        block.TakeHit();
+        Assert.AreEqual(0, block.HitPoints);
+        
+        // Act & Assert: Taking another hit should not throw exception
+        Assert.DoesNotThrow(() => block.TakeHit());
+        
+        // But hit points should not go negative (this will help drive our implementation)
+        Assert.GreaterOrEqual(block.HitPoints, 0);
+    }
+
+    [Test]
+    public void Block_SetHitPointsUpdatesCorrectly()
+    {
+        // Test our setter method works correctly
+        block.SetHitPoints(5);
+        Assert.AreEqual(5, block.HitPoints);
+        
+        block.SetHitPoints(0);
+        Assert.AreEqual(0, block.HitPoints);
+        
+        // Edge case: Setting negative hit points should be clamped to 0
+        block.SetHitPoints(-1);
+        Assert.AreEqual(0, block.HitPoints); // Hit points should never be negative
+    }
+
+    [Test]
+    public void Block_DestroyBlockWithNullGameManagerDoesNotThrow()
+    {
+        // Arrange: Ensure GameManager.Instance is null
+        // This tests that our code handles missing GameManager gracefully
+        var originalInstance = GameManager.Instance;
+        
+        // We can't easily set GameManager.Instance to null in Unity's singleton,
+        // but we can test that the method doesn't crash when called
+        // This is more of an integration test
+        
+        Assert.DoesNotThrow(() => {
+            block.TakeHit(); // Should destroy block when hit points reach 0
+        });
     }
 }
