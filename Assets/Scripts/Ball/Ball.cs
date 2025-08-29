@@ -35,8 +35,8 @@ public class Ball : MonoBehaviour
             
         if (rb != null)
         {
-            float x = Random.Range(0, 2) == 0 ? -1 : 1;
-            float y = Random.Range(0, 2) == 0 ? -1 : 1;
+            float x = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
+            float y = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
             rb.linearVelocity = new Vector2(x, y).normalized * _initialSpeed;
         }
     }
