@@ -21,7 +21,6 @@ public class Block : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.AddScore(10); // Add 10 points for destroying a block
-            GameManager.Instance.AddCurrency(5); // Add 5 currency for destroying a block
         }
 
         if (destructionEffectPrefab != null)

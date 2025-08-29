@@ -16,7 +16,7 @@ public class Ball : MonoBehaviour
     {
         float x = Random.Range(0, 2) == 0 ? -1 : 1;
         float y = Random.Range(0, 2) == 0 ? -1 : 1;
-        rb.linearVelocity = new Vector2(x, y).normalized * initialSpeed;
+        rb.linearVelocity = new Vector2(x, y).normalized * _initialSpeed;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -25,11 +25,4 @@ public class Ball : MonoBehaviour
         // More complex logic can be added here later for blocks
     }
 
-    public float initialSpeed { get { return _initialSpeed; } } // Public getter for initialSpeed
-
-    public void SetSpeed(float newSpeed)
-    {
-        _initialSpeed = newSpeed;
-        rb.linearVelocity = rb.linearVelocity.normalized * _initialSpeed; // Update current velocity
-    }
 }

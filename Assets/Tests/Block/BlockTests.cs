@@ -8,23 +8,20 @@ public class BlockTests
 {
     private Block block;
     private GameObject blockGO;
-    private GameManager gameManager; // To test score/currency addition
+    private GameManager gameManager; // To test score addition
     private TextMeshProUGUI scoreText;
-    private TextMeshProUGUI currencyText;
 
     [SetUp]
     public void Setup()
     {
-        // Setup GameManager for score/currency testing
+        // Setup GameManager for score testing
         GameObject gameManagerGO = new GameObject();
         gameManager = gameManagerGO.AddComponent<GameManager>();
         scoreText = new GameObject().AddComponent<TextMeshProUGUI>();
-        currencyText = new GameObject().AddComponent<TextMeshProUGUI>();
         // Manually set private fields for testing (not ideal for production)
         // In a real scenario, use public setters or a mocking framework.
         // For this example, we'll assume direct access for testing.
         // gameManager.scoreText = scoreText;
-        // gameManager.currencyText = currencyText;
 
         blockGO = new GameObject();
         block = blockGO.AddComponent<Block>();
@@ -38,7 +35,6 @@ public class BlockTests
         Object.Destroy(blockGO);
         Object.Destroy(gameManager.gameObject);
         Object.Destroy(scoreText.gameObject);
-        Object.Destroy(currencyText.gameObject);
     }
 
     [Test]
@@ -61,17 +57,15 @@ public class BlockTests
     }
 
     [UnityTest]
-    public IEnumerator Block_DestroyBlockAddsScoreAndCurrency()
+    public IEnumerator Block_DestroyBlockAddsScore()
     {
         // Assuming hitPoints is accessible for testing
         // block.hitPoints = 1;
         // int initialScore = gameManager.score;
-        // int initialCurrency = gameManager.currency;
 
         // block.TakeHit();
         yield return null; // Wait a frame for Destroy and GameManager updates
 
         // Assert.AreEqual(initialScore + 10, gameManager.score);
-        // Assert.AreEqual(initialCurrency + 5, gameManager.currency);
     }
 }

@@ -46,3 +46,13 @@ Implementation Details:
 - Input handled directly in PlayerPaddle using Unity's new Input System with keyboard polling
 - Upgrade system uses enum-based typing with generic float values for flexibility
 - GameManager serves as central coordinator for game state, score, and currency management
+
+2025-08-29 - Decision: Complete Upgrade System Removal
+Rationale: User requested complete removal of upgrade system to simplify game to pure Breakout/Arkanoid mechanics.
+Implementation Details:
+- Removed all upgrade-related files: UpgradeManager.cs, UpgradeMenu.cs, UpgradeButton.cs, UpgradeManagerTests.cs
+- Cleaned GameManager to remove currency system, keeping only score tracking
+- Removed upgrade methods from PlayerPaddle and Ball components
+- Updated UIManager to remove upgrade menu references
+- Fixed game balance with paddle speed=5f, ball speed=5f, blocks award 10 points
+- Created backup branch 'backup-upgrade-system' before removal for potential future restoration

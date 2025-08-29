@@ -16,10 +16,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
-    [SerializeField]
-    private TextMeshProUGUI _currencyText; // Reference to UI TextMeshPro element for currency
     private int score;
-    private int currency;
     [SerializeField]
     private float difficultyMultiplier = 1.0f; // Multiplier for game difficulty
 
@@ -38,9 +35,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         score = 0;
-        currency = 0;
         UpdateScoreUI();
-        UpdateCurrencyUI();
         SetGameState(GameState.Start); // Initial game state
     }
 
@@ -61,27 +56,6 @@ public class GameManager : MonoBehaviour
         UpdateScoreUI();
     }
 
-    public void AddCurrency(int amount)
-    {
-        currency += amount;
-        UpdateCurrencyUI();
-    }
-
-    public bool SpendCurrency(int amount)
-    {
-        if (currency >= amount)
-        {
-            currency -= amount;
-            UpdateCurrencyUI();
-            return true;
-        }
-        return false;
-    }
-
-    public int GetCurrency()
-    {
-        return currency;
-    }
 
     public int GetScore()
     {
@@ -96,13 +70,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateCurrencyUI()
-    {
-        if (_currencyText != null)
-        {
-            _currencyText.text = "Currency: " + currency;
-        }
-    }
 
     public void SetGameState(GameState newGameState)
     {

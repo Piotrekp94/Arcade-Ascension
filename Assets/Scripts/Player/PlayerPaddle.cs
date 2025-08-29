@@ -29,16 +29,4 @@ public class PlayerPaddle : MonoBehaviour
         transform.position = position;
     }
 
-    public float speed { get { return _speed; } } // Public getter for speed
-
-    public void SetSpeed(float newSpeed)
-    {
-        _speed = newSpeed;
-    }
-
-    public void SetSize(float newSize)
-    {
-        Vector3 currentScale = transform.localScale;
-        transform.localScale = new Vector3(newSize, currentScale.y, currentScale.z);
-    }
 }

@@ -7,20 +7,21 @@ This file provides a high-level overview of the project and the expected product
 
 ## Project Goal
 
-*   Build an arcade game similar to Pong, where players destroy blocks to earn points and currency, which can then be used to purchase upgrades to enhance gameplay.
+*   Build a classic Breakout/Arkanoid-style arcade game where players control a paddle to bounce a ball and destroy blocks to earn points.
 
 ## Key Features
 
-*   Pong-like core gameplay with a player-controlled paddle and a ball.
-*   Blocks with hit points that award score and currency upon destruction.
-*   An upgrade system allowing players to purchase enhancements (e.g., Paddle Speed, Paddle Size, Ball Speed, Multi-Ball, Extra Life) using earned currency.
+*   Classic Breakout gameplay with a player-controlled paddle and physics-based ball.
+*   Destructible blocks with hit points that award score points upon destruction.
+*   Pure arcade mechanics without upgrades - focus on skill-based gameplay.
 *   Management of distinct game states (Start, Playing, Game Over).
-*   User Interface (UI) for displaying score and currency.
+*   Clean User Interface (UI) for displaying score and game information.
 
 ## Overall Architecture
 
 *   Unity game engine, C# scripting.
-*   Singleton pattern for core managers (`GameManager`, `UpgradeManager`).
+*   Singleton pattern for core managers (`GameManager`).
 *   Input handling via Unity's new Input System (keyboard for paddle).
 *   Component-based design for game entities (`PlayerPaddle`, `Ball`, `Block`).
 *   UI elements managed by TextMeshPro.
+*   Pure arcade mechanics without progression systems - classic Breakout experience.

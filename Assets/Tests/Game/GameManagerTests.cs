@@ -8,7 +8,6 @@ public class GameManagerTests
 {
     private GameManager gameManager;
     private TextMeshProUGUI scoreText;
-    private TextMeshProUGUI currencyText;
 
     [SetUp]
     public void Setup()
@@ -20,8 +19,6 @@ public class GameManagerTests
         // Create mock TextMeshProUGUI components
         GameObject scoreTextGO = new GameObject();
         scoreText = scoreTextGO.AddComponent<TextMeshProUGUI>();
-        GameObject currencyTextGO = new GameObject();
-        currencyText = currencyTextGO.AddComponent<TextMeshProUGUI>();
 
         // Use reflection or a public setter to assign the private fields
         // For simplicity, assuming public setters or direct assignment for testing purposes
@@ -36,7 +33,6 @@ public class GameManagerTests
         // This would require making the fields public or using reflection.
         // For this example, we'll assume they are accessible for testing.
         // gameManager.scoreText = scoreText;
-        // gameManager.currencyText = currencyText;
 
         // A more robust way would be to have a test-specific initialization method in GameManager
         // or use a mocking library. For now, we'll proceed with the assumption that
@@ -54,7 +50,6 @@ public class GameManagerTests
         // Clean up GameObjects after each test
         Object.Destroy(gameManager.gameObject);
         Object.Destroy(scoreText.gameObject);
-        Object.Destroy(currencyText.gameObject);
     }
 
     [Test]
@@ -71,44 +66,6 @@ public class GameManagerTests
         Assert.AreEqual(100, gameManager.GetScore());
     }
 
-    [Test]
-    public void GameManager_InitialCurrencyIsZero()
-    {
-        // GameManager's Start method sets currency to 0
-        Assert.AreEqual(0, gameManager.GetCurrency());
-    }
-
-    [Test]
-    public void GameManager_AddCurrencyIncreasesCurrency()
-    {
-        gameManager.AddCurrency(50);
-        Assert.AreEqual(50, gameManager.GetCurrency());
-    }
-
-    [Test]
-    public void GameManager_SpendCurrencyDecreasesCurrency()
-    {
-        gameManager.AddCurrency(100);
-        gameManager.SpendCurrency(30);
-        Assert.AreEqual(70, gameManager.GetCurrency());
-    }
-
-    [Test]
-    public void GameManager_SpendCurrencyReturnsTrueWhenEnoughCurrency()
-    {
-        gameManager.AddCurrency(50);
-        bool result = gameManager.SpendCurrency(20);
-        Assert.IsTrue(result);
-    }
-
-    [Test]
-    public void GameManager_SpendCurrencyReturnsFalseWhenNotEnoughCurrency()
-    {
-        gameManager.AddCurrency(10);
-        bool result = gameManager.SpendCurrency(20);
-        Assert.IsFalse(result);
-        Assert.AreEqual(10, gameManager.GetCurrency()); // Currency should not change
-    }
 
     [Test]
     public void GameManager_SetGameStateChangesState()

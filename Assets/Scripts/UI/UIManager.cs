@@ -8,8 +8,6 @@ public class UIManager : MonoBehaviour
     private GameObject mainMenuPanel;
     [SerializeField]
     private GameObject pauseMenuPanel;
-    [SerializeField]
-    private GameObject upgradeMenuPanel; // Reference to the UpgradeMenu GameObject
 
     void Awake()
     {
@@ -32,7 +30,6 @@ public class UIManager : MonoBehaviour
     {
         mainMenuPanel.SetActive(true);
         pauseMenuPanel.SetActive(false);
-        upgradeMenuPanel.SetActive(false);
         Time.timeScale = 0f; // Pause game
         if (GameManager.Instance != null) GameManager.Instance.SetGameState(GameManager.GameState.Start);
     }
@@ -53,21 +50,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowUpgradeMenu()
-    {
-        upgradeMenuPanel.SetActive(true);
-        if (upgradeMenuPanel.GetComponent<UpgradeMenu>() != null)
-        {
-            upgradeMenuPanel.GetComponent<UpgradeMenu>().ShowMenu();
-        }
-        Time.timeScale = 0f; // Pause game
-    }
-
-    public void HideUpgradeMenu()
-    {
-        upgradeMenuPanel.SetActive(false);
-        Time.timeScale = 1f; // Resume game
-    }
 
     public void StartGame()
     {
