@@ -190,8 +190,8 @@ public class GameManagerTests
         // Timer should now be active
         Assert.IsTrue(gameManager.IsRespawnTimerActive());
         
-        // Wait for timer to complete
-        yield return new WaitForSeconds(1.1f);
+        // Manually advance the timer since Update() won't be called in tests
+        gameManager.UpdateRespawnTimer(1.1f);
         
         // Timer should no longer be active
         Assert.IsFalse(gameManager.IsRespawnTimerActive());
@@ -260,7 +260,8 @@ public class GameManagerTests
         
         // Trigger ball loss and respawn
         gameManager.OnBallLost();
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f); // Small delay
+        gameManager.UpdateRespawnTimer(0.2f); // Manually advance timer
         
         // Paddle should now have an attached ball
         Assert.IsTrue(paddle.HasAttachedBall());

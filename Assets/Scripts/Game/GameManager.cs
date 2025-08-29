@@ -253,4 +253,18 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    // Method to manually update respawn timer for testing
+    public void UpdateRespawnTimer(float deltaTime)
+    {
+        if (respawnTimerActive)
+        {
+            respawnTimer -= deltaTime;
+            if (respawnTimer <= 0f)
+            {
+                SpawnBallAtPaddle();
+                respawnTimerActive = false;
+            }
+        }
+    }
 }

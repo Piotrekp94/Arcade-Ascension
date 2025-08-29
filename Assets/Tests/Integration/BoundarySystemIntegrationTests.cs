@@ -219,8 +219,9 @@ public class BoundarySystemIntegrationTests
         deathZone.SimulateBallEntry(testBallForRespawn);
         Assert.IsTrue(gameManager.IsRespawnTimerActive());
         
-        // Wait for respawn
-        yield return new WaitForSeconds(0.2f);
+        // Wait for respawn - manually trigger timer since Update() won't be called in tests
+        yield return new WaitForSeconds(0.1f); // Small delay to let the timer start
+        gameManager.UpdateRespawnTimer(0.2f); // Manually advance timer past respawn delay
         
         // Ball should be attached to paddle
         Assert.IsTrue(paddle.HasAttachedBall());
@@ -290,7 +291,11 @@ public class BoundarySystemIntegrationTests
         GameObject testBall3 = new GameObject("TestBall3");
         testBall3.tag = "Ball";
         deathZone.SimulateBallEntry(testBall3);
-        yield return new WaitForSeconds(0.2f);
+        
+        // Manually trigger the respawn timer since Update() won't be called in tests
+        yield return new WaitForSeconds(0.1f); // Small delay to let the timer start
+        gameManager.UpdateRespawnTimer(0.2f); // Manually advance timer past respawn delay
+        
         Assert.IsTrue(paddle.HasAttachedBall());
         
         // Cleanup
