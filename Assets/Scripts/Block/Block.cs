@@ -40,6 +40,13 @@ public class Block : MonoBehaviour
             Instantiate(destructionEffectPrefab, transform.position, Quaternion.identity);
         }
         // Play sound here later
-        Destroy(gameObject);
+        if (Application.isPlaying)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DestroyImmediate(gameObject);
+        }
     }
 }

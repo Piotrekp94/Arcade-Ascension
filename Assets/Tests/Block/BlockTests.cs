@@ -32,9 +32,19 @@ public class BlockTests
     [TearDown]
     public void Teardown()
     {
-        Object.Destroy(blockGO);
-        Object.Destroy(gameManager.gameObject);
-        Object.Destroy(scoreText.gameObject);
+        // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
+        if (Application.isPlaying)
+        {
+            if (blockGO != null) Object.Destroy(blockGO);
+            if (gameManager != null && gameManager.gameObject != null) Object.Destroy(gameManager.gameObject);
+            if (scoreText != null && scoreText.gameObject != null) Object.Destroy(scoreText.gameObject);
+        }
+        else
+        {
+            if (blockGO != null) Object.DestroyImmediate(blockGO);
+            if (gameManager != null && gameManager.gameObject != null) Object.DestroyImmediate(gameManager.gameObject);
+            if (scoreText != null && scoreText.gameObject != null) Object.DestroyImmediate(scoreText.gameObject);
+        }
     }
 
     [Test]
