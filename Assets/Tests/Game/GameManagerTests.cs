@@ -133,4 +133,117 @@ public class GameManagerTests
         Assert.IsNotNull(GameManager.Instance);
         Assert.AreSame(gameManager, GameManager.Instance);
     }
+
+    [Test]
+    public void GameManager_HasConfigurableRespawnDelay()
+    {
+        // Test that GameManager has configurable respawn delay
+        float defaultRespawnDelay = gameManager.GetRespawnDelay();
+        Assert.Greater(defaultRespawnDelay, 0f); // Should have a positive default value
+
+        // Test setting custom respawn delay
+        gameManager.SetRespawnDelay(5.0f);
+        Assert.AreEqual(5.0f, gameManager.GetRespawnDelay());
+    }
+
+    [Test]
+    public void GameManager_CanSpawnBallAtPaddlePosition()
+    {
+        // Test that GameManager can spawn ball at specified position
+        Vector2 spawnPosition = new Vector2(1.0f, -3.0f);
+        
+        // Mock paddle for position reference
+        GameObject mockPaddle = new GameObject("MockPaddle");
+        mockPaddle.transform.position = spawnPosition;
+        
+        GameObject spawnedBall = gameManager.SpawnBallAtPosition(spawnPosition);
+        
+        Assert.IsNotNull(spawnedBall);
+        Assert.AreEqual("Ball", spawnedBall.tag);
+        Assert.That(Vector2.Distance(spawnedBall.transform.position, spawnPosition), Is.LessThan(0.1f));
+        
+        // Cleanup
+        if (Application.isPlaying)
+        {
+            Object.Destroy(spawnedBall);
+            Object.Destroy(mockPaddle);
+        }
+        else
+        {
+            Object.DestroyImmediate(spawnedBall);
+            Object.DestroyImmediate(mockPaddle);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator GameManager_StartsRespawnTimerOnBallLoss()
+    {
+        // Test that respawn timer starts when ball is lost
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetRespawnDelay(1.0f); // Short delay for testing
+        
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
+        
+        // Trigger ball loss
+        gameManager.OnBallLost();
+        
+        // Timer should now be active
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
+        
+        // Wait for timer to complete
+        yield return new WaitForSeconds(1.1f);
+        
+        // Timer should no longer be active
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
+    }
+
+    [Test]
+    public void GameManager_CanRegisterPaddleForBallSpawning()
+    {
+        // Test that GameManager can register paddle for ball spawning
+        GameObject mockPaddle = new GameObject("MockPaddle");
+        
+        gameManager.RegisterPaddleForSpawning(mockPaddle.transform);
+        Assert.AreEqual(mockPaddle.transform, gameManager.GetRegisteredPaddle());
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(mockPaddle);
+        else
+            Object.DestroyImmediate(mockPaddle);
+    }
+
+    [Test]
+    public void GameManager_HasBallPrefabReference()
+    {
+        // Test that GameManager has a ball prefab reference for spawning
+        // Initially might be null, but should have a setter
+        gameManager.SetBallPrefab(new GameObject("BallPrefab"));
+        Assert.IsNotNull(gameManager.GetBallPrefab());
+        
+        // Cleanup
+        GameObject ballPrefab = gameManager.GetBallPrefab();
+        if (Application.isPlaying)
+            Object.Destroy(ballPrefab);
+        else
+            Object.DestroyImmediate(ballPrefab);
+    }
+
+    [Test]
+    public void GameManager_RespawnOnlyDuringPlayingState()
+    {
+        // Test that ball respawn only happens during Playing state
+        gameManager.SetGameState(GameManager.GameState.Start);
+        gameManager.OnBallLost();
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
+        
+        gameManager.SetGameState(GameManager.GameState.GameOver);
+        gameManager.OnBallLost();
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
+        
+        // Should work in Playing state
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.OnBallLost();
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
+    }
 }

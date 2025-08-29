@@ -233,4 +233,137 @@ public class BallTests
         else
             Object.DestroyImmediate(wallGO);
     }
+
+    [Test]
+    public void Ball_CanBeAttachedToPaddle()
+    {
+        // Test that ball can be set to attached state
+        Assert.IsFalse(ball.IsAttached());
+        
+        ball.SetAttachedState(true);
+        Assert.IsTrue(ball.IsAttached());
+        
+        ball.SetAttachedState(false);
+        Assert.IsFalse(ball.IsAttached());
+    }
+
+    [Test]
+    public void Ball_AttachedBallDoesNotMove()
+    {
+        // Test that attached ball doesn't use physics movement
+        ball.LaunchBall();
+        Assert.AreNotEqual(Vector2.zero, rb.linearVelocity);
+        
+        // Attach ball - velocity should be set to zero
+        ball.SetAttachedState(true);
+        Assert.AreEqual(Vector2.zero, rb.linearVelocity);
+        Assert.IsTrue(rb.isKinematic); // Should be kinematic when attached
+    }
+
+    [Test]
+    public void Ball_CanBeLaunchedFromPaddle()
+    {
+        // Test that ball can be launched from paddle with specific direction and force
+        ball.SetAttachedState(true);
+        Assert.IsTrue(ball.IsAttached());
+        Assert.AreEqual(Vector2.zero, rb.linearVelocity);
+        
+        Vector2 launchDirection = Vector2.up;
+        float launchForce = 10.0f;
+        
+        ball.LaunchFromPaddle(launchDirection, launchForce);
+        
+        // Ball should no longer be attached
+        Assert.IsFalse(ball.IsAttached());
+        Assert.IsFalse(rb.isKinematic); // Should not be kinematic when launched
+        
+        // Ball should have the expected velocity
+        Vector2 expectedVelocity = launchDirection.normalized * launchForce;
+        Assert.That(Vector2.Distance(rb.linearVelocity, expectedVelocity), Is.LessThan(0.1f));
+    }
+
+    [Test]
+    public void Ball_LaunchFromPaddleWithRandomDirection()
+    {
+        // Test launching with random direction variance
+        ball.SetAttachedState(true);
+        
+        Vector2 launchDirection = new Vector2(0.3f, 0.7f).normalized; // Angled upward
+        float launchForce = 8.0f;
+        
+        ball.LaunchFromPaddle(launchDirection, launchForce);
+        
+        Assert.IsFalse(ball.IsAttached());
+        Assert.Greater(rb.linearVelocity.magnitude, 0f);
+        Assert.Greater(rb.linearVelocity.y, 0f); // Should have upward component
+    }
+
+    [Test]
+    public void Ball_AttachedStatePreventsBallLaunch()
+    {
+        // Test that LaunchBall() doesn't work when ball is attached
+        ball.SetAttachedState(true);
+        rb.linearVelocity = Vector2.zero;
+        
+        ball.LaunchBall();
+        
+        // Velocity should remain zero because ball is attached
+        Assert.AreEqual(Vector2.zero, rb.linearVelocity);
+        Assert.IsTrue(ball.IsAttached());
+    }
+
+    [Test]
+    public void Ball_DetachedStateAllowsBallLaunch()
+    {
+        // Test that LaunchBall() works when ball is not attached
+        ball.SetAttachedState(false);
+        Assert.IsFalse(ball.IsAttached());
+        
+        ball.LaunchBall();
+        
+        Assert.AreNotEqual(Vector2.zero, rb.linearVelocity);
+        Assert.That(rb.linearVelocity.magnitude, Is.EqualTo(5f).Within(0.1f));
+    }
+
+    [Test]
+    public void Ball_CannotLaunchFromPaddleWhenNotAttached()
+    {
+        // Test that LaunchFromPaddle doesn't work when ball is not attached
+        ball.SetAttachedState(false);
+        rb.linearVelocity = Vector2.zero;
+        
+        ball.LaunchFromPaddle(Vector2.up, 10.0f);
+        
+        // Ball should not have moved since it wasn't attached
+        Assert.AreEqual(Vector2.zero, rb.linearVelocity);
+    }
+
+    [Test]
+    public void Ball_OnlyFiresWallHitWhenNotAttached()
+    {
+        // Test that wall hit events only fire when ball is not attached
+        GameObject wallGO = new GameObject();
+        Wall wall = wallGO.AddComponent<Wall>();
+        wall.SetWallType(Wall.WallType.Top);
+
+        bool wallHitDetected = false;
+        ball.OnWallHit += (wallType) => wallHitDetected = true;
+
+        // Test when not attached - should fire event
+        ball.SetAttachedState(false);
+        ball.SimulateWallCollision(wall);
+        Assert.IsTrue(wallHitDetected);
+
+        // Reset and test when attached - should not fire event
+        wallHitDetected = false;
+        ball.SetAttachedState(true);
+        ball.SimulateWallCollision(wall);
+        Assert.IsFalse(wallHitDetected);
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(wallGO);
+        else
+            Object.DestroyImmediate(wallGO);
+    }
 }

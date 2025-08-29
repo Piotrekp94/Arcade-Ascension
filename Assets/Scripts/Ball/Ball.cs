@@ -10,6 +10,9 @@ public class Ball : MonoBehaviour
     // Events for boundary interactions
     public event Action<Wall.WallType> OnWallHit;
     
+    // Attachment state management
+    private bool isAttached = false;
+    
     // Public getter for testing
     public float InitialSpeed { get { return _initialSpeed; } }
 
@@ -30,6 +33,10 @@ public class Ball : MonoBehaviour
 
     public void LaunchBall()
     {
+        // Don't launch if ball is attached to paddle
+        if (isAttached)
+            return;
+            
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
             
@@ -48,6 +55,10 @@ public class Ball : MonoBehaviour
 
     private void HandleCollision(GameObject other)
     {
+        // Don't handle collisions when attached to paddle
+        if (isAttached)
+            return;
+            
         // Check if collision is with a wall
         Wall wall = other.GetComponent<Wall>();
         if (wall != null)
@@ -68,5 +79,54 @@ public class Ball : MonoBehaviour
     public void SimulateNonWallCollision(GameObject other)
     {
         HandleCollision(other);
+    }
+
+    // Attachment state management methods
+    public bool IsAttached()
+    {
+        return isAttached;
+    }
+
+    public void SetAttachedState(bool attached)
+    {
+        isAttached = attached;
+        
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        if (rb != null)
+        {
+            if (attached)
+            {
+                // When attached, stop movement and make kinematic
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                rb.isKinematic = true;
+            }
+            else
+            {
+                // When detached, restore normal physics
+                rb.isKinematic = false;
+            }
+        }
+    }
+
+    public void LaunchFromPaddle(Vector2 direction, float force)
+    {
+        // Only launch if ball is currently attached
+        if (!isAttached)
+            return;
+            
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        if (rb != null)
+        {
+            // Detach ball first
+            SetAttachedState(false);
+            
+            // Apply launch velocity
+            rb.linearVelocity = direction.normalized * force;
+        }
     }
 }

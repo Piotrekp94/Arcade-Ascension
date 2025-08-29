@@ -23,12 +23,23 @@ public class GameManager : MonoBehaviour
     
     // Events for game state changes
     public event Action OnGameOver;
+    public event Action OnBallSpawned;
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
     private int score;
     [SerializeField]
     private float difficultyMultiplier = 1.0f; // Multiplier for game difficulty
+    
+    // Ball spawning system
+    [SerializeField]
+    private GameObject ballPrefab; // Ball prefab reference for spawning
+    [SerializeField]
+    private float respawnDelay = 3.0f; // Time before ball respawns after being lost
+    
+    private Transform registeredPaddle; // Paddle reference for ball spawning
+    private bool respawnTimerActive = false;
+    private float respawnTimer = 0f;
 
     void Awake()
     {
@@ -50,6 +61,20 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
         SetGameState(GameState.Start); // Initial game state
+    }
+
+    void Update()
+    {
+        // Handle respawn timer
+        if (respawnTimerActive)
+        {
+            respawnTimer -= Time.deltaTime;
+            if (respawnTimer <= 0f)
+            {
+                SpawnBallAtPaddle();
+                respawnTimerActive = false;
+            }
+        }
     }
 
     public float GetDifficultyMultiplier()
@@ -117,7 +142,8 @@ public class GameManager : MonoBehaviour
         // Only handle ball loss during gameplay
         if (CurrentGameState == GameState.Playing)
         {
-            SetGameState(GameState.GameOver);
+            // Start respawn timer instead of immediate game over
+            StartRespawnTimer();
         }
     }
 
@@ -127,11 +153,92 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
         SetGameState(GameState.Start);
+        
+        // Stop respawn timer if active
+        respawnTimerActive = false;
+        respawnTimer = 0f;
     }
 
     public void StartGame()
     {
         // Start a new game
         SetGameState(GameState.Playing);
+    }
+
+    // Ball spawning system methods
+    public void StartRespawnTimer()
+    {
+        if (CurrentGameState == GameState.Playing)
+        {
+            respawnTimerActive = true;
+            respawnTimer = respawnDelay;
+        }
+    }
+
+    public bool IsRespawnTimerActive()
+    {
+        return respawnTimerActive;
+    }
+
+    public float GetRespawnDelay()
+    {
+        return respawnDelay;
+    }
+
+    public void SetRespawnDelay(float delay)
+    {
+        respawnDelay = delay;
+    }
+
+    public void RegisterPaddleForSpawning(Transform paddle)
+    {
+        registeredPaddle = paddle;
+    }
+
+    public Transform GetRegisteredPaddle()
+    {
+        return registeredPaddle;
+    }
+
+    public GameObject GetBallPrefab()
+    {
+        return ballPrefab;
+    }
+
+    public void SetBallPrefab(GameObject prefab)
+    {
+        ballPrefab = prefab;
+    }
+
+    public GameObject SpawnBallAtPosition(Vector2 position)
+    {
+        if (ballPrefab == null)
+        {
+            // Create a basic ball if no prefab is assigned
+            GameObject ball = new GameObject("Ball");
+            ball.tag = "Ball";
+            ball.AddComponent<CircleCollider2D>();
+            ball.AddComponent<Rigidbody2D>();
+            ball.AddComponent<Ball>();
+            ball.transform.position = position;
+            
+            OnBallSpawned?.Invoke();
+            return ball;
+        }
+        else
+        {
+            GameObject spawnedBall = Instantiate(ballPrefab, position, Quaternion.identity);
+            OnBallSpawned?.Invoke();
+            return spawnedBall;
+        }
+    }
+
+    private void SpawnBallAtPaddle()
+    {
+        if (registeredPaddle != null)
+        {
+            Vector2 spawnPosition = registeredPaddle.position + Vector3.up * 0.5f; // Spawn slightly above paddle
+            SpawnBallAtPosition(spawnPosition);
+        }
     }
 }
