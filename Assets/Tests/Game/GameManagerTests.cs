@@ -75,17 +75,21 @@ public class GameManagerTests
         // Simulate ball loss
         gameManager.OnBallLost();
 
-        // Game state should change to GameOver
-        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+        // Game state should remain Playing (respawn system active)
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        
+        // Respawn timer should now be active
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
     }
 
     [Test]
-    public void GameManager_BallLossFromPlayingStateTriggersGameOver()
+    public void GameManager_BallLossFromPlayingStateTriggersRespawn()
     {
-        // Test specific transition from Playing to GameOver on ball loss
+        // Test specific respawn behavior when ball is lost during Playing state
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.OnBallLost();
-        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
     }
 
     [Test]
@@ -116,12 +120,12 @@ public class GameManagerTests
     [Test]
     public void GameManager_GameOverTriggersEvent()
     {
-        // Test that game over triggers an event for UI updates
+        // Test that game over event is triggered when explicitly setting GameOver state
         bool gameOverTriggered = false;
         gameManager.OnGameOver += () => gameOverTriggered = true;
         
-        gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.OnBallLost();
+        // Manually set to GameOver state (ball loss no longer triggers GameOver)
+        gameManager.SetGameState(GameManager.GameState.GameOver);
         
         Assert.IsTrue(gameOverTriggered);
     }

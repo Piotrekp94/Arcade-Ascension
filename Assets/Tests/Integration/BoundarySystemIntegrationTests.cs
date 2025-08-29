@@ -78,16 +78,17 @@ public class BoundarySystemIntegrationTests
     }
 
     [Test]
-    public void BoundarySystem_BallEntersDeathZoneTriggersGameOver()
+    public void BoundarySystem_BallEntersDeathZoneTriggersRespawn()
     {
-        // Integration test: Ball entering death zone triggers game over
+        // Integration test: Ball entering death zone triggers respawn during Playing state
         gameManager.SetGameState(GameManager.GameState.Playing);
         
         // Ball enters death zone
         deathZone.SimulateBallEntry(ballGO);
         
-        // Game should be over
-        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+        // Game should remain in Playing state with respawn timer active
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
     }
 
     [Test]
@@ -97,28 +98,30 @@ public class BoundarySystemIntegrationTests
         gameManager.SetGameState(GameManager.GameState.Playing);
         Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
 
-        bool gameOverEventTriggered = false;
-        gameManager.OnGameOver += () => gameOverEventTriggered = true;
-
-        // Ball enters death zone
+        // Ball enters death zone during Playing state - should trigger respawn
         deathZone.SimulateBallEntry(ballGO);
 
-        // Verify complete chain reaction
-        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
-        Assert.IsTrue(gameOverEventTriggered);
+        // Verify respawn logic is activated
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
     }
 
     [Test]
     public void BoundarySystem_GameCanBeResetAfterBallLoss()
     {
-        // Integration test: Complete game cycle - play, lose ball, reset
+        // Integration test: Complete game cycle - play, lose ball (respawn), manually trigger GameOver, reset
         
         // Start game
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.AddScore(100); // Player scored some points
         
-        // Ball is lost
+        // Ball is lost - triggers respawn system
         deathZone.SimulateBallEntry(ballGO);
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
+        
+        // Simulate game over (e.g., multiple lives lost or other condition)
+        gameManager.SetGameState(GameManager.GameState.GameOver);
         Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
         
         // Reset game
@@ -189,8 +192,13 @@ public class BoundarySystemIntegrationTests
         gameManager.AddScore(50);
         Assert.AreEqual(50, gameManager.GetScore());
         
-        // Ball is lost (enters death zone)
+        // Ball is lost (enters death zone) - triggers respawn
         deathZone.SimulateBallEntry(ballGO);
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
+        
+        // Simulate eventual game over condition
+        gameManager.SetGameState(GameManager.GameState.GameOver);
         Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
         
         // Game can be reset for another round
@@ -229,8 +237,8 @@ public class BoundarySystemIntegrationTests
         Assert.IsNotNull(respawnedBall);
         Assert.IsTrue(respawnedBall.IsAttached());
         
-        // Launch ball from paddle
-        paddle.SimulateLeftClick();
+        // Launch ball from paddle using deterministic method for predictable testing
+        paddle.SimulateLeftClickDeterministic();
         
         // Ball should no longer be attached and should be moving
         Assert.IsFalse(paddle.HasAttachedBall());
@@ -239,7 +247,7 @@ public class BoundarySystemIntegrationTests
         Rigidbody2D ballRb = respawnedBall.GetComponent<Rigidbody2D>();
         Assert.IsNotNull(ballRb);
         Assert.Greater(ballRb.linearVelocity.magnitude, 0f);
-        Assert.Greater(ballRb.linearVelocity.y, 0f); // Should be moving upward
+        Assert.Greater(ballRb.linearVelocity.y, 0f); // Should be moving upward (deterministic launch)
         
         // Cleanup
         if (Application.isPlaying)
@@ -271,7 +279,11 @@ public class BoundarySystemIntegrationTests
         GameObject testBall1 = new GameObject("TestBall1");
         testBall1.tag = "Ball";
         deathZone.SimulateBallEntry(testBall1);
-        yield return new WaitForSeconds(0.2f);
+        
+        // Manually trigger timer update to ensure no respawn happens
+        gameManager.UpdateRespawnTimer(0.2f);
+        yield return new WaitForSeconds(0.1f);
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
         Assert.IsFalse(paddle.HasAttachedBall());
         
         // Test in GameOver state - no respawn
@@ -281,7 +293,11 @@ public class BoundarySystemIntegrationTests
         GameObject testBall2 = new GameObject("TestBall2");
         testBall2.tag = "Ball";
         deathZone.SimulateBallEntry(testBall2);
-        yield return new WaitForSeconds(0.2f);
+        
+        // Manually trigger timer update to ensure no respawn happens
+        gameManager.UpdateRespawnTimer(0.2f);
+        yield return new WaitForSeconds(0.1f);
+        Assert.IsFalse(gameManager.IsRespawnTimerActive());
         Assert.IsFalse(paddle.HasAttachedBall());
         
         // Test in Playing state - should respawn

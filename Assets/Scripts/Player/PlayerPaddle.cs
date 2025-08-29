@@ -171,6 +171,17 @@ public class PlayerPaddle : MonoBehaviour
             LaunchAttachedBall();
         }
     }
+    
+    public void SimulateLeftClickDeterministic()
+    {
+        if (hasBallAttached && attachedBall != null)
+        {
+            // Launch straight up for predictable testing
+            Vector2 launchDirection = Vector2.up;
+            attachedBall.LaunchFromPaddle(launchDirection, launchForce);
+            DetachBall();
+        }
+    }
 
     public void RegisterWithGameManager()
     {

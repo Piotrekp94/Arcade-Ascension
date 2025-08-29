@@ -108,21 +108,23 @@ public class DeathZoneTests
     }
 
     [Test]
-    public void DeathZone_TriggersGameOverWhenBallLost()
+    public void DeathZone_TriggersRespawnInPlayingState()
     {
-        // Test that DeathZone triggers game over when ball is lost
+        // Test that DeathZone triggers respawn when ball is lost during Playing state
         GameObject ballGO = new GameObject("Ball");
         ballGO.tag = "Ball";
         ballGO.AddComponent<CircleCollider2D>();
 
-        // Initial game state should not be GameOver
-        Assert.AreNotEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+        // Set game to Playing state
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
 
         // Simulate ball entering death zone
         deathZone.SimulateBallEntry(ballGO);
 
-        // Game state should now be GameOver
-        Assert.AreEqual(GameManager.GameState.GameOver, gameManager.CurrentGameState);
+        // Game state should remain Playing with respawn timer active
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
 
         // Cleanup
         if (Application.isPlaying)

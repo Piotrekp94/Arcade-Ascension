@@ -50,10 +50,10 @@ public class DeathZone : MonoBehaviour
             // Trigger ball lost event
             OnBallLost?.Invoke();
             
-            // Set game state to game over if GameManager exists
+            // Notify GameManager of ball loss (triggers respawn or game over based on game state)
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.SetGameState(GameManager.GameState.GameOver);
+                GameManager.Instance.OnBallLost();
             }
             
             // Destroy the ball
