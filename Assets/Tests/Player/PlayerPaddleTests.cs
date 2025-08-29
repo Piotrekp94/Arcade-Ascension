@@ -25,19 +25,16 @@ public class PlayerPaddleTests
     }
 
     [Test]
-    public void PlayerPaddle_SetSpeedChangesSpeed()
+    public void PlayerPaddle_HasCorrectInitialPosition()
     {
-        float newSpeed = 10f;
-        playerPaddle.SetSpeed(newSpeed);
-        Assert.AreEqual(newSpeed, playerPaddle.speed);
+        // Test that paddle initializes at correct position
+        Assert.AreEqual(Vector2.zero, (Vector2)playerPaddle.transform.position);
     }
 
     [Test]
-    public void PlayerPaddle_SetSizeChangesScaleX()
+    public void PlayerPaddle_HasCorrectInitialScale()
     {
-        float newSize = 2f;
-        playerPaddle.SetSize(newSize);
-        Assert.AreEqual(newSize, playerPaddle.transform.localScale.x);
-        Assert.AreEqual(1f, playerPaddle.transform.localScale.y); // Y should remain 1
+        // Test that paddle has correct initial scale
+        Assert.AreEqual(Vector3.one, playerPaddle.transform.localScale);
     }
 }

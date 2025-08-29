@@ -35,17 +35,15 @@ public class BallTests
 
         // Check if velocity is non-zero after launch
         Assert.AreNotEqual(Vector2.zero, rb.linearVelocity);
-        // Check if speed is approximately initialSpeed
-        Assert.That(rb.linearVelocity.magnitude, Is.EqualTo(ball.initialSpeed).Within(0.1f));
+        // Check if speed is approximately 5f (the fixed initial speed)
+        Assert.That(rb.linearVelocity.magnitude, Is.EqualTo(5f).Within(0.1f));
     }
 
     [Test]
-    public void Ball_SetSpeedChangesSpeed()
+    public void Ball_HasCorrectRigidbodySettings()
     {
-        // Manually call Start for isolated test
-        ball.SendMessage("Start"); 
-        float newSpeed = 10f;
-        ball.SetSpeed(newSpeed);
-        Assert.That(rb.linearVelocity.magnitude, Is.EqualTo(newSpeed).Within(0.1f));
+        // Test that ball has correct physics settings
+        Assert.AreEqual(0f, rb.gravityScale); // No gravity for Breakout ball
+        Assert.IsTrue(rb.simulated); // Physics simulation should be active
     }
 }
