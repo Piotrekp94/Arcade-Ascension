@@ -134,13 +134,17 @@ public class PlayerPaddle : MonoBehaviour
     private bool CheckWallCollision(Vector2 position, Vector2 direction, float distance)
     {
         // Cast a ray from paddle center in the movement direction
-        RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, LayerMask.GetMask("Default", "Wall"));
+        // Use layer 6 (Walls) and Default layer for wall detection
+        int layerMask = (1 << 0) | (1 << 6); // Default (0) + Walls (6)
+        RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, layerMask);
         return hit.collider != null && hit.collider.CompareTag("Wall");
     }
     
     private float FindWallPosition(Vector2 position, Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(position, direction, 10f, LayerMask.GetMask("Default", "Wall"));
+        // Use layer 6 (Walls) and Default layer for wall detection
+        int layerMask = (1 << 0) | (1 << 6); // Default (0) + Walls (6)
+        RaycastHit2D hit = Physics2D.Raycast(position, direction, 10f, layerMask);
         if (hit.collider != null && hit.collider.CompareTag("Wall"))
         {
             return hit.point.x;
@@ -269,6 +273,36 @@ public class PlayerPaddle : MonoBehaviour
     public float GetPaddleHalfWidth()
     {
         return paddleHalfWidth;
+    }
+    
+    // Debug method to test wall collision detection
+    [ContextMenu("Test Wall Collision Detection")]
+    public void TestWallCollisionDetection()
+    {
+        Debug.Log($"Paddle Wall Collision Test:");
+        Debug.Log($"- Use Wall Collision: {useWallCollision}");
+        Debug.Log($"- Paddle Half Width: {paddleHalfWidth}");
+        Debug.Log($"- Current Position: {transform.position}");
+        
+        // Test left wall detection
+        bool leftWallFound = CheckWallCollision(transform.position, Vector2.left, 5f);
+        Debug.Log($"- Left Wall Detected: {leftWallFound}");
+        
+        // Test right wall detection  
+        bool rightWallFound = CheckWallCollision(transform.position, Vector2.right, 5f);
+        Debug.Log($"- Right Wall Detected: {rightWallFound}");
+        
+        if (leftWallFound)
+        {
+            float leftWallX = FindWallPosition(transform.position, Vector2.left);
+            Debug.Log($"- Left Wall Position: {leftWallX}");
+        }
+        
+        if (rightWallFound)
+        {
+            float rightWallX = FindWallPosition(transform.position, Vector2.right);
+            Debug.Log($"- Right Wall Position: {rightWallX}");
+        }
     }
 
     // Testing methods
