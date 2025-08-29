@@ -246,4 +246,39 @@ public class GameManagerTests
         gameManager.OnBallLost();
         Assert.IsTrue(gameManager.IsRespawnTimerActive());
     }
+
+    [UnityTest]
+    public IEnumerator GameManager_SpawnedBallIsAttachedToPaddle()
+    {
+        // Test that spawned ball is automatically attached to paddle
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetRespawnDelay(0.1f); // Very short delay for testing
+        
+        // Trigger ball loss and respawn
+        gameManager.OnBallLost();
+        yield return new WaitForSeconds(0.2f);
+        
+        // Paddle should now have an attached ball
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Assert.IsNotNull(paddle.GetAttachedBall());
+        
+        // Cleanup
+        if (paddle.HasAttachedBall())
+        {
+            GameObject attachedBallGO = paddle.GetAttachedBall().gameObject;
+            if (Application.isPlaying)
+                Object.Destroy(attachedBallGO);
+            else
+                Object.DestroyImmediate(attachedBallGO);
+        }
+        
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
 }

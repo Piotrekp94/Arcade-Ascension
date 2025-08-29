@@ -238,7 +238,19 @@ public class GameManager : MonoBehaviour
         if (registeredPaddle != null)
         {
             Vector2 spawnPosition = registeredPaddle.position + Vector3.up * 0.5f; // Spawn slightly above paddle
-            SpawnBallAtPosition(spawnPosition);
+            GameObject spawnedBall = SpawnBallAtPosition(spawnPosition);
+            
+            // Attach the spawned ball to the paddle
+            if (spawnedBall != null)
+            {
+                Ball ballComponent = spawnedBall.GetComponent<Ball>();
+                PlayerPaddle paddle = registeredPaddle.GetComponent<PlayerPaddle>();
+                
+                if (ballComponent != null && paddle != null)
+                {
+                    paddle.AttachBall(ballComponent);
+                }
+            }
         }
     }
 }

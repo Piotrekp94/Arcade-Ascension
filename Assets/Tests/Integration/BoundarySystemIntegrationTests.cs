@@ -198,4 +198,141 @@ public class BoundarySystemIntegrationTests
         Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
         Assert.AreEqual(0, gameManager.GetScore());
     }
+
+    [UnityTest]
+    public IEnumerator BoundarySystem_CompleteBallRespawnAndLaunchCycle()
+    {
+        // Integration test: Complete ball respawn and launch cycle
+        
+        // Set up paddle
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        // Start game
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetRespawnDelay(0.1f); // Short delay for testing
+        
+        // Ball is lost
+        deathZone.SimulateBallEntry(ballGO);
+        Assert.IsTrue(gameManager.IsRespawnTimerActive());
+        
+        // Wait for respawn
+        yield return new WaitForSeconds(0.2f);
+        
+        // Ball should be attached to paddle
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Ball respawnedBall = paddle.GetAttachedBall();
+        Assert.IsNotNull(respawnedBall);
+        Assert.IsTrue(respawnedBall.IsAttached());
+        
+        // Launch ball from paddle
+        paddle.SimulateLeftClick();
+        
+        // Ball should no longer be attached and should be moving
+        Assert.IsFalse(paddle.HasAttachedBall());
+        Assert.IsFalse(respawnedBall.IsAttached());
+        
+        Rigidbody2D ballRb = respawnedBall.GetComponent<Rigidbody2D>();
+        Assert.IsNotNull(ballRb);
+        Assert.Greater(ballRb.linearVelocity.magnitude, 0f);
+        Assert.Greater(ballRb.linearVelocity.y, 0f); // Should be moving upward
+        
+        // Cleanup
+        if (Application.isPlaying)
+        {
+            if (respawnedBall != null) Object.Destroy(respawnedBall.gameObject);
+            Object.Destroy(paddleGO);
+        }
+        else
+        {
+            if (respawnedBall != null) Object.DestroyImmediate(respawnedBall.gameObject);
+            Object.DestroyImmediate(paddleGO);
+        }
+    }
+
+    [UnityTest] 
+    public IEnumerator BoundarySystem_BallRespawnOnlyDuringPlayingState()
+    {
+        // Integration test: Ball respawn only works during Playing state
+        
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        gameManager.SetRespawnDelay(0.1f);
+        
+        // Test in Start state - no respawn
+        gameManager.SetGameState(GameManager.GameState.Start);
+        deathZone.SimulateBallEntry(ballGO);
+        yield return new WaitForSeconds(0.2f);
+        Assert.IsFalse(paddle.HasAttachedBall());
+        
+        // Test in GameOver state - no respawn
+        gameManager.SetGameState(GameManager.GameState.GameOver);
+        deathZone.SimulateBallEntry(ballGO);
+        yield return new WaitForSeconds(0.2f);
+        Assert.IsFalse(paddle.HasAttachedBall());
+        
+        // Test in Playing state - should respawn
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        deathZone.SimulateBallEntry(ballGO);
+        yield return new WaitForSeconds(0.2f);
+        Assert.IsTrue(paddle.HasAttachedBall());
+        
+        // Cleanup
+        if (paddle.HasAttachedBall())
+        {
+            GameObject attachedBallGO = paddle.GetAttachedBall().gameObject;
+            if (Application.isPlaying)
+                Object.Destroy(attachedBallGO);
+            else
+                Object.DestroyImmediate(attachedBallGO);
+        }
+        
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
+
+    [Test]
+    public void BoundarySystem_AttachedBallFollowsPaddleMovement()
+    {
+        // Integration test: Attached ball follows paddle movement
+        
+        GameObject paddleGO = new GameObject("Paddle");
+        paddleGO.transform.position = Vector2.zero;
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        
+        // Create and attach ball
+        GameObject testBallGO = new GameObject("TestBall");
+        Ball testBall = testBallGO.AddComponent<Ball>();
+        paddle.AttachBall(testBall);
+        
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Assert.IsTrue(testBall.IsAttached());
+        
+        // Move paddle
+        Vector2 newPaddlePos = new Vector2(3.0f, -2.0f);
+        paddleGO.transform.position = newPaddlePos;
+        
+        // Update ball position (simulates paddle Update method)
+        paddle.UpdateAttachedBallPosition();
+        
+        // Ball should follow paddle
+        Vector2 expectedBallPos = newPaddlePos + Vector2.up * paddle.GetAttachmentOffset();
+        Assert.That(Vector2.Distance(testBall.transform.position, expectedBallPos), Is.LessThan(0.1f));
+        
+        // Cleanup
+        if (Application.isPlaying)
+        {
+            Object.Destroy(testBallGO);
+            Object.Destroy(paddleGO);
+        }
+        else
+        {
+            Object.DestroyImmediate(testBallGO);
+            Object.DestroyImmediate(paddleGO);
+        }
+    }
 }
