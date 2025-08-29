@@ -195,6 +195,8 @@ public class GameManagerTests
         
         // Timer should no longer be active
         Assert.IsFalse(gameManager.IsRespawnTimerActive());
+        
+        yield return null; // Required for IEnumerator method
     }
 
     [Test]
