@@ -163,6 +163,9 @@ public class GameManager : MonoBehaviour
     {
         // Start a new game
         SetGameState(GameState.Playing);
+        
+        // Spawn initial ball attached to paddle
+        SpawnInitialBallAtPaddle();
     }
 
     // Ball spawning system methods
@@ -254,6 +257,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void SpawnInitialBallAtPaddle()
+    {
+        // Same logic as SpawnBallAtPaddle but called at game start
+        if (registeredPaddle != null)
+        {
+            Vector2 spawnPosition = registeredPaddle.position + Vector3.up * 0.5f; // Spawn slightly above paddle
+            GameObject spawnedBall = SpawnBallAtPosition(spawnPosition);
+            
+            // Attach the spawned ball to the paddle
+            if (spawnedBall != null)
+            {
+                Ball ballComponent = spawnedBall.GetComponent<Ball>();
+                PlayerPaddle paddle = registeredPaddle.GetComponent<PlayerPaddle>();
+                
+                if (ballComponent != null && paddle != null)
+                {
+                    paddle.AttachBall(ballComponent);
+                }
+            }
+        }
+    }
+
     // Method to manually update respawn timer for testing
     public void UpdateRespawnTimer(float deltaTime)
     {
@@ -264,6 +289,41 @@ public class GameManager : MonoBehaviour
             {
                 SpawnBallAtPaddle();
                 respawnTimerActive = false;
+            }
+        }
+    }
+
+    // Manual testing and debugging methods
+    [ContextMenu("Spawn Initial Ball")]
+    public void ForceSpawnInitialBall()
+    {
+        SpawnInitialBallAtPaddle();
+    }
+
+    [ContextMenu("Force Spawn Ball")]
+    public void ForceSpawnBall()
+    {
+        SpawnBallAtPaddle();
+    }
+
+    [ContextMenu("Log System Status")]
+    public void LogSystemStatus()
+    {
+        Debug.Log($"GameManager Status:" +
+                  $"\n- Current State: {CurrentGameState}" +
+                  $"\n- Registered Paddle: {(registeredPaddle != null ? registeredPaddle.name : "NULL")}" +
+                  $"\n- Ball Prefab: {(ballPrefab != null ? ballPrefab.name : "NULL")}" +
+                  $"\n- Respawn Timer Active: {respawnTimerActive}" +
+                  $"\n- Respawn Delay: {respawnDelay}");
+                  
+        if (registeredPaddle != null)
+        {
+            PlayerPaddle paddle = registeredPaddle.GetComponent<PlayerPaddle>();
+            if (paddle != null)
+            {
+                Debug.Log($"Paddle Status:" +
+                          $"\n- Has Attached Ball: {paddle.HasAttachedBall()}" +
+                          $"\n- Attached Ball: {(paddle.GetAttachedBall() != null ? paddle.GetAttachedBall().name : "NULL")}");
             }
         }
     }

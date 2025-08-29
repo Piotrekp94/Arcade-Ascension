@@ -284,4 +284,87 @@ public class GameManagerTests
         else
             Object.DestroyImmediate(paddleGO);
     }
+
+    [Test]
+    public void GameManager_StartGameSpawnsInitialBallAttachedToPaddle()
+    {
+        // Test that StartGame() spawns an initial ball attached to paddle
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        // Initially no ball should be attached
+        Assert.IsFalse(paddle.HasAttachedBall());
+        
+        // Start game should spawn initial ball
+        gameManager.StartGame();
+        
+        // Ball should now be attached to paddle
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Assert.IsNotNull(paddle.GetAttachedBall());
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+        
+        // Ball should be in attached state
+        Ball attachedBall = paddle.GetAttachedBall();
+        Assert.IsTrue(attachedBall.IsAttached());
+        
+        // Cleanup
+        if (paddle.HasAttachedBall())
+        {
+            GameObject attachedBallGO = paddle.GetAttachedBall().gameObject;
+            if (attachedBallGO != null)
+            {
+                if (Application.isPlaying)
+                    Object.Destroy(attachedBallGO);
+                else
+                    Object.DestroyImmediate(attachedBallGO);
+            }
+        }
+        
+        if (paddleGO != null)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(paddleGO);
+            else
+                Object.DestroyImmediate(paddleGO);
+        }
+    }
+
+    [Test]
+    public void GameManager_ForceSpawnInitialBallWorksManually()
+    {
+        // Test manual ball spawning for debugging
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        Assert.IsFalse(paddle.HasAttachedBall());
+        
+        // Force spawn ball manually
+        gameManager.ForceSpawnInitialBall();
+        
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Assert.IsNotNull(paddle.GetAttachedBall());
+        
+        // Cleanup
+        if (paddle.HasAttachedBall())
+        {
+            GameObject attachedBallGO = paddle.GetAttachedBall().gameObject;
+            if (attachedBallGO != null)
+            {
+                if (Application.isPlaying)
+                    Object.Destroy(attachedBallGO);
+                else
+                    Object.DestroyImmediate(attachedBallGO);
+            }
+        }
+        
+        if (paddleGO != null)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(paddleGO);
+            else
+                Object.DestroyImmediate(paddleGO);
+        }
+    }
 }
