@@ -24,7 +24,15 @@ public class BallTests
     [TearDown]
     public void Teardown()
     {
-        Object.Destroy(ballGO);
+        // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
+        if (Application.isPlaying)
+        {
+            if (ballGO != null) Object.Destroy(ballGO);
+        }
+        else
+        {
+            if (ballGO != null) Object.DestroyImmediate(ballGO);
+        }
     }
 
     [UnityTest]

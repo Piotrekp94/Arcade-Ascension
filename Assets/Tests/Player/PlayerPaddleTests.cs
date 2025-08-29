@@ -21,7 +21,15 @@ public class PlayerPaddleTests
     [TearDown]
     public void Teardown()
     {
-        Object.Destroy(paddleGO);
+        // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
+        if (Application.isPlaying)
+        {
+            if (paddleGO != null) Object.Destroy(paddleGO);
+        }
+        else
+        {
+            if (paddleGO != null) Object.DestroyImmediate(paddleGO);
+        }
     }
 
     [Test]

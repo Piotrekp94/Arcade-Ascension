@@ -48,8 +48,17 @@ public class GameManagerTests
     public void Teardown()
     {
         // Clean up GameObjects after each test
-        Object.Destroy(gameManager.gameObject);
-        Object.Destroy(scoreText.gameObject);
+        // Use DestroyImmediate in edit mode (tests) and Destroy in play mode
+        if (Application.isPlaying)
+        {
+            if (gameManager != null && gameManager.gameObject != null) Object.Destroy(gameManager.gameObject);
+            if (scoreText != null && scoreText.gameObject != null) Object.Destroy(scoreText.gameObject);
+        }
+        else
+        {
+            if (gameManager != null && gameManager.gameObject != null) Object.DestroyImmediate(gameManager.gameObject);
+            if (scoreText != null && scoreText.gameObject != null) Object.DestroyImmediate(scoreText.gameObject);
+        }
     }
 
     [Test]
