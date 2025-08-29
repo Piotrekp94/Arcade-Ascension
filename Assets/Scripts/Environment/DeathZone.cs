@@ -63,4 +63,15 @@ public class DeathZone : MonoBehaviour
     {
         ballDestroyed = false;
     }
+
+    // Public method to ensure proper initialization for testing
+    public void EnsureProperInitialization()
+    {
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        if (collider == null)
+        {
+            collider = gameObject.AddComponent<BoxCollider2D>();
+        }
+        collider.isTrigger = true;
+    }
 }

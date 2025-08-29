@@ -22,6 +22,10 @@ public class DeathZoneTests
         deathZoneGO = new GameObject();
         deathZoneCollider = deathZoneGO.AddComponent<BoxCollider2D>();
         deathZone = deathZoneGO.AddComponent<DeathZone>();
+        
+        // Ensure proper initialization for unit tests
+        // In unit tests, Awake() might not be called automatically
+        deathZone.EnsureProperInitialization();
     }
 
     [TearDown]
