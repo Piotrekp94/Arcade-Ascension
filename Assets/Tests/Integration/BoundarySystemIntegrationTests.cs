@@ -213,8 +213,10 @@ public class BoundarySystemIntegrationTests
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.SetRespawnDelay(0.1f); // Short delay for testing
         
-        // Ball is lost
-        deathZone.SimulateBallEntry(ballGO);
+        // Ball is lost - create separate ball for this test
+        GameObject testBallForRespawn = new GameObject("TestBallForRespawn");
+        testBallForRespawn.tag = "Ball";
+        deathZone.SimulateBallEntry(testBallForRespawn);
         Assert.IsTrue(gameManager.IsRespawnTimerActive());
         
         // Wait for respawn
@@ -241,13 +243,13 @@ public class BoundarySystemIntegrationTests
         // Cleanup
         if (Application.isPlaying)
         {
-            if (respawnedBall != null) Object.Destroy(respawnedBall.gameObject);
-            Object.Destroy(paddleGO);
+            if (respawnedBall != null && respawnedBall.gameObject != null) Object.Destroy(respawnedBall.gameObject);
+            if (paddleGO != null) Object.Destroy(paddleGO);
         }
         else
         {
-            if (respawnedBall != null) Object.DestroyImmediate(respawnedBall.gameObject);
-            Object.DestroyImmediate(paddleGO);
+            if (respawnedBall != null && respawnedBall.gameObject != null) Object.DestroyImmediate(respawnedBall.gameObject);
+            if (paddleGO != null) Object.DestroyImmediate(paddleGO);
         }
     }
 
@@ -263,19 +265,31 @@ public class BoundarySystemIntegrationTests
         
         // Test in Start state - no respawn
         gameManager.SetGameState(GameManager.GameState.Start);
-        deathZone.SimulateBallEntry(ballGO);
+        
+        // Create separate ball for this test phase
+        GameObject testBall1 = new GameObject("TestBall1");
+        testBall1.tag = "Ball";
+        deathZone.SimulateBallEntry(testBall1);
         yield return new WaitForSeconds(0.2f);
         Assert.IsFalse(paddle.HasAttachedBall());
         
         // Test in GameOver state - no respawn
         gameManager.SetGameState(GameManager.GameState.GameOver);
-        deathZone.SimulateBallEntry(ballGO);
+        
+        // Create separate ball for this test phase  
+        GameObject testBall2 = new GameObject("TestBall2");
+        testBall2.tag = "Ball";
+        deathZone.SimulateBallEntry(testBall2);
         yield return new WaitForSeconds(0.2f);
         Assert.IsFalse(paddle.HasAttachedBall());
         
         // Test in Playing state - should respawn
         gameManager.SetGameState(GameManager.GameState.Playing);
-        deathZone.SimulateBallEntry(ballGO);
+        
+        // Create separate ball for this test phase
+        GameObject testBall3 = new GameObject("TestBall3");
+        testBall3.tag = "Ball";
+        deathZone.SimulateBallEntry(testBall3);
         yield return new WaitForSeconds(0.2f);
         Assert.IsTrue(paddle.HasAttachedBall());
         
@@ -283,16 +297,22 @@ public class BoundarySystemIntegrationTests
         if (paddle.HasAttachedBall())
         {
             GameObject attachedBallGO = paddle.GetAttachedBall().gameObject;
-            if (Application.isPlaying)
-                Object.Destroy(attachedBallGO);
-            else
-                Object.DestroyImmediate(attachedBallGO);
+            if (attachedBallGO != null)
+            {
+                if (Application.isPlaying)
+                    Object.Destroy(attachedBallGO);
+                else
+                    Object.DestroyImmediate(attachedBallGO);
+            }
         }
         
-        if (Application.isPlaying)
-            Object.Destroy(paddleGO);
-        else
-            Object.DestroyImmediate(paddleGO);
+        if (paddleGO != null)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(paddleGO);
+            else
+                Object.DestroyImmediate(paddleGO);
+        }
     }
 
     [Test]
@@ -326,13 +346,13 @@ public class BoundarySystemIntegrationTests
         // Cleanup
         if (Application.isPlaying)
         {
-            Object.Destroy(testBallGO);
-            Object.Destroy(paddleGO);
+            if (testBallGO != null) Object.Destroy(testBallGO);
+            if (paddleGO != null) Object.Destroy(paddleGO);
         }
         else
         {
-            Object.DestroyImmediate(testBallGO);
-            Object.DestroyImmediate(paddleGO);
+            if (testBallGO != null) Object.DestroyImmediate(testBallGO);
+            if (paddleGO != null) Object.DestroyImmediate(paddleGO);
         }
     }
 }
