@@ -10,6 +10,7 @@ public class Ball : MonoBehaviour
     // Events for boundary interactions
     public event Action<Wall.WallType> OnWallHit;
     public event Action OnPaddleHit;
+    public event Action<Block> OnBlockHit;
     
     // Attachment state management
     private bool isAttached = false;
@@ -78,6 +79,12 @@ public class Ball : MonoBehaviour
         }
         
         // Handle other collision types (blocks) here
+        Block block = other.GetComponent<Block>();
+        if (block != null)
+        {
+            HandleBlockCollision(block);
+            return;
+        }
     }
 
     private void HandlePaddleCollision(PlayerPaddle paddle)
@@ -99,6 +106,27 @@ public class Ball : MonoBehaviour
         OnPaddleHit?.Invoke();
     }
 
+    private void HandleBlockCollision(Block block)
+    {
+        // Block takes a hit
+        block.TakeHit();
+        
+        // Fire block hit event
+        OnBlockHit?.Invoke(block);
+        
+        // Ball bounces normally - Unity physics handles the direction change
+        // We maintain the same speed to keep gameplay consistent
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        if (rb != null)
+        {
+            // Maintain current speed after block collision
+            Vector2 currentVelocity = rb.linearVelocity;
+            rb.linearVelocity = currentVelocity.normalized * _initialSpeed;
+        }
+    }
+
     // Testing methods
     public void SimulateWallCollision(Wall wall)
     {
@@ -113,6 +141,11 @@ public class Ball : MonoBehaviour
     public void SimulatePaddleCollision(GameObject paddle)
     {
         HandleCollision(paddle);
+    }
+
+    public void SimulateBlockCollision(Block block)
+    {
+        HandleCollision(block.gameObject);
     }
 
     // Debug method to test paddle collision behavior
