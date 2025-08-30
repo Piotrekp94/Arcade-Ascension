@@ -221,6 +221,7 @@ public class PlayerPaddle : MonoBehaviour
         if (hasBallAttached && attachedBall != null)
         {
             // Calculate launch direction with random variance, but ensure it's always upward
+            // Use standard Unity angle system where 0° = right, 90° = up, 180° = left, 270° = down
             float baseAngle = 90f; // Straight up
             float randomVariance = UnityEngine.Random.Range(-launchAngleVariance, launchAngleVariance);
             float launchAngle = baseAngle + randomVariance;
@@ -228,9 +229,11 @@ public class PlayerPaddle : MonoBehaviour
             // Clamp the angle to ensure ball always goes upward (between 45° and 135°)
             launchAngle = Mathf.Clamp(launchAngle, 45f, 135f);
             
+            // Convert angle to direction vector using standard trigonometry
+            // In Unity: X = Cos(angle), Y = Sin(angle)
             Vector2 launchDirection = new Vector2(
-                Mathf.Sin(launchAngle * Mathf.Deg2Rad),
-                Mathf.Cos(launchAngle * Mathf.Deg2Rad)
+                Mathf.Cos(launchAngle * Mathf.Deg2Rad),
+                Mathf.Sin(launchAngle * Mathf.Deg2Rad)
             ).normalized;
             
             // Launch the ball
@@ -305,6 +308,26 @@ public class PlayerPaddle : MonoBehaviour
         {
             float rightWallX = FindWallPosition(transform.position, Vector2.right);
             Debug.Log($"- Right Wall Position: {rightWallX}");
+        }
+    }
+
+    // Debug method to test launch direction calculation
+    [ContextMenu("Test Launch Direction")]
+    public void TestLaunchDirection()
+    {
+        Debug.Log("Ball Launch Direction Test:");
+        
+        // Test key angles
+        float[] testAngles = { 45f, 60f, 90f, 120f, 135f };
+        
+        foreach (float angle in testAngles)
+        {
+            Vector2 direction = new Vector2(
+                Mathf.Cos(angle * Mathf.Deg2Rad),
+                Mathf.Sin(angle * Mathf.Deg2Rad)
+            ).normalized;
+            
+            Debug.Log($"- Angle {angle}°: Direction ({direction.x:F2}, {direction.y:F2}) - Y positive: {direction.y > 0}");
         }
     }
 

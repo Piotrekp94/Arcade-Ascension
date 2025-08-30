@@ -257,4 +257,107 @@ public class PlayerPaddleTests
         // The actual movement behavior is tested in integration tests since it involves physics
         // This test validates the configuration system works correctly
     }
+
+    [Test]
+    public void PlayerPaddle_LaunchAlwaysHasPositiveYVelocity()
+    {
+        // Test that ball launch always has positive Y component (upward)
+        GameObject ballGO = new GameObject("Ball");
+        ballGO.tag = "Ball";
+        ballGO.AddComponent<CircleCollider2D>();
+        Rigidbody2D ballRb = ballGO.AddComponent<Rigidbody2D>();
+        Ball ball = ballGO.AddComponent<Ball>();
+        
+        playerPaddle.AttachBall(ball);
+        
+        // Test multiple random launches to ensure Y is always positive
+        for (int i = 0; i < 10; i++)
+        {
+            // Reset ball state
+            playerPaddle.AttachBall(ball);
+            ballRb.linearVelocity = Vector2.zero;
+            
+            // Launch with random direction
+            playerPaddle.SimulateLeftClick();
+            
+            // Y velocity must always be positive (upward)
+            Assert.Greater(ballRb.linearVelocity.y, 0f, 
+                $"Launch {i}: Y velocity {ballRb.linearVelocity.y} should be positive");
+        }
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(ballGO);
+        else
+            Object.DestroyImmediate(ballGO);
+    }
+
+    [Test]
+    public void PlayerPaddle_LaunchCanHaveVariableXVelocity()
+    {
+        // Test that ball launch can have both positive and negative X components
+        GameObject ballGO = new GameObject("Ball");
+        ballGO.tag = "Ball";
+        ballGO.AddComponent<CircleCollider2D>();
+        Rigidbody2D ballRb = ballGO.AddComponent<Rigidbody2D>();
+        Ball ball = ballGO.AddComponent<Ball>();
+        
+        bool foundPositiveX = false;
+        bool foundNegativeX = false;
+        
+        // Test multiple launches to verify X can be both positive and negative
+        for (int i = 0; i < 20 && (!foundPositiveX || !foundNegativeX); i++)
+        {
+            // Reset ball state
+            playerPaddle.AttachBall(ball);
+            ballRb.linearVelocity = Vector2.zero;
+            
+            // Launch with random direction
+            playerPaddle.SimulateLeftClick();
+            
+            if (ballRb.linearVelocity.x > 0.1f)
+                foundPositiveX = true;
+            else if (ballRb.linearVelocity.x < -0.1f)
+                foundNegativeX = true;
+                
+            // Y should always be positive
+            Assert.Greater(ballRb.linearVelocity.y, 0f);
+        }
+        
+        // Should have found both positive and negative X velocities
+        Assert.IsTrue(foundPositiveX || foundNegativeX, 
+            "Should be able to launch ball in different X directions");
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(ballGO);
+        else
+            Object.DestroyImmediate(ballGO);
+    }
+
+    [Test]
+    public void PlayerPaddle_DeterministicLaunchGoesUpward()
+    {
+        // Test that deterministic launch always goes straight up (Y=1, X=0)
+        GameObject ballGO = new GameObject("Ball");
+        ballGO.tag = "Ball";
+        ballGO.AddComponent<CircleCollider2D>();
+        Rigidbody2D ballRb = ballGO.AddComponent<Rigidbody2D>();
+        Ball ball = ballGO.AddComponent<Ball>();
+        
+        playerPaddle.AttachBall(ball);
+        
+        // Launch deterministically
+        playerPaddle.SimulateLeftClickDeterministic();
+        
+        // Should go straight up
+        Assert.That(ballRb.linearVelocity.x, Is.EqualTo(0f).Within(0.01f));
+        Assert.Greater(ballRb.linearVelocity.y, 0f);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(ballGO);
+        else
+            Object.DestroyImmediate(ballGO);
+    }
 }

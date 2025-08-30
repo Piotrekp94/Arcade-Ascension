@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
     
     // Events for boundary interactions
     public event Action<Wall.WallType> OnWallHit;
+    public event Action OnPaddleHit;
     
     // Attachment state management
     private bool isAttached = false;
@@ -65,9 +66,37 @@ public class Ball : MonoBehaviour
         {
             // Fire wall hit event
             OnWallHit?.Invoke(wall.GetWallType());
+            return;
         }
         
-        // Handle other collision types (blocks, paddle) here
+        // Check if collision is with a paddle
+        PlayerPaddle paddle = other.GetComponent<PlayerPaddle>();
+        if (paddle != null)
+        {
+            HandlePaddleCollision(paddle);
+            return;
+        }
+        
+        // Handle other collision types (blocks) here
+    }
+
+    private void HandlePaddleCollision(PlayerPaddle paddle)
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        if (rb != null)
+        {
+            // Calculate bounce direction - ball should bounce upward from paddle
+            Vector2 currentVelocity = rb.linearVelocity;
+            
+            // Simple paddle bounce - reverse Y direction and maintain speed
+            Vector2 bounceDirection = new Vector2(currentVelocity.x, Mathf.Abs(currentVelocity.y));
+            rb.linearVelocity = bounceDirection.normalized * _initialSpeed;
+        }
+        
+        // Fire paddle hit event
+        OnPaddleHit?.Invoke();
     }
 
     // Testing methods
@@ -79,6 +108,44 @@ public class Ball : MonoBehaviour
     public void SimulateNonWallCollision(GameObject other)
     {
         HandleCollision(other);
+    }
+
+    public void SimulatePaddleCollision(GameObject paddle)
+    {
+        HandleCollision(paddle);
+    }
+
+    // Debug method to test paddle collision behavior
+    [ContextMenu("Test Paddle Collision")]
+    public void TestPaddleCollision()
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        Debug.Log("Ball Paddle Collision Test:");
+        Debug.Log($"- Current Velocity: ({rb.linearVelocity.x:F2}, {rb.linearVelocity.y:F2})");
+        Debug.Log($"- Is Attached: {isAttached}");
+        
+        // Simulate a downward velocity hitting paddle
+        Vector2 testVelocity = new Vector2(2.0f, -3.0f);
+        rb.linearVelocity = testVelocity;
+        
+        Debug.Log($"- Test Velocity (downward): ({testVelocity.x:F2}, {testVelocity.y:F2})");
+        
+        // Create a test paddle for collision
+        GameObject testPaddleGO = new GameObject("TestPaddle");
+        PlayerPaddle testPaddle = testPaddleGO.AddComponent<PlayerPaddle>();
+        
+        HandlePaddleCollision(testPaddle);
+        
+        Debug.Log($"- After Paddle Hit: ({rb.linearVelocity.x:F2}, {rb.linearVelocity.y:F2})");
+        Debug.Log($"- Y Now Positive: {rb.linearVelocity.y > 0}");
+        
+        // Cleanup
+        if (Application.isPlaying)
+            UnityEngine.Object.Destroy(testPaddleGO);
+        else
+            UnityEngine.Object.DestroyImmediate(testPaddleGO);
     }
 
     // Attachment state management methods

@@ -366,4 +366,82 @@ public class BallTests
         else
             Object.DestroyImmediate(wallGO);
     }
+
+    [Test]
+    public void Ball_CanDetectPaddleCollisions()
+    {
+        // Test that ball can detect and handle paddle collisions
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        paddleGO.AddComponent<BoxCollider2D>();
+
+        bool paddleHitDetected = false;
+        
+        // We'll need to add a paddle collision event to the Ball class
+        ball.OnPaddleHit += () => paddleHitDetected = true;
+
+        // Simulate paddle collision
+        ball.SimulatePaddleCollision(paddleGO);
+        
+        Assert.IsTrue(paddleHitDetected);
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
+
+    [Test]
+    public void Ball_BounceOffPaddleChangesDirection()
+    {
+        // Test that hitting paddle changes ball direction (should bounce upward)
+        ball.LaunchBall();
+        Vector2 initialVelocity = rb.linearVelocity;
+        
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        paddleGO.AddComponent<BoxCollider2D>();
+
+        // Simulate downward movement hitting paddle
+        rb.linearVelocity = new Vector2(initialVelocity.x, -Mathf.Abs(initialVelocity.y));
+        
+        ball.SimulatePaddleCollision(paddleGO);
+        
+        // Ball should now be moving upward after paddle bounce
+        Assert.Greater(rb.linearVelocity.y, 0f, "Ball should bounce upward after hitting paddle");
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
+
+    [Test]
+    public void Ball_PaddleCollisionOnlyWhenNotAttached()
+    {
+        // Test that paddle collision only happens when ball is not attached
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+
+        bool paddleHitDetected = false;
+        ball.OnPaddleHit += () => paddleHitDetected = true;
+
+        // Test when attached - should not trigger collision
+        ball.SetAttachedState(true);
+        ball.SimulatePaddleCollision(paddleGO);
+        Assert.IsFalse(paddleHitDetected);
+
+        // Test when not attached - should trigger collision
+        ball.SetAttachedState(false);
+        ball.SimulatePaddleCollision(paddleGO);
+        Assert.IsTrue(paddleHitDetected);
+
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
 }
