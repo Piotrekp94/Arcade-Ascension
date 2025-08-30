@@ -388,6 +388,9 @@ public class BoundarySystemIntegrationTests
         PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
         paddleGO.transform.position = Vector2.zero;
         
+        // Initialize paddle width calculation
+        paddle.CalculatePaddleWidth();
+        
         // Create left and right walls
         GameObject leftWallGO = new GameObject("LeftWall");
         leftWallGO.tag = "Wall";

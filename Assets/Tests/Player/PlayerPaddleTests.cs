@@ -127,8 +127,8 @@ public class PlayerPaddleTests
         
         playerPaddle.AttachBall(ball);
         
-        // Launch ball
-        playerPaddle.LaunchAttachedBall();
+        // Launch ball deterministically (straight up for testing)
+        playerPaddle.SimulateLeftClickDeterministic();
         
         // Ball should no longer be attached
         Assert.IsFalse(playerPaddle.HasAttachedBall());
@@ -229,17 +229,20 @@ public class PlayerPaddleTests
     [Test]
     public void PlayerPaddle_CalculatesPaddleWidth()
     {
+        // Add a collider to the paddle for proper testing
+        BoxCollider2D collider = paddleGO.AddComponent<BoxCollider2D>();
+        collider.size = Vector2.one; // 1x1 collider
+        
+        // Manually calculate paddle width for testing
+        playerPaddle.CalculatePaddleWidth();
+        
         // Test that paddle width is calculated correctly
         float paddleHalfWidth = playerPaddle.GetPaddleHalfWidth();
         Assert.Greater(paddleHalfWidth, 0f);
         
         // Should be approximately half the collider width
-        Collider2D paddleCollider = paddleGO.GetComponent<Collider2D>();
-        if (paddleCollider != null)
-        {
-            float expectedHalfWidth = paddleCollider.bounds.size.x * 0.5f;
-            Assert.That(paddleHalfWidth, Is.EqualTo(expectedHalfWidth).Within(0.1f));
-        }
+        float expectedHalfWidth = collider.bounds.size.x * 0.5f;
+        Assert.That(paddleHalfWidth, Is.EqualTo(expectedHalfWidth).Within(0.1f));
     }
 
     [Test]

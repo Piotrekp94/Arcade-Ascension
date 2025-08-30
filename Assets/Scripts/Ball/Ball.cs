@@ -101,12 +101,12 @@ public class Ball : MonoBehaviour
                 // When attached, stop movement and make kinematic
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
-                rb.isKinematic = true;
+                rb.bodyType = RigidbodyType2D.Kinematic;
             }
             else
             {
                 // When detached, restore normal physics
-                rb.isKinematic = false;
+                rb.bodyType = RigidbodyType2D.Dynamic;
             }
         }
     }

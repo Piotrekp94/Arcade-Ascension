@@ -34,7 +34,7 @@ public class PlayerPaddle : MonoBehaviour
         RegisterWithGameManager();
     }
     
-    private void CalculatePaddleWidth()
+    public void CalculatePaddleWidth()
     {
         // Get paddle's collider to determine its width
         Collider2D paddleCollider = GetComponent<Collider2D>();
@@ -220,10 +220,13 @@ public class PlayerPaddle : MonoBehaviour
     {
         if (hasBallAttached && attachedBall != null)
         {
-            // Calculate launch direction with random variance
+            // Calculate launch direction with random variance, but ensure it's always upward
             float baseAngle = 90f; // Straight up
             float randomVariance = UnityEngine.Random.Range(-launchAngleVariance, launchAngleVariance);
             float launchAngle = baseAngle + randomVariance;
+            
+            // Clamp the angle to ensure ball always goes upward (between 45° and 135°)
+            launchAngle = Mathf.Clamp(launchAngle, 45f, 135f);
             
             Vector2 launchDirection = new Vector2(
                 Mathf.Sin(launchAngle * Mathf.Deg2Rad),

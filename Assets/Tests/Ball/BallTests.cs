@@ -257,7 +257,7 @@ public class BallTests
         // Attach ball - velocity should be set to zero
         ball.SetAttachedState(true);
         Assert.AreEqual(Vector2.zero, rb.linearVelocity);
-        Assert.IsTrue(rb.isKinematic); // Should be kinematic when attached
+        Assert.IsTrue(rb.bodyType == RigidbodyType2D.Kinematic); // Should be kinematic when attached
     }
 
     [Test]
@@ -275,7 +275,7 @@ public class BallTests
         
         // Ball should no longer be attached
         Assert.IsFalse(ball.IsAttached());
-        Assert.IsFalse(rb.isKinematic); // Should not be kinematic when launched
+        Assert.IsFalse(rb.bodyType == RigidbodyType2D.Kinematic); // Should not be kinematic when launched
         
         // Ball should have the expected velocity
         Vector2 expectedVelocity = launchDirection.normalized * launchForce;
