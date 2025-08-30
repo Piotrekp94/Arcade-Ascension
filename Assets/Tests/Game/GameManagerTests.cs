@@ -371,4 +371,188 @@ public class GameManagerTests
                 Object.DestroyImmediate(paddleGO);
         }
     }
+
+    // NEW TDD TESTS FOR SCORE MULTIPLIERS (Phase 2 - Red)
+
+    [Test]
+    public void GameManager_HasDefaultScoreMultiplier()
+    {
+        // Test that GameManager has a default score multiplier of 1.0
+        Assert.AreEqual(1.0f, gameManager.GetScoreMultiplier());
+    }
+
+    [Test]
+    public void GameManager_SetScoreMultiplier_UpdatesCorrectly()
+    {
+        // Test that score multiplier can be set to different values
+        gameManager.SetScoreMultiplier(2.0f);
+        Assert.AreEqual(2.0f, gameManager.GetScoreMultiplier());
+        
+        gameManager.SetScoreMultiplier(0.5f);
+        Assert.AreEqual(0.5f, gameManager.GetScoreMultiplier());
+        
+        gameManager.SetScoreMultiplier(1.5f);
+        Assert.AreEqual(1.5f, gameManager.GetScoreMultiplier());
+    }
+
+    [Test]
+    public void GameManager_SetScoreMultiplier_RejectsNegativeValues()
+    {
+        // Test that negative multipliers are rejected and clamped to 0
+        gameManager.SetScoreMultiplier(-1.0f);
+        Assert.AreEqual(0.0f, gameManager.GetScoreMultiplier());
+        
+        gameManager.SetScoreMultiplier(-2.5f);
+        Assert.AreEqual(0.0f, gameManager.GetScoreMultiplier());
+    }
+
+    [Test]
+    public void GameManager_AddScoreWithMultiplier_AppliesCorrectly()
+    {
+        // Test that score multiplier is applied when adding scores
+        gameManager.SetScoreMultiplier(2.0f);
+        
+        gameManager.AddScore(10);
+        Assert.AreEqual(20, gameManager.GetScore()); // 10 * 2.0 = 20
+        
+        gameManager.AddScore(5);
+        Assert.AreEqual(30, gameManager.GetScore()); // 20 + (5 * 2.0) = 30
+    }
+
+    [Test]
+    public void GameManager_AddScoreWithFractionalMultiplier_RoundsCorrectly()
+    {
+        // Test that fractional multipliers are handled correctly (rounded to nearest int)
+        gameManager.SetScoreMultiplier(1.5f);
+        
+        gameManager.AddScore(10);
+        Assert.AreEqual(15, gameManager.GetScore()); // 10 * 1.5 = 15
+        
+        gameManager.AddScore(3);
+        Assert.AreEqual(19, gameManager.GetScore()); // 15 + round(3 * 1.5) = 15 + 4 = 19
+    }
+
+    [Test] 
+    public void GameManager_AddScoreWithZeroMultiplier_AddsNothing()
+    {
+        // Test that zero multiplier results in no score addition
+        gameManager.SetScoreMultiplier(0.0f);
+        
+        gameManager.AddScore(100);
+        Assert.AreEqual(0, gameManager.GetScore()); // 100 * 0.0 = 0
+    }
+
+    [UnityTest]
+    public IEnumerator GameManager_ScoreMultiplier_AffectsBlockDestruction()
+    {
+        // Test that score multiplier affects points gained from block destruction
+        gameManager.SetScoreMultiplier(3.0f);
+        
+        // Create and destroy a block to test integration
+        GameObject blockGO = new GameObject("TestBlock");
+        Block block = blockGO.AddComponent<Block>();
+        block.SetPointValue(10); // Block worth 10 points
+        
+        int initialScore = gameManager.GetScore();
+        
+        // Destroy block (should add 10 * 3.0 = 30 points)
+        block.TakeHit();
+        yield return null; // Wait for destruction
+        
+        int finalScore = gameManager.GetScore();
+        Assert.AreEqual(initialScore + 30, finalScore);
+    }
+
+    [Test]
+    public void GameManager_HasDefaultBlockScore()
+    {
+        // Test that GameManager has a default block score for new blocks
+        Assert.AreEqual(10, gameManager.GetDefaultBlockScore());
+    }
+
+    [Test]
+    public void GameManager_SetDefaultBlockScore_UpdatesCorrectly()
+    {
+        // Test that default block score can be configured
+        gameManager.SetDefaultBlockScore(25);
+        Assert.AreEqual(25, gameManager.GetDefaultBlockScore());
+        
+        gameManager.SetDefaultBlockScore(5);
+        Assert.AreEqual(5, gameManager.GetDefaultBlockScore());
+    }
+
+    [Test]
+    public void GameManager_SetDefaultBlockScore_RejectsNegativeValues()
+    {
+        // Test that negative default scores are rejected
+        gameManager.SetDefaultBlockScore(-10);
+        Assert.AreEqual(0, gameManager.GetDefaultBlockScore());
+    }
+
+    // ENHANCED SCORING FEATURES TESTS (Phase 4)
+
+    [Test]
+    public void GameManager_ScoreEvents_TriggeredOnScoreChange()
+    {
+        // Test that score events are triggered when score changes
+        int scoreChangedCallCount = 0;
+        int scoreAddedCallCount = 0;
+        int lastScore = 0;
+        int lastAmountAdded = 0;
+        int lastNewTotal = 0;
+        
+        gameManager.OnScoreChanged += (newScore) => {
+            scoreChangedCallCount++;
+            lastScore = newScore;
+        };
+        
+        gameManager.OnScoreAdded += (amount, newTotal) => {
+            scoreAddedCallCount++;
+            lastAmountAdded = amount;
+            lastNewTotal = newTotal;
+        };
+        
+        gameManager.AddScore(50);
+        
+        Assert.AreEqual(1, scoreChangedCallCount);
+        Assert.AreEqual(1, scoreAddedCallCount);
+        Assert.AreEqual(50, lastScore);
+        Assert.AreEqual(50, lastAmountAdded);
+        Assert.AreEqual(50, lastNewTotal);
+    }
+
+    [Test]
+    public void GameManager_ScoreMultiplierWithDifficulty_AppliesCorrectly()
+    {
+        // Test that difficulty affects score multiplier
+        gameManager.SetDifficultyMultiplier(2.0f);
+        gameManager.SetScoreMultiplierWithDifficulty(1.5f);
+        
+        // Should be 1.5 * 2.0 = 3.0
+        Assert.AreEqual(3.0f, gameManager.GetScoreMultiplier());
+        
+        gameManager.AddScore(10);
+        Assert.AreEqual(30, gameManager.GetScore()); // 10 * 3.0 = 30
+    }
+
+    [Test]
+    public void GameManager_MultipleScoreAdditions_TriggerMultipleEvents()
+    {
+        // Test that multiple score additions trigger events correctly
+        int eventCount = 0;
+        int totalScoreFromEvents = 0;
+        
+        gameManager.OnScoreAdded += (amount, newTotal) => {
+            eventCount++;
+            totalScoreFromEvents = newTotal;
+        };
+        
+        gameManager.AddScore(10);
+        gameManager.AddScore(20);
+        gameManager.AddScore(30);
+        
+        Assert.AreEqual(3, eventCount);
+        Assert.AreEqual(60, totalScoreFromEvents);
+        Assert.AreEqual(60, gameManager.GetScore());
+    }
 }

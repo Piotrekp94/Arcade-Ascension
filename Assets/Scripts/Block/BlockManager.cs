@@ -14,6 +14,10 @@ public class BlockManager : MonoBehaviour
     [SerializeField]
     private Vector2 spawnAreaOffset = new Vector2(0f, -1f);
     
+    // Score configuration
+    [SerializeField]
+    private int defaultScoreOverride = -1; // -1 means use GameManager default
+    
     // Wall boundaries (from PADDLE_COLLISION_SETUP.md)
     private const float LEFT_WALL_X = -3.5f;
     private const float RIGHT_WALL_X = 3.53f;
@@ -93,6 +97,18 @@ public class BlockManager : MonoBehaviour
         spawnedBlocks.RemoveAll(block => block == null);
         return new List<GameObject>(spawnedBlocks);
     }
+
+    // Score configuration getters and setters
+    public int GetDefaultScoreOverride()
+    {
+        return defaultScoreOverride;
+    }
+
+    public void SetDefaultScoreOverride(int score)
+    {
+        defaultScoreOverride = score;
+    }
+
 
     // Core block spawning functionality
     public void SpawnBlocks()
@@ -189,7 +205,33 @@ public class BlockManager : MonoBehaviour
             newBlock.tag = "Block";
         }
         
+        // Configure block score based on settings
+        Block blockComponent = newBlock.GetComponent<Block>();
+        if (blockComponent != null)
+        {
+            int blockScore = GetBaseScore();
+            blockComponent.SetPointValue(blockScore);
+        }
+        
         return newBlock;
+    }
+
+    private int GetBaseScore()
+    {
+        // Use override if set, otherwise use GameManager default
+        if (defaultScoreOverride > 0)
+        {
+            return defaultScoreOverride;
+        }
+        
+        // Try to get default from GameManager
+        if (GameManager.Instance != null)
+        {
+            return GameManager.Instance.GetDefaultBlockScore();
+        }
+        
+        // Fallback default
+        return 10;
     }
 
     private void UpdateBlockSizeFromPrefab()

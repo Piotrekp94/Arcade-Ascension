@@ -207,4 +207,80 @@ public class BlockTests
             block.TakeHit(); // Should destroy block when hit points reach 0
         });
     }
+
+    // NEW TDD TESTS FOR CONFIGURABLE SCORING
+
+    [Test]
+    public void Block_HasDefaultPointValue()
+    {
+        // Test that block has a default point value of 10
+        Assert.AreEqual(10, block.PointValue);
+    }
+
+    [Test]
+    public void Block_SetPointValue_UpdatesCorrectly()
+    {
+        // Test that we can set custom point values
+        block.SetPointValue(25);
+        Assert.AreEqual(25, block.PointValue);
+        
+        block.SetPointValue(100);
+        Assert.AreEqual(100, block.PointValue);
+        
+        block.SetPointValue(1);
+        Assert.AreEqual(1, block.PointValue);
+    }
+
+    [Test]
+    public void Block_SetPointValue_RejectsNegativeValues()
+    {
+        // Test that negative point values are rejected and clamped to 0
+        block.SetPointValue(-5);
+        Assert.AreEqual(0, block.PointValue);
+        
+        block.SetPointValue(-100);
+        Assert.AreEqual(0, block.PointValue);
+    }
+
+    [Test]
+    public void Block_SetPointValue_AcceptsZeroValue()
+    {
+        // Test that zero point values are allowed (some blocks might give no points)
+        block.SetPointValue(0);
+        Assert.AreEqual(0, block.PointValue);
+    }
+
+    [UnityTest]
+    public IEnumerator Block_DestroyBlock_UsesConfiguredPointValue()
+    {
+        // Arrange: Set custom point value
+        block.SetPointValue(50);
+        
+        int initialScore = GameManager.Instance.GetScore();
+        
+        // Act: Destroy block
+        block.TakeHit();
+        yield return null; // Wait for destruction
+        
+        // Assert: Score should increase by custom point value (50)
+        int finalScore = GameManager.Instance.GetScore();
+        Assert.AreEqual(initialScore + 50, finalScore);
+    }
+
+    [UnityTest]
+    public IEnumerator Block_DestroyBlock_WithZeroPoints_DoesNotAddScore()
+    {
+        // Arrange: Set point value to 0
+        block.SetPointValue(0);
+        
+        int initialScore = GameManager.Instance.GetScore();
+        
+        // Act: Destroy block
+        block.TakeHit();
+        yield return null; // Wait for destruction
+        
+        // Assert: Score should not change
+        int finalScore = GameManager.Instance.GetScore();
+        Assert.AreEqual(initialScore, finalScore);
+    }
 }

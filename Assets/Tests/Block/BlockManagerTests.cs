@@ -325,6 +325,73 @@ public class BlockManagerTests
         Assert.Less(bottomRight.x, 3.53f, "Grid should end left of right wall");
     }
 
+    // NEW TDD TESTS FOR SCORE CONFIGURATION (Phase 3 - Red)
+
+    [Test]
+    public void BlockManager_SpawnBlocks_AssignsDefaultScoreFromGameManager()
+    {
+        // Test that spawned blocks use GameManager's default block score
+        gameManager.SetDefaultBlockScore(25);
+        
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        blockManager.SetBlockRows(1);
+        blockManager.SetBlockColumns(1);
+        
+        blockManager.SpawnBlocks();
+        
+        List<GameObject> spawnedBlocks = blockManager.GetSpawnedBlocks();
+        Assert.AreEqual(1, spawnedBlocks.Count);
+        
+        Block block = spawnedBlocks[0].GetComponent<Block>();
+        Assert.AreEqual(25, block.PointValue);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+
+    [Test]
+    public void BlockManager_DefaultScoreAssignmentWithoutGameManager()
+    {
+        // Test that BlockManager has a fallback when GameManager is not available
+        GameManager.SetInstanceForTesting(null);
+        
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        blockManager.SetBlockRows(1);
+        blockManager.SetBlockColumns(1);
+        
+        blockManager.SpawnBlocks();
+        
+        List<GameObject> spawnedBlocks = blockManager.GetSpawnedBlocks();
+        Assert.AreEqual(1, spawnedBlocks.Count);
+        
+        Block block = spawnedBlocks[0].GetComponent<Block>();
+        Assert.AreEqual(10, block.PointValue); // Should use default fallback value
+        
+        // Restore GameManager for teardown
+        GameManager.SetInstanceForTesting(gameManager);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    [Test]
+    public void BlockManager_ScoreConfigurationInspectorFriendly()
+    {
+        // Test that BlockManager has inspector-friendly score configuration
+        blockManager.SetDefaultScoreOverride(50);
+        Assert.AreEqual(50, blockManager.GetDefaultScoreOverride());
+    }
+
+
     // Helper method to create a test block prefab
     private GameObject CreateTestBlockPrefab()
     {

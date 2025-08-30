@@ -25,12 +25,20 @@ public class GameManager : MonoBehaviour
     public event Action OnGameOver;
     public event Action OnBallSpawned;
     public event Action OnGameStarted;
+    
+    // Score events
+    public event System.Action<int> OnScoreChanged;
+    public event System.Action<int, int> OnScoreAdded; // (amount added, new total)
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
     private int score;
     [SerializeField]
     private float difficultyMultiplier = 1.0f; // Multiplier for game difficulty
+    [SerializeField]
+    private float scoreMultiplier = 1.0f; // Multiplier for all score additions
+    [SerializeField]
+    private int defaultBlockScore = 10; // Default score value for new blocks
     
     // Ball spawning system
     [SerializeField]
@@ -89,10 +97,44 @@ public class GameManager : MonoBehaviour
         // Potentially re-evaluate game parameters based on new difficulty
     }
 
+    public float GetScoreMultiplier()
+    {
+        return scoreMultiplier;
+    }
+
+    public void SetScoreMultiplier(float newMultiplier)
+    {
+        scoreMultiplier = Mathf.Max(0.0f, newMultiplier); // Ensure non-negative multiplier
+    }
+
+    public void SetScoreMultiplierWithDifficulty(float baseMultiplier)
+    {
+        // Apply difficulty scaling to score multiplier
+        float finalMultiplier = baseMultiplier * difficultyMultiplier;
+        SetScoreMultiplier(finalMultiplier);
+    }
+
+    public int GetDefaultBlockScore()
+    {
+        return defaultBlockScore;
+    }
+
+    public void SetDefaultBlockScore(int newScore)
+    {
+        defaultBlockScore = Mathf.Max(0, newScore); // Ensure non-negative score
+    }
+
     public void AddScore(int amount)
     {
-        score += amount;
+        int multipliedAmount = Mathf.RoundToInt(amount * scoreMultiplier);
+        int previousScore = score;
+        score += multipliedAmount;
+        
         UpdateScoreUI();
+        
+        // Trigger score events
+        OnScoreChanged?.Invoke(score);
+        OnScoreAdded?.Invoke(multipliedAmount, score);
     }
 
 
