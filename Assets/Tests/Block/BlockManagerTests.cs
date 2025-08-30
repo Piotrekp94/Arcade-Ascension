@@ -205,6 +205,9 @@ public class BlockManagerTests
         blockManager.SetBlockRows(1);
         blockManager.SetBlockColumns(2);
         
+        // Register with GameManager (normally done in Start(), but Start() isn't called in tests)
+        blockManager.RegisterWithGameManager();
+        
         // Initially no blocks should be spawned
         Assert.AreEqual(0, blockManager.GetSpawnedBlocks().Count);
         

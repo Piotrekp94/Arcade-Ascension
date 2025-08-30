@@ -66,6 +66,9 @@ public class BlockManagerIntegrationTests
         blockManager.SetBlockRows(2);
         blockManager.SetBlockColumns(3);
         
+        // Register with GameManager (normally done in Start(), but Start() isn't called in tests)
+        blockManager.RegisterWithGameManager();
+        
         // Initially no blocks
         Assert.AreEqual(0, blockManager.GetSpawnedBlocks().Count);
         
@@ -234,6 +237,9 @@ public class BlockManagerIntegrationTests
         
         blockManager.SpawnBlocks();
         Assert.AreEqual(4, blockManager.GetSpawnedBlocks().Count);
+        
+        // Register with GameManager for event handling
+        blockManager.RegisterWithGameManager();
         
         // Start new game (should clear existing blocks and spawn new ones)
         gameManager.SetGameState(GameManager.GameState.Start); // Ensure we're in Start state
