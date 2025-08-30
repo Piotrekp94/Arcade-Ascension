@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - DeathZone
   - Paddle
+  - Block
   layers:
   - Default
   - TransparentFX
