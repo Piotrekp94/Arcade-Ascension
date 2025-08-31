@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     private float respawnTimer = 0f;
     
     // Level completion tracking
-    private int blocksRemaining = 0;
+    private int blocksRemaining = -1; // -1 means no level active, 0 means level complete
 
     void Awake()
     {
@@ -200,6 +200,9 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
         SetGameState(GameState.Start);
+        
+        // Reset level completion tracking
+        blocksRemaining = -1; // No level active
         
         // Stop respawn timer if active
         respawnTimerActive = false;
@@ -394,7 +397,8 @@ public class GameManager : MonoBehaviour
     // Level completion system methods
     public bool CheckLevelCompletion()
     {
-        return blocksRemaining <= 0;
+        // Level is complete only if we had blocks set (>= 0) and now have 0 remaining
+        return blocksRemaining == 0;
     }
 
     public void OnBlockDestroyed()
