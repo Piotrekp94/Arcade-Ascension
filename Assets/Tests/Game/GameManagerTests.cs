@@ -601,6 +601,8 @@ public class GameManagerTests
         bool levelCompletedTriggered = false;
         gameManager.OnLevelCompleted += () => levelCompletedTriggered = true;
         
+        // Set game state to Playing (required for level completion)
+        gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.OnAllBlocksDestroyed();
         
         Assert.IsTrue(levelCompletedTriggered);
