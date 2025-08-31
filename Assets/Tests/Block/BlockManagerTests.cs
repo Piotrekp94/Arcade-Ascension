@@ -392,6 +392,128 @@ public class BlockManagerTests
     }
 
 
+    // LEVEL CONFIGURATION INTEGRATION TESTS
+
+    [Test]
+    public void BlockManager_ConfigureForLevel_AppliesLevelDataCorrectly()
+    {
+        // Test that BlockManager can be configured with LevelData
+        LevelData testLevelData = CreateTestLevelData(2, 7, 6, 0.15f, 2.5f, 25);
+        
+        blockManager.ConfigureForLevel(testLevelData);
+        
+        Assert.AreEqual(7, blockManager.GetBlockRows());
+        Assert.AreEqual(6, blockManager.GetBlockColumns());
+        Assert.That(blockManager.GetBlockSpacing(), Is.EqualTo(0.15f).Within(0.01f));
+        Assert.That(Vector2.Distance(blockManager.GetSpawnAreaOffset(), new Vector2(0f, -1f)), Is.LessThan(0.01f));
+    }
+
+    [Test]
+    public void BlockManager_ConfigureForLevel_UpdatesScoreConfiguration()
+    {
+        // Test that level configuration updates score settings
+        LevelData testLevelData = CreateTestLevelData(3, 4, 5, 0.1f, 3.0f, 50);
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        
+        blockManager.ConfigureForLevel(testLevelData);
+        blockManager.SpawnBlocks();
+        
+        List<GameObject> spawnedBlocks = blockManager.GetSpawnedBlocks();
+        Assert.Greater(spawnedBlocks.Count, 0);
+        
+        Block firstBlock = spawnedBlocks[0].GetComponent<Block>();
+        Assert.AreEqual(50, firstBlock.PointValue);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    [Test]
+    public void BlockManager_ConfigureForLevel_HandlesNullLevelData()
+    {
+        // Test that BlockManager handles null level data gracefully
+        Assert.DoesNotThrow(() => blockManager.ConfigureForLevel(null));
+        
+        // Should maintain existing configuration when null is passed
+        int originalRows = blockManager.GetBlockRows();
+        int originalColumns = blockManager.GetBlockColumns();
+        
+        blockManager.ConfigureForLevel(null);
+        
+        Assert.AreEqual(originalRows, blockManager.GetBlockRows());
+        Assert.AreEqual(originalColumns, blockManager.GetBlockColumns());
+    }
+
+    [Test]
+    public void BlockManager_NotifiesGameManagerOfBlockCount()
+    {
+        // Test that BlockManager notifies GameManager about total block count
+        LevelData testLevelData = CreateTestLevelData(1, 2, 3, 0.1f, 1.0f, 10);
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        
+        blockManager.ConfigureForLevel(testLevelData);
+        blockManager.SpawnBlocks();
+        
+        // GameManager should be notified about the total number of blocks spawned (2*3 = 6)
+        Assert.AreEqual(6, gameManager.GetBlocksRemaining());
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    [Test]
+    public void BlockManager_IntegratesWithLevelManager()
+    {
+        // Test that BlockManager can work with LevelManager for level configuration
+        
+        // Create test level data and set up LevelManager
+        List<LevelData> testLevels = new List<LevelData>
+        {
+            CreateTestLevelData(1, 3, 4, 0.1f, 1.0f, 10),
+            CreateTestLevelData(2, 4, 5, 0.1f, 1.5f, 15)
+        };
+        
+        GameObject levelManagerGO = new GameObject("TestLevelManager");
+        LevelManager levelManager = levelManagerGO.AddComponent<LevelManager>();
+        LevelManager.SetInstanceForTesting(levelManager);
+        levelManager.InitializeForTesting(testLevels);
+        
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        
+        // Configure for level 1
+        levelManager.SetCurrentLevel(1);
+        LevelData level1Data = levelManager.GetCurrentLevelData();
+        blockManager.ConfigureForLevel(level1Data);
+        blockManager.SpawnBlocks();
+        
+        // Verify configuration applied
+        Assert.AreEqual(3, blockManager.GetBlockRows());
+        Assert.AreEqual(4, blockManager.GetBlockColumns());
+        Assert.AreEqual(12, blockManager.GetSpawnedBlocks().Count); // 3*4 = 12
+        
+        // Cleanup
+        LevelManager.SetInstanceForTesting(null);
+        if (Application.isPlaying)
+        {
+            Object.Destroy(levelManagerGO);
+            Object.Destroy(blockPrefab);
+        }
+        else
+        {
+            Object.DestroyImmediate(levelManagerGO);
+            Object.DestroyImmediate(blockPrefab);
+        }
+    }
+
     // Helper method to create a test block prefab
     private GameObject CreateTestBlockPrefab()
     {
@@ -400,5 +522,32 @@ public class BlockManagerTests
         prefab.AddComponent<BoxCollider2D>();
         prefab.AddComponent<SpriteRenderer>();
         return prefab;
+    }
+
+    // Helper method to create test level data
+    private LevelData CreateTestLevelData(int levelId, int rows, int columns, float spacing, float scoreMultiplier, int blockScore)
+    {
+        LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
+        
+        // Use reflection to set private fields
+        SetPrivateField(levelData, "levelId", levelId);
+        SetPrivateField(levelData, "levelName", $"Test Level {levelId}");
+        SetPrivateField(levelData, "levelDescription", $"Test level {levelId} description");
+        SetPrivateField(levelData, "blockRows", rows);
+        SetPrivateField(levelData, "blockColumns", columns);
+        SetPrivateField(levelData, "blockSpacing", spacing);
+        SetPrivateField(levelData, "spawnAreaOffset", new Vector2(0f, -1f));
+        SetPrivateField(levelData, "scoreMultiplier", scoreMultiplier);
+        SetPrivateField(levelData, "defaultBlockScore", blockScore);
+        
+        return levelData;
+    }
+
+    // Helper method to set private fields via reflection
+    private void SetPrivateField(object target, string fieldName, object value)
+    {
+        var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Assert.IsNotNull(field, $"Field {fieldName} not found");
+        field.SetValue(target, value);
     }
 }

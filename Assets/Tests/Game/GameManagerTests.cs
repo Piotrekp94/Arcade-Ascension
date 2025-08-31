@@ -555,4 +555,114 @@ public class GameManagerTests
         Assert.AreEqual(60, totalScoreFromEvents);
         Assert.AreEqual(60, gameManager.GetScore());
     }
+
+    // LEVEL COMPLETION INTEGRATION TESTS
+
+    [Test]
+    public void GameManager_HasOnLevelCompletedEvent()
+    {
+        // Test that GameManager has level completion event by subscribing to it
+        bool canSubscribeToEvent = false;
+        
+        try
+        {
+            gameManager.OnLevelCompleted += () => { };
+            canSubscribeToEvent = true;
+            gameManager.OnLevelCompleted -= () => { };
+        }
+        catch
+        {
+            canSubscribeToEvent = false;
+        }
+        
+        Assert.IsTrue(canSubscribeToEvent, "Should be able to subscribe to OnLevelCompleted event");
+    }
+
+    [Test] 
+    public void GameManager_CheckLevelCompletion_ReturnsFalseWithRemainingBlocks()
+    {
+        // Test that level completion check returns false when blocks remain
+        Assert.IsFalse(gameManager.CheckLevelCompletion());
+    }
+
+    [Test]
+    public void GameManager_CheckLevelCompletion_ReturnsTrueWithNoBlocks()
+    {
+        // Test level completion when no blocks remain
+        // This would be integration tested with BlockManager
+        gameManager.SetBlocksRemainingForTesting(0);
+        Assert.IsTrue(gameManager.CheckLevelCompletion());
+    }
+
+    [Test]
+    public void GameManager_OnAllBlocksDestroyed_TriggersLevelCompleted()
+    {
+        // Test that destroying all blocks triggers level completion
+        bool levelCompletedTriggered = false;
+        gameManager.OnLevelCompleted += () => levelCompletedTriggered = true;
+        
+        gameManager.OnAllBlocksDestroyed();
+        
+        Assert.IsTrue(levelCompletedTriggered);
+    }
+
+    [Test]
+    public void GameManager_OnAllBlocksDestroyed_DoesNotTriggerInWrongState()
+    {
+        // Test that level completion only triggers during Playing state
+        bool levelCompletedTriggered = false;
+        gameManager.OnLevelCompleted += () => levelCompletedTriggered = true;
+        
+        gameManager.SetGameState(GameManager.GameState.Start);
+        gameManager.OnAllBlocksDestroyed();
+        
+        Assert.IsFalse(levelCompletedTriggered);
+    }
+
+    [Test]
+    public void GameManager_HasLevelIntegrationMethods()
+    {
+        // Test that GameManager has methods for level system integration
+        // These methods should be available for BlockManager integration
+        
+        // Should be able to set blocks remaining for testing
+        Assert.DoesNotThrow(() => gameManager.SetBlocksRemainingForTesting(5));
+        
+        // Should be able to notify about block destruction
+        Assert.DoesNotThrow(() => gameManager.OnBlockDestroyed());
+        
+        // Should be able to check completion status
+        Assert.DoesNotThrow(() => gameManager.CheckLevelCompletion());
+    }
+
+    [Test]
+    public void GameManager_OnBlockDestroyed_DecreasesBlockCount()
+    {
+        // Test that block destruction decreases remaining block count
+        gameManager.SetBlocksRemainingForTesting(3);
+        
+        gameManager.OnBlockDestroyed();
+        Assert.IsFalse(gameManager.CheckLevelCompletion()); // 2 blocks remain
+        
+        gameManager.OnBlockDestroyed();
+        Assert.IsFalse(gameManager.CheckLevelCompletion()); // 1 block remains
+        
+        gameManager.OnBlockDestroyed();
+        Assert.IsTrue(gameManager.CheckLevelCompletion()); // 0 blocks remain
+    }
+
+    [Test]
+    public void GameManager_OnBlockDestroyed_TriggersLevelCompletionWhenLastBlock()
+    {
+        // Test that destroying the last block automatically triggers level completion
+        bool levelCompletedTriggered = false;
+        gameManager.OnLevelCompleted += () => levelCompletedTriggered = true;
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetBlocksRemainingForTesting(1);
+        
+        gameManager.OnBlockDestroyed();
+        
+        Assert.IsTrue(levelCompletedTriggered);
+    }
 }

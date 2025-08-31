@@ -140,6 +140,9 @@ public class BlockManager : MonoBehaviour
             }
         }
         
+        // Notify GameManager about total block count
+        NotifyGameManagerOfBlockCount();
+        
         Debug.Log($"BlockManager: Spawned {spawnedBlocks.Count} blocks ({blockRows}x{blockColumns} grid)");
     }
 
@@ -303,6 +306,46 @@ public class BlockManager : MonoBehaviour
         {
             Debug.Log($"First Block Position: {GetSpawnedBlocks()[0].transform.position}");
             Debug.Log($"Last Block Position: {GetSpawnedBlocks()[GetSpawnedBlocks().Count - 1].transform.position}");
+        }
+    }
+
+    // Level system integration methods
+    public void ConfigureForLevel(LevelData levelData)
+    {
+        if (levelData == null)
+            return; // Keep existing configuration if null
+            
+        // Apply level configuration
+        SetBlockRows(levelData.BlockRows);
+        SetBlockColumns(levelData.BlockColumns);
+        SetBlockSpacing(levelData.BlockSpacing);
+        SetSpawnAreaOffset(levelData.SpawnAreaOffset);
+        
+        // Set score override from level data
+        SetDefaultScoreOverride(levelData.DefaultBlockScore);
+        
+        // Apply score multiplier to GameManager if available
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetScoreMultiplier(levelData.ScoreMultiplier);
+        }
+    }
+
+    private void NotifyGameManagerOfBlockCount()
+    {
+        if (GameManager.Instance != null)
+        {
+            int totalBlocks = spawnedBlocks.Count;
+            GameManager.Instance.SetBlocksRemaining(totalBlocks);
+        }
+    }
+
+    // Integration method for block destruction
+    private void OnBlockDestroyed()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnBlockDestroyed();
         }
     }
 }

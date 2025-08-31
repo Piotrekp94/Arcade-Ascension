@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public event Action OnGameOver;
     public event Action OnBallSpawned;
     public event Action OnGameStarted;
+    public event Action OnLevelCompleted;
     
     // Score events
     public event System.Action<int> OnScoreChanged;
@@ -49,6 +50,9 @@ public class GameManager : MonoBehaviour
     private Transform registeredPaddle; // Paddle reference for ball spawning
     private bool respawnTimerActive = false;
     private float respawnTimer = 0f;
+    
+    // Level completion tracking
+    private int blocksRemaining = 0;
 
     void Awake()
     {
@@ -385,5 +389,44 @@ public class GameManager : MonoBehaviour
                           $"\n- Attached Ball: {(paddle.GetAttachedBall() != null ? paddle.GetAttachedBall().name : "NULL")}");
             }
         }
+    }
+
+    // Level completion system methods
+    public bool CheckLevelCompletion()
+    {
+        return blocksRemaining <= 0;
+    }
+
+    public void OnBlockDestroyed()
+    {
+        blocksRemaining--;
+        
+        if (blocksRemaining <= 0 && CurrentGameState == GameState.Playing)
+        {
+            OnAllBlocksDestroyed();
+        }
+    }
+
+    public void OnAllBlocksDestroyed()
+    {
+        if (CurrentGameState == GameState.Playing)
+        {
+            OnLevelCompleted?.Invoke();
+        }
+    }
+
+    public void SetBlocksRemainingForTesting(int count)
+    {
+        blocksRemaining = count;
+    }
+
+    public void SetBlocksRemaining(int count)
+    {
+        blocksRemaining = count;
+    }
+
+    public int GetBlocksRemaining()
+    {
+        return blocksRemaining;
     }
 }

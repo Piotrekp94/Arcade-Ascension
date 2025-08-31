@@ -44,6 +44,7 @@ public class Block : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.AddScore(pointValue); // Add configurable points for destroying a block
+            GameManager.Instance.OnBlockDestroyed(); // Notify GameManager for level completion tracking
         }
 
         if (destructionEffectPrefab != null)
