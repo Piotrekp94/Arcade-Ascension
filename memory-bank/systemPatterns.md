@@ -1,14 +1,27 @@
 # System Patterns
 
 This file documents recurring patterns and standards used in the project.
-Updated 2025-08-29 to reflect current implementation patterns and best practices.
+Updated 2025-08-31 to reflect level selection system implementation and emphasize TDD methodology.
+
+## ⚠️ CRITICAL DEVELOPMENT METHODOLOGY ⚠️
+
+**TEST-DRIVEN DEVELOPMENT (TDD) IS MANDATORY FOR ALL DEVELOPMENT ON THIS PROJECT**
+
+This project follows STRICT Test-Driven Development practices:
+1. **RED**: Write a failing test first
+2. **GREEN**: Write minimal code to make the test pass  
+3. **REFACTOR**: Improve code quality while keeping tests green
+4. **NO CODE** is written without corresponding tests
+5. **ALL NEW FEATURES** must follow this RED-GREEN-REFACTOR cycle
 
 ## Coding Patterns
 
-*   **Singleton Pattern:** Used for core managers like `GameManager` to ensure a single instance throughout the game, providing global access and state management.
-*   **Component-Based Design:** Unity's component-based architecture with game objects composed of focused scripts (`PlayerPaddle`, `Ball`, `Block`, `Wall`, `DeathZone`) each handling specific behaviors.
+*   **Singleton Pattern:** Used for core managers like `GameManager` and `LevelManager` to ensure a single instance throughout the game, providing global access and state management.
+*   **Component-Based Design:** Unity's component-based architecture with game objects composed of focused scripts (`PlayerPaddle`, `Ball`, `Block`, `BlockManager`, `Wall`, `DeathZone`, `LevelSelectionUI`) each handling specific behaviors.
 *   **State Machine Pattern:** GameManager uses clear state transitions (Start → Playing → GameOver) with event-driven state changes.
-*   **Event-Driven Architecture:** Components communicate via C# Actions/Events (e.g., `OnGameOver`, `OnBallLost`, `OnWallHit`) for loose coupling.
+*   **Event-Driven Architecture:** Components communicate via C# Actions/Events (e.g., `OnGameOver`, `OnBallLost`, `OnWallHit`, `OnLevelCompleted`, `OnLevelSelected`, `OnLevelUnlocked`) for loose coupling.
+*   **ScriptableObject Pattern:** Level data stored as ScriptableObjects for designer-friendly configuration and runtime data management.
+*   **Progressive System Design:** Level progression with configurable difficulty scaling through data-driven parameters.
 
 ## Architectural Patterns
 
@@ -31,16 +44,18 @@ Updated 2025-08-29 to reflect current implementation patterns and best practices
 ## Unity-Specific Patterns
 
 *   **MonoBehaviour Lifecycle:** Proper use of Awake, Start, Update methods with clear responsibilities.
+*   **ScriptableObject Data Management:** Level configurations stored as ScriptableObject assets for runtime loading and editor modification.
 *   **Physics Materials:** Separate physics materials for ball bouncing and wall interactions.
 *   **Tag-Based Detection:** Object identification using Unity tags ("Ball", "Wall", "DeathZone").
 *   **Layer-Based Organization:** Physics layers for different game object types.
 *   **Context Menu Testing:** `[ContextMenu]` attributes for debugging and manual testing in editor.
+*   **Unity Editor Integration:** Custom integrators for seamless level data binding and editor workflow.
 
 ## Code Organization Patterns
 
 *   **Assembly Definitions:** Separate assemblies for main scripts and tests for clean separation.
 *   **Namespace Convention:** All scripts use `Scripts` namespace for organization.
-*   **File Structure:** Clear folder hierarchy (Game/, Player/, Ball/, Environment/, UI/, Tests/).
+*   **File Structure:** Clear folder hierarchy (Game/, Player/, Ball/, Block/, Level/, Environment/, UI/, Tests/, Data/Levels/).
 *   **Serialized Fields:** Unity-specific serialization with `[SerializeField]` for inspector configuration.
 
 ## Error Handling Patterns
