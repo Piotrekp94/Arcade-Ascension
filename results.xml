@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="136" result="Passed" total="136" passed="136" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:32Z" duration="0.1927734">
+  <test-suite type="TestSuite" id="1000" name="Arcade Ascension" fullname="Arcade Ascension" runstate="Runnable" testcasecount="136" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:32Z" duration="0.192773" total="136" passed="136" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1147" name="Tests.dll" fullname="/home/fave/Arcade Ascension/Library/ScriptAssemblies/Tests.dll" runstate="Runnable" testcasecount="136" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:32Z" duration="0.187059" total="136" passed="136" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10421" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="BallTests" fullname="BallTests" classname="BallTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.035694" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1013" name="Ball_AttachedBallDoesNotMove" fullname="BallTests.Ball_AttachedBallDoesNotMove" methodname="Ball_AttachedBallDoesNotMove" classname="BallTests" runstate="Runnable" seed="55194946" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.014507" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1016" name="Ball_AttachedStatePreventsBallLaunch" fullname="BallTests.Ball_AttachedStatePreventsBallLaunch" methodname="Ball_AttachedStatePreventsBallLaunch" classname="BallTests" runstate="Runnable" seed="1098648267" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000261" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1021" name="Ball_BounceOffPaddleChangesDirection" fullname="BallTests.Ball_BounceOffPaddleChangesDirection" methodname="Ball_BounceOffPaddleChangesDirection" classname="BallTests" runstate="Runnable" seed="1496020132" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.002738" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1012" name="Ball_CanBeAttachedToPaddle" fullname="BallTests.Ball_CanBeAttachedToPaddle" methodname="Ball_CanBeAttachedToPaddle" classname="BallTests" runstate="Runnable" seed="1632014966" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000293" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1014" name="Ball_CanBeLaunchedFromPaddle" fullname="BallTests.Ball_CanBeLaunchedFromPaddle" methodname="Ball_CanBeLaunchedFromPaddle" classname="BallTests" runstate="Runnable" seed="361071528" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000613" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1020" name="Ball_CanDetectPaddleCollisions" fullname="BallTests.Ball_CanDetectPaddleCollisions" methodname="Ball_CanDetectPaddleCollisions" classname="BallTests" runstate="Runnable" seed="1541459790" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000399" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1008" name="Ball_CanDetectWallCollisions" fullname="BallTests.Ball_CanDetectWallCollisions" methodname="Ball_CanDetectWallCollisions" classname="BallTests" runstate="Runnable" seed="1273012444" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000467" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="Ball_CanInitializeAndLaunchProperly" fullname="BallTests.Ball_CanInitializeAndLaunchProperly" methodname="Ball_CanInitializeAndLaunchProperly" classname="BallTests" runstate="Runnable" seed="627305764" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000835" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1018" name="Ball_CannotLaunchFromPaddleWhenNotAttached" fullname="BallTests.Ball_CannotLaunchFromPaddleWhenNotAttached" methodname="Ball_CannotLaunchFromPaddleWhenNotAttached" classname="BallTests" runstate="Runnable" seed="466703238" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000217" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1017" name="Ball_DetachedStateAllowsBallLaunch" fullname="BallTests.Ball_DetachedStateAllowsBallLaunch" methodname="Ball_DetachedStateAllowsBallLaunch" classname="BallTests" runstate="Runnable" seed="106432886" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000249" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="Ball_HasBallTag" fullname="BallTests.Ball_HasBallTag" methodname="Ball_HasBallTag" classname="BallTests" runstate="Runnable" seed="1578826456" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="Ball_HasCorrectRigidbodySettings" fullname="BallTests.Ball_HasCorrectRigidbodySettings" methodname="Ball_HasCorrectRigidbodySettings" classname="BallTests" runstate="Runnable" seed="423090359" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000394" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="Ball_InitialStateIsCorrect" fullname="BallTests.Ball_InitialStateIsCorrect" methodname="Ball_InitialStateIsCorrect" classname="BallTests" runstate="Runnable" seed="1602474875" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000235" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="Ball_LaunchBallMethodSetsVelocityDirectly" fullname="BallTests.Ball_LaunchBallMethodSetsVelocityDirectly" methodname="Ball_LaunchBallMethodSetsVelocityDirectly" classname="BallTests" runstate="Runnable" seed="1369371904" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000275" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="Ball_LaunchBallWithNullRigidbodyDoesNotThrow" fullname="BallTests.Ball_LaunchBallWithNullRigidbodyDoesNotThrow" methodname="Ball_LaunchBallWithNullRigidbodyDoesNotThrow" classname="BallTests" runstate="Runnable" seed="1793709060" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000787" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1015" name="Ball_LaunchFromPaddleWithRandomDirection" fullname="BallTests.Ball_LaunchFromPaddleWithRandomDirection" methodname="Ball_LaunchFromPaddleWithRandomDirection" classname="BallTests" runstate="Runnable" seed="1163553740" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1011" name="Ball_MaintainsSpeedAfterWallCollision" fullname="BallTests.Ball_MaintainsSpeedAfterWallCollision" methodname="Ball_MaintainsSpeedAfterWallCollision" classname="BallTests" runstate="Runnable" seed="1253717348" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000330" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1019" name="Ball_OnlyFiresWallHitWhenNotAttached" fullname="BallTests.Ball_OnlyFiresWallHitWhenNotAttached" methodname="Ball_OnlyFiresWallHitWhenNotAttached" classname="BallTests" runstate="Runnable" seed="2040192421" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000343" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="Ball_OnlyReactsToWallComponents" fullname="BallTests.Ball_OnlyReactsToWallComponents" methodname="Ball_OnlyReactsToWallComponents" classname="BallTests" runstate="Runnable" seed="591694116" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000309" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="Ball_OnWallHitEventFiresForDifferentWallTypes" fullname="BallTests.Ball_OnWallHitEventFiresForDifferentWallTypes" methodname="Ball_OnWallHitEventFiresForDifferentWallTypes" classname="BallTests" runstate="Runnable" seed="1713246104" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000409" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1022" name="Ball_PaddleCollisionOnlyWhenNotAttached" fullname="BallTests.Ball_PaddleCollisionOnlyWhenNotAttached" methodname="Ball_PaddleCollisionOnlyWhenNotAttached" classname="BallTests" runstate="Runnable" seed="199897250" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000355" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1105" name="BlockManagerIntegrationTests" fullname="BlockManagerIntegrationTests" classname="BlockManagerIntegrationTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.016440" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1107" name="BlockManagerIntegration_BallCanHitSpawnedBlocks" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_BallCanHitSpawnedBlocks" methodname="BlockManagerIntegration_BallCanHitSpawnedBlocks" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="445927419" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.005251" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 1 blocks (1x1 grid)
+]]></output>
+        </test-case>
+        <test-case id="1108" name="BlockManagerIntegration_BlockDestructionAddsScore" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_BlockDestructionAddsScore" methodname="BlockManagerIntegration_BlockDestructionAddsScore" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="162202257" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000871" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 1 blocks (1x1 grid)
+]]></output>
+        </test-case>
+        <test-case id="1110" name="BlockManagerIntegration_BlocksSpawnWithinGameBoundaries" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_BlocksSpawnWithinGameBoundaries" methodname="BlockManagerIntegration_BlocksSpawnWithinGameBoundaries" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="18693705" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.002431" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 40 blocks (5x8 grid)
+]]></output>
+        </test-case>
+        <test-case id="1111" name="BlockManagerIntegration_ClearsBlocksOnNewGame" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_ClearsBlocksOnNewGame" methodname="BlockManagerIntegration_ClearsBlocksOnNewGame" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="153633492" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.002422" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 4 blocks (2x2 grid)
+Game State: Start
+Game State: Playing
+BlockManager: Spawned 4 blocks (2x2 grid)
+]]></output>
+        </test-case>
+        <test-case id="1112" name="BlockManagerIntegration_HandlesMultiHitBlocks" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_HandlesMultiHitBlocks" methodname="BlockManagerIntegration_HandlesMultiHitBlocks" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="1851187840" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.001761" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 40 blocks (5x8 grid)
+]]></output>
+        </test-case>
+        <test-case id="1109" name="BlockManagerIntegration_MultipleBlocksCanBeHit" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_MultipleBlocksCanBeHit" methodname="BlockManagerIntegration_MultipleBlocksCanBeHit" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="2072154803" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.001041" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 4 blocks (2x2 grid)
+]]></output>
+        </test-case>
+        <test-case id="1106" name="BlockManagerIntegration_SpawnsBlocksOnGameStart" fullname="BlockManagerIntegrationTests.BlockManagerIntegration_SpawnsBlocksOnGameStart" methodname="BlockManagerIntegration_SpawnsBlocksOnGameStart" classname="BlockManagerIntegrationTests" runstate="Runnable" seed="671900962" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.001594" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+Game State: Playing
+BlockManager: Spawned 6 blocks (2x3 grid)
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1023" name="BlockManagerTests" fullname="BlockManagerTests" classname="BlockManagerTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.014378" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1029" name="BlockManager_CalculatesCorrectBlockPositions" fullname="BlockManagerTests.BlockManager_CalculatesCorrectBlockPositions" methodname="BlockManager_CalculatesCorrectBlockPositions" classname="BlockManagerTests" runstate="Runnable" seed="1130209612" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000722" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1037" name="BlockManager_CalculatesGridDimensionsProperly" fullname="BlockManagerTests.BlockManager_CalculatesGridDimensionsProperly" methodname="BlockManager_CalculatesGridDimensionsProperly" classname="BlockManagerTests" runstate="Runnable" seed="1482959117" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000330" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="BlockManager_CanSetAndGetBlockPrefab" fullname="BlockManagerTests.BlockManager_CanSetAndGetBlockPrefab" methodname="BlockManager_CanSetAndGetBlockPrefab" classname="BlockManagerTests" runstate="Runnable" seed="1565348428" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000308" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1031" name="BlockManager_ClearAllBlocksRemovesSpawnedBlocks" fullname="BlockManagerTests.BlockManager_ClearAllBlocksRemovesSpawnedBlocks" methodname="BlockManager_ClearAllBlocksRemovesSpawnedBlocks" classname="BlockManagerTests" runstate="Runnable" seed="702453437" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000869" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 4 blocks (2x2 grid)
+]]></output>
+        </test-case>
+        <test-case id="1033" name="BlockManager_ClearsOldBlocksBeforeSpawningNew" fullname="BlockManagerTests.BlockManager_ClearsOldBlocksBeforeSpawningNew" methodname="BlockManager_ClearsOldBlocksBeforeSpawningNew" classname="BlockManagerTests" runstate="Runnable" seed="321574564" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.001229" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 1 blocks (1x1 grid)
+BlockManager: Spawned 1 blocks (1x1 grid)
+]]></output>
+        </test-case>
+        <test-case id="1039" name="BlockManager_DefaultScoreAssignmentWithoutGameManager" fullname="BlockManagerTests.BlockManager_DefaultScoreAssignmentWithoutGameManager" methodname="BlockManager_DefaultScoreAssignmentWithoutGameManager" classname="BlockManagerTests" runstate="Runnable" seed="1170294653" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000789" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 1 blocks (1x1 grid)
+]]></output>
+        </test-case>
+        <test-case id="1035" name="BlockManager_HandlesNullBlockPrefabGracefully" fullname="BlockManagerTests.BlockManager_HandlesNullBlockPrefabGracefully" methodname="BlockManager_HandlesNullBlockPrefabGracefully" classname="BlockManagerTests" runstate="Runnable" seed="1259933087" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000734" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: No block prefab assigned. Cannot spawn blocks.
+]]></output>
+        </test-case>
+        <test-case id="1025" name="BlockManager_HasConfigurableBlockColumns" fullname="BlockManagerTests.BlockManager_HasConfigurableBlockColumns" methodname="BlockManager_HasConfigurableBlockColumns" classname="BlockManagerTests" runstate="Runnable" seed="1136182672" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000564" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1024" name="BlockManager_HasConfigurableBlockRows" fullname="BlockManagerTests.BlockManager_HasConfigurableBlockRows" methodname="BlockManager_HasConfigurableBlockRows" classname="BlockManagerTests" runstate="Runnable" seed="1533606558" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000212" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="BlockManager_HasConfigurableBlockSpacing" fullname="BlockManagerTests.BlockManager_HasConfigurableBlockSpacing" methodname="BlockManager_HasConfigurableBlockSpacing" classname="BlockManagerTests" runstate="Runnable" seed="1053306275" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000229" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1027" name="BlockManager_HasConfigurableSpawnAreaOffset" fullname="BlockManagerTests.BlockManager_HasConfigurableSpawnAreaOffset" methodname="BlockManager_HasConfigurableSpawnAreaOffset" classname="BlockManagerTests" runstate="Runnable" seed="1559211905" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000292" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1034" name="BlockManager_RegistersWithGameManagerEvents" fullname="BlockManagerTests.BlockManager_RegistersWithGameManagerEvents" methodname="BlockManager_RegistersWithGameManagerEvents" classname="BlockManagerTests" runstate="Runnable" seed="1033336617" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.002371" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+Game State: Playing
+BlockManager: Spawned 40 blocks (5x8 grid)
+]]></output>
+        </test-case>
+        <test-case id="1040" name="BlockManager_ScoreConfigurationInspectorFriendly" fullname="BlockManagerTests.BlockManager_ScoreConfigurationInspectorFriendly" methodname="BlockManager_ScoreConfigurationInspectorFriendly" classname="BlockManagerTests" runstate="Runnable" seed="44893676" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000201" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1038" name="BlockManager_SpawnBlocks_AssignsDefaultScoreFromGameManager" fullname="BlockManagerTests.BlockManager_SpawnBlocks_AssignsDefaultScoreFromGameManager" methodname="BlockManager_SpawnBlocks_AssignsDefaultScoreFromGameManager" classname="BlockManagerTests" runstate="Runnable" seed="1884341589" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000780" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 1 blocks (1x1 grid)
+]]></output>
+        </test-case>
+        <test-case id="1030" name="BlockManager_SpawnedBlocksAreWithinBoundaries" fullname="BlockManagerTests.BlockManager_SpawnedBlocksAreWithinBoundaries" methodname="BlockManager_SpawnedBlocksAreWithinBoundaries" classname="BlockManagerTests" runstate="Runnable" seed="780833610" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000998" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[BlockManager: Spawned 6 blocks (2x3 grid)
+]]></output>
+        </test-case>
+        <test-case id="1032" name="BlockManager_SpawnsBlocksOnGameStartEvent" fullname="BlockManagerTests.BlockManager_SpawnsBlocksOnGameStartEvent" methodname="BlockManager_SpawnsBlocksOnGameStartEvent" classname="BlockManagerTests" runstate="Runnable" seed="261229996" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.001462" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+Game State: Playing
+BlockManager: Spawned 2 blocks (1x2 grid)
+]]></output>
+        </test-case>
+        <test-case id="1036" name="BlockManager_ValidatesConfigurationValues" fullname="BlockManagerTests.BlockManager_ValidatesConfigurationValues" methodname="BlockManager_ValidatesConfigurationValues" classname="BlockManagerTests" runstate="Runnable" seed="175076896" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000329" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1041" name="BlockTests" fullname="BlockTests" classname="BlockTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:32Z" duration="0.063283" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1056" name="Block_DestroyBlock_UsesConfiguredPointValue" fullname="BlockTests.Block_DestroyBlock_UsesConfiguredPointValue" methodname="Block_DestroyBlock_UsesConfiguredPointValue" classname="BlockTests" runstate="Runnable" seed="1137678499" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.054169" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1057" name="Block_DestroyBlock_WithZeroPoints_DoesNotAddScore" fullname="BlockTests.Block_DestroyBlock_WithZeroPoints_DoesNotAddScore" methodname="Block_DestroyBlock_WithZeroPoints_DoesNotAddScore" classname="BlockTests" runstate="Runnable" seed="1985114870" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000900" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1047" name="Block_DestroyBlockAddsScore" fullname="BlockTests.Block_DestroyBlockAddsScore" methodname="Block_DestroyBlockAddsScore" classname="BlockTests" runstate="Runnable" seed="1966829237" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000864" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1046" name="Block_DestroyBlockDestroysGameObject" fullname="BlockTests.Block_DestroyBlockDestroysGameObject" methodname="Block_DestroyBlockDestroysGameObject" classname="BlockTests" runstate="Runnable" seed="695610558" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000739" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1051" name="Block_DestroyBlockWithNullGameManagerDoesNotThrow" fullname="BlockTests.Block_DestroyBlockWithNullGameManagerDoesNotThrow" methodname="Block_DestroyBlockWithNullGameManagerDoesNotThrow" classname="BlockTests" runstate="Runnable" seed="1849354825" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000669" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1052" name="Block_HasDefaultPointValue" fullname="BlockTests.Block_HasDefaultPointValue" methodname="Block_HasDefaultPointValue" classname="BlockTests" runstate="Runnable" seed="320160366" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000310" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1042" name="Block_HasInitialHitPointsOfOne" fullname="BlockTests.Block_HasInitialHitPointsOfOne" methodname="Block_HasInitialHitPointsOfOne" classname="BlockTests" runstate="Runnable" seed="49649315" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000308" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1045" name="Block_MultipleHitsDecrementCorrectly" fullname="BlockTests.Block_MultipleHitsDecrementCorrectly" methodname="Block_MultipleHitsDecrementCorrectly" classname="BlockTests" runstate="Runnable" seed="1677297304" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000364" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1049" name="Block_SetHitPointsUpdatesCorrectly" fullname="BlockTests.Block_SetHitPointsUpdatesCorrectly" methodname="Block_SetHitPointsUpdatesCorrectly" classname="BlockTests" runstate="Runnable" seed="1381409975" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000366" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1055" name="Block_SetPointValue_AcceptsZeroValue" fullname="BlockTests.Block_SetPointValue_AcceptsZeroValue" methodname="Block_SetPointValue_AcceptsZeroValue" classname="BlockTests" runstate="Runnable" seed="18967551" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000309" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1054" name="Block_SetPointValue_RejectsNegativeValues" fullname="BlockTests.Block_SetPointValue_RejectsNegativeValues" methodname="Block_SetPointValue_RejectsNegativeValues" classname="BlockTests" runstate="Runnable" seed="94185498" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000332" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1053" name="Block_SetPointValue_UpdatesCorrectly" fullname="BlockTests.Block_SetPointValue_UpdatesCorrectly" methodname="Block_SetPointValue_UpdatesCorrectly" classname="BlockTests" runstate="Runnable" seed="1913237370" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000354" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1043" name="Block_TakeHitDecreasesHitPoints" fullname="BlockTests.Block_TakeHitDecreasesHitPoints" methodname="Block_TakeHitDecreasesHitPoints" classname="BlockTests" runstate="Runnable" seed="238391805" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:31Z" duration="0.000312" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1044" name="Block_TakeHitFromTwoHitPointsDecreasesToOne" fullname="BlockTests.Block_TakeHitFromTwoHitPointsDecreasesToOne" methodname="Block_TakeHitFromTwoHitPointsDecreasesToOne" classname="BlockTests" runstate="Runnable" seed="1788405382" result="Passed" start-time="2025-08-31 07:07:31Z" end-time="2025-08-31 07:07:32Z" duration="0.000326" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1048" name="Block_TakeHitWhenHitPointsIsZeroDoesNotThrow" fullname="BlockTests.Block_TakeHitWhenHitPointsIsZeroDoesNotThrow" methodname="Block_TakeHitWhenHitPointsIsZeroDoesNotThrow" classname="BlockTests" runstate="Runnable" seed="1443845053" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000397" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1050" name="GameManager_SingletonAndScoreWorkCorrectly" fullname="BlockTests.GameManager_SingletonAndScoreWorkCorrectly" methodname="GameManager_SingletonAndScoreWorkCorrectly" classname="BlockTests" runstate="Runnable" seed="804854777" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000365" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1113" name="BoundarySystemIntegrationTests" fullname="BoundarySystemIntegrationTests" classname="BoundarySystemIntegrationTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.013811" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1122" name="BoundarySystem_AttachedBallFollowsPaddleMovement" fullname="BoundarySystemIntegrationTests.BoundarySystem_AttachedBallFollowsPaddleMovement" methodname="BoundarySystem_AttachedBallFollowsPaddleMovement" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="1750502443" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001847" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1115" name="BoundarySystem_BallEntersDeathZoneTriggersRespawn" fullname="BoundarySystemIntegrationTests.BoundarySystem_BallEntersDeathZoneTriggersRespawn" methodname="BoundarySystem_BallEntersDeathZoneTriggersRespawn" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="953944779" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000880" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1114" name="BoundarySystem_BallHitsWallTriggersEvent" fullname="BoundarySystemIntegrationTests.BoundarySystem_BallHitsWallTriggersEvent" methodname="BoundarySystem_BallHitsWallTriggersEvent" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="1841528141" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000318" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1121" name="BoundarySystem_BallRespawnOnlyDuringPlayingState" fullname="BoundarySystemIntegrationTests.BoundarySystem_BallRespawnOnlyDuringPlayingState" methodname="BoundarySystem_BallRespawnOnlyDuringPlayingState" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="581930207" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.002690" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+Game State: Game Over
+Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1120" name="BoundarySystem_CompleteBallRespawnAndLaunchCycle" fullname="BoundarySystemIntegrationTests.BoundarySystem_CompleteBallRespawnAndLaunchCycle" methodname="BoundarySystem_CompleteBallRespawnAndLaunchCycle" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="2013049048" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001516" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1119" name="BoundarySystem_CompleteBreakoutGameplayFlow" fullname="BoundarySystemIntegrationTests.BoundarySystem_CompleteBreakoutGameplayFlow" methodname="BoundarySystem_CompleteBreakoutGameplayFlow" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="501773239" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001452" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+Game State: Game Over
+Game State: Start
+]]></output>
+        </test-case>
+        <test-case id="1116" name="BoundarySystem_DeathZoneConnectsToGameManager" fullname="BoundarySystemIntegrationTests.BoundarySystem_DeathZoneConnectsToGameManager" methodname="BoundarySystem_DeathZoneConnectsToGameManager" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="757814653" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000633" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1117" name="BoundarySystem_GameCanBeResetAfterBallLoss" fullname="BoundarySystemIntegrationTests.BoundarySystem_GameCanBeResetAfterBallLoss" methodname="BoundarySystem_GameCanBeResetAfterBallLoss" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="560249619" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001490" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+Game State: Game Over
+Game State: Start
+]]></output>
+        </test-case>
+        <test-case id="1123" name="BoundarySystem_PaddleWallCollisionDetection" fullname="BoundarySystemIntegrationTests.BoundarySystem_PaddleWallCollisionDetection" methodname="BoundarySystem_PaddleWallCollisionDetection" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="12590829" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001082" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1118" name="BoundarySystem_WallsAndDeathZoneWorkWithDifferentWallTypes" fullname="BoundarySystemIntegrationTests.BoundarySystem_WallsAndDeathZoneWorkWithDifferentWallTypes" methodname="BoundarySystem_WallsAndDeathZoneWorkWithDifferentWallTypes" classname="BoundarySystemIntegrationTests" runstate="Runnable" seed="653465012" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000557" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1058" name="DeathZoneTests" fullname="DeathZoneTests" classname="DeathZoneTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.004001" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1061" name="DeathZone_CanDetectBallEntering" fullname="DeathZoneTests.DeathZone_CanDetectBallEntering" methodname="DeathZone_CanDetectBallEntering" classname="DeathZoneTests" runstate="Runnable" seed="1332397867" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000875" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1060" name="DeathZone_ColliderIsTrigger" fullname="DeathZoneTests.DeathZone_ColliderIsTrigger" methodname="DeathZone_ColliderIsTrigger" classname="DeathZoneTests" runstate="Runnable" seed="131710951" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000282" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1064" name="DeathZone_DestroysBallOnEntry" fullname="DeathZoneTests.DeathZone_DestroysBallOnEntry" methodname="DeathZone_DestroysBallOnEntry" classname="DeathZoneTests" runstate="Runnable" seed="478639130" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000257" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1065" name="DeathZone_HandlesNullGameManagerGracefully" fullname="DeathZoneTests.DeathZone_HandlesNullGameManagerGracefully" methodname="DeathZone_HandlesNullGameManagerGracefully" classname="DeathZoneTests" runstate="Runnable" seed="1268968330" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000348" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1059" name="DeathZone_HasRequiredComponents" fullname="DeathZoneTests.DeathZone_HasRequiredComponents" methodname="DeathZone_HasRequiredComponents" classname="DeathZoneTests" runstate="Runnable" seed="205045365" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000199" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="DeathZone_OnlyDetectsBallObjects" fullname="DeathZoneTests.DeathZone_OnlyDetectsBallObjects" methodname="DeathZone_OnlyDetectsBallObjects" classname="DeathZoneTests" runstate="Runnable" seed="1586771777" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000305" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="DeathZone_TriggersRespawnInPlayingState" fullname="DeathZoneTests.DeathZone_TriggersRespawnInPlayingState" methodname="DeathZone_TriggersRespawnInPlayingState" classname="DeathZoneTests" runstate="Runnable" seed="1313837651" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000674" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1073" name="GameManagerTests" fullname="GameManagerTests" classname="GameManagerTests" runstate="Runnable" testcasecount="31" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.020147" total="31" passed="31" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1075" name="GameManager_AddScoreIncreasesScore" fullname="GameManagerTests.GameManager_AddScoreIncreasesScore" methodname="GameManager_AddScoreIncreasesScore" classname="GameManagerTests" runstate="Runnable" seed="1395174951" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000569" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1096" name="GameManager_AddScoreWithFractionalMultiplier_RoundsCorrectly" fullname="GameManagerTests.GameManager_AddScoreWithFractionalMultiplier_RoundsCorrectly" methodname="GameManager_AddScoreWithFractionalMultiplier_RoundsCorrectly" classname="GameManagerTests" runstate="Runnable" seed="261657762" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000330" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1095" name="GameManager_AddScoreWithMultiplier_AppliesCorrectly" fullname="GameManagerTests.GameManager_AddScoreWithMultiplier_AppliesCorrectly" methodname="GameManager_AddScoreWithMultiplier_AppliesCorrectly" classname="GameManagerTests" runstate="Runnable" seed="1716425120" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000312" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1097" name="GameManager_AddScoreWithZeroMultiplier_AddsNothing" fullname="GameManagerTests.GameManager_AddScoreWithZeroMultiplier_AddsNothing" methodname="GameManager_AddScoreWithZeroMultiplier_AddsNothing" classname="GameManagerTests" runstate="Runnable" seed="1089086758" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000303" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1078" name="GameManager_BallLossFromPlayingStateTriggersRespawn" fullname="GameManagerTests.GameManager_BallLossFromPlayingStateTriggersRespawn" methodname="GameManager_BallLossFromPlayingStateTriggersRespawn" classname="GameManagerTests" runstate="Runnable" seed="510426447" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000648" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1079" name="GameManager_BallLossFromStartStateDoesNothing" fullname="GameManagerTests.GameManager_BallLossFromStartStateDoesNothing" methodname="GameManager_BallLossFromStartStateDoesNothing" classname="GameManagerTests" runstate="Runnable" seed="677041003" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000632" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+]]></output>
+        </test-case>
+        <test-case id="1077" name="GameManager_CanHandleBallLoss" fullname="GameManagerTests.GameManager_CanHandleBallLoss" methodname="GameManager_CanHandleBallLoss" classname="GameManagerTests" runstate="Runnable" seed="938549080" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000652" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1086" name="GameManager_CanRegisterPaddleForBallSpawning" fullname="GameManagerTests.GameManager_CanRegisterPaddleForBallSpawning" methodname="GameManager_CanRegisterPaddleForBallSpawning" classname="GameManagerTests" runstate="Runnable" seed="1996464581" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000382" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1080" name="GameManager_CanResetAfterGameOver" fullname="GameManagerTests.GameManager_CanResetAfterGameOver" methodname="GameManager_CanResetAfterGameOver" classname="GameManagerTests" runstate="Runnable" seed="1623396649" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000968" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Game Over
+Game State: Start
+]]></output>
+        </test-case>
+        <test-case id="1084" name="GameManager_CanSpawnBallAtPaddlePosition" fullname="GameManagerTests.GameManager_CanSpawnBallAtPaddlePosition" methodname="GameManager_CanSpawnBallAtPaddlePosition" classname="GameManagerTests" runstate="Runnable" seed="232878406" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000594" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1091" name="GameManager_ForceSpawnInitialBallWorksManually" fullname="GameManagerTests.GameManager_ForceSpawnInitialBallWorksManually" methodname="GameManager_ForceSpawnInitialBallWorksManually" classname="GameManagerTests" runstate="Runnable" seed="680516361" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000587" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1081" name="GameManager_GameOverTriggersEvent" fullname="GameManagerTests.GameManager_GameOverTriggersEvent" methodname="GameManager_GameOverTriggersEvent" classname="GameManagerTests" runstate="Runnable" seed="1175266132" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000706" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Game Over
+]]></output>
+        </test-case>
+        <test-case id="1087" name="GameManager_HasBallPrefabReference" fullname="GameManagerTests.GameManager_HasBallPrefabReference" methodname="GameManager_HasBallPrefabReference" classname="GameManagerTests" runstate="Runnable" seed="1981951838" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000377" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1083" name="GameManager_HasConfigurableRespawnDelay" fullname="GameManagerTests.GameManager_HasConfigurableRespawnDelay" methodname="GameManager_HasConfigurableRespawnDelay" classname="GameManagerTests" runstate="Runnable" seed="403168239" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000300" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1099" name="GameManager_HasDefaultBlockScore" fullname="GameManagerTests.GameManager_HasDefaultBlockScore" methodname="GameManager_HasDefaultBlockScore" classname="GameManagerTests" runstate="Runnable" seed="1134753316" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000286" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1092" name="GameManager_HasDefaultScoreMultiplier" fullname="GameManagerTests.GameManager_HasDefaultScoreMultiplier" methodname="GameManager_HasDefaultScoreMultiplier" classname="GameManagerTests" runstate="Runnable" seed="1946824749" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000273" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1074" name="GameManager_InitialScoreIsZero" fullname="GameManagerTests.GameManager_InitialScoreIsZero" methodname="GameManager_InitialScoreIsZero" classname="GameManagerTests" runstate="Runnable" seed="1340053971" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000270" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1104" name="GameManager_MultipleScoreAdditions_TriggerMultipleEvents" fullname="GameManagerTests.GameManager_MultipleScoreAdditions_TriggerMultipleEvents" methodname="GameManager_MultipleScoreAdditions_TriggerMultipleEvents" classname="GameManagerTests" runstate="Runnable" seed="820191930" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000409" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1088" name="GameManager_RespawnOnlyDuringPlayingState" fullname="GameManagerTests.GameManager_RespawnOnlyDuringPlayingState" methodname="GameManager_RespawnOnlyDuringPlayingState" classname="GameManagerTests" runstate="Runnable" seed="362191514" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001293" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Start
+Game State: Game Over
+Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1102" name="GameManager_ScoreEvents_TriggeredOnScoreChange" fullname="GameManagerTests.GameManager_ScoreEvents_TriggeredOnScoreChange" methodname="GameManager_ScoreEvents_TriggeredOnScoreChange" classname="GameManagerTests" runstate="Runnable" seed="512006248" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000450" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1098" name="GameManager_ScoreMultiplier_AffectsBlockDestruction" fullname="GameManagerTests.GameManager_ScoreMultiplier_AffectsBlockDestruction" methodname="GameManager_ScoreMultiplier_AffectsBlockDestruction" classname="GameManagerTests" runstate="Runnable" seed="785618557" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000829" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1103" name="GameManager_ScoreMultiplierWithDifficulty_AppliesCorrectly" fullname="GameManagerTests.GameManager_ScoreMultiplierWithDifficulty_AppliesCorrectly" methodname="GameManager_ScoreMultiplierWithDifficulty_AppliesCorrectly" classname="GameManagerTests" runstate="Runnable" seed="1634812873" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1101" name="GameManager_SetDefaultBlockScore_RejectsNegativeValues" fullname="GameManagerTests.GameManager_SetDefaultBlockScore_RejectsNegativeValues" methodname="GameManager_SetDefaultBlockScore_RejectsNegativeValues" classname="GameManagerTests" runstate="Runnable" seed="407172620" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000295" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1100" name="GameManager_SetDefaultBlockScore_UpdatesCorrectly" fullname="GameManagerTests.GameManager_SetDefaultBlockScore_UpdatesCorrectly" methodname="GameManager_SetDefaultBlockScore_UpdatesCorrectly" classname="GameManagerTests" runstate="Runnable" seed="462430206" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000316" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1076" name="GameManager_SetGameStateChangesState" fullname="GameManagerTests.GameManager_SetGameStateChangesState" methodname="GameManager_SetGameStateChangesState" classname="GameManagerTests" runstate="Runnable" seed="611586717" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000624" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1094" name="GameManager_SetScoreMultiplier_RejectsNegativeValues" fullname="GameManagerTests.GameManager_SetScoreMultiplier_RejectsNegativeValues" methodname="GameManager_SetScoreMultiplier_RejectsNegativeValues" classname="GameManagerTests" runstate="Runnable" seed="1711898869" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1093" name="GameManager_SetScoreMultiplier_UpdatesCorrectly" fullname="GameManagerTests.GameManager_SetScoreMultiplier_UpdatesCorrectly" methodname="GameManager_SetScoreMultiplier_UpdatesCorrectly" classname="GameManagerTests" runstate="Runnable" seed="888488718" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000339" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1082" name="GameManager_SingletonInstanceIsProperlySet" fullname="GameManagerTests.GameManager_SingletonInstanceIsProperlySet" methodname="GameManager_SingletonInstanceIsProperlySet" classname="GameManagerTests" runstate="Runnable" seed="1761957791" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000287" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1089" name="GameManager_SpawnedBallIsAttachedToPaddle" fullname="GameManagerTests.GameManager_SpawnedBallIsAttachedToPaddle" methodname="GameManager_SpawnedBallIsAttachedToPaddle" classname="GameManagerTests" runstate="Runnable" seed="406466353" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.001362" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1090" name="GameManager_StartGameSpawnsInitialBallAttachedToPaddle" fullname="GameManagerTests.GameManager_StartGameSpawnsInitialBallAttachedToPaddle" methodname="GameManager_StartGameSpawnsInitialBallAttachedToPaddle" classname="GameManagerTests" runstate="Runnable" seed="1656520779" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000924" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1085" name="GameManager_StartsRespawnTimerOnBallLoss" fullname="GameManagerTests.GameManager_StartsRespawnTimerOnBallLoss" methodname="GameManager_StartsRespawnTimerOnBallLoss" classname="GameManagerTests" runstate="Runnable" seed="630713318" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000946" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1141" name="GameUIManagerTests" fullname="GameUIManagerTests" classname="GameUIManagerTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.007123" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1142" name="GameUIManager_CanFindGameManagerInstance" fullname="GameUIManagerTests.GameUIManager_CanFindGameManagerInstance" methodname="GameUIManager_CanFindGameManagerInstance" classname="GameUIManagerTests" runstate="Runnable" seed="811741348" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.002696" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1146" name="GameUIManager_HandlesNullGameManagerGracefully" fullname="GameUIManagerTests.GameUIManager_HandlesNullGameManagerGracefully" methodname="GameUIManager_HandlesNullGameManagerGracefully" classname="GameUIManagerTests" runstate="Runnable" seed="247050717" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000496" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1144" name="GameUIManager_RestartButtonResetsAndStartsGame" fullname="GameUIManagerTests.GameUIManager_RestartButtonResetsAndStartsGame" methodname="GameUIManager_RestartButtonResetsAndStartsGame" classname="GameUIManagerTests" runstate="Runnable" seed="1211613866" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.002010" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+Game State: Game Over
+Game State: Start
+Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1143" name="GameUIManager_StartButtonTriggersGameStart" fullname="GameUIManagerTests.GameUIManager_StartButtonTriggersGameStart" methodname="GameUIManager_StartButtonTriggersGameStart" classname="GameUIManagerTests" runstate="Runnable" seed="1218099485" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000829" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Game State: Playing
+]]></output>
+        </test-case>
+        <test-case id="1145" name="GameUIManager_UpdateUIStateDoesNotThrow" fullname="GameUIManagerTests.GameUIManager_UpdateUIStateDoesNotThrow" methodname="GameUIManager_UpdateUIStateDoesNotThrow" classname="GameUIManagerTests" runstate="Runnable" seed="212805334" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000321" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1124" name="PlayerPaddleTests" fullname="PlayerPaddleTests" classname="PlayerPaddleTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.007277" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1129" name="PlayerPaddle_AttachedBallFollowsPaddle" fullname="PlayerPaddleTests.PlayerPaddle_AttachedBallFollowsPaddle" methodname="PlayerPaddle_AttachedBallFollowsPaddle" classname="PlayerPaddleTests" runstate="Runnable" seed="1574885396" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000774" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1136" name="PlayerPaddle_CalculatesPaddleWidth" fullname="PlayerPaddleTests.PlayerPaddle_CalculatesPaddleWidth" methodname="PlayerPaddle_CalculatesPaddleWidth" classname="PlayerPaddleTests" runstate="Runnable" seed="884638155" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000295" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1127" name="PlayerPaddle_CanAttachBall" fullname="PlayerPaddleTests.PlayerPaddle_CanAttachBall" methodname="PlayerPaddle_CanAttachBall" classname="PlayerPaddleTests" runstate="Runnable" seed="298190210" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000305" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1135" name="PlayerPaddle_CanConfigureWallCollision" fullname="PlayerPaddleTests.PlayerPaddle_CanConfigureWallCollision" methodname="PlayerPaddle_CanConfigureWallCollision" classname="PlayerPaddleTests" runstate="Runnable" seed="1174827686" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000177" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1128" name="PlayerPaddle_CanDetachBall" fullname="PlayerPaddleTests.PlayerPaddle_CanDetachBall" methodname="PlayerPaddle_CanDetachBall" classname="PlayerPaddleTests" runstate="Runnable" seed="1176998002" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000288" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1130" name="PlayerPaddle_CanLaunchBallWithRandomDirection" fullname="PlayerPaddleTests.PlayerPaddle_CanLaunchBallWithRandomDirection" methodname="PlayerPaddle_CanLaunchBallWithRandomDirection" classname="PlayerPaddleTests" runstate="Runnable" seed="43655115" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000355" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1133" name="PlayerPaddle_CanSimulateLeftClick" fullname="PlayerPaddleTests.PlayerPaddle_CanSimulateLeftClick" methodname="PlayerPaddle_CanSimulateLeftClick" classname="PlayerPaddleTests" runstate="Runnable" seed="3964504" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000616" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1140" name="PlayerPaddle_DeterministicLaunchGoesUpward" fullname="PlayerPaddleTests.PlayerPaddle_DeterministicLaunchGoesUpward" methodname="PlayerPaddle_DeterministicLaunchGoesUpward" classname="PlayerPaddleTests" runstate="Runnable" seed="817620004" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000352" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1132" name="PlayerPaddle_HasConfigurableAttachmentOffset" fullname="PlayerPaddleTests.PlayerPaddle_HasConfigurableAttachmentOffset" methodname="PlayerPaddle_HasConfigurableAttachmentOffset" classname="PlayerPaddleTests" runstate="Runnable" seed="2077825513" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000181" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1131" name="PlayerPaddle_HasConfigurableLaunchForce" fullname="PlayerPaddleTests.PlayerPaddle_HasConfigurableLaunchForce" methodname="PlayerPaddle_HasConfigurableLaunchForce" classname="PlayerPaddleTests" runstate="Runnable" seed="1289799052" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000173" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1125" name="PlayerPaddle_HasCorrectInitialPosition" fullname="PlayerPaddleTests.PlayerPaddle_HasCorrectInitialPosition" methodname="PlayerPaddle_HasCorrectInitialPosition" classname="PlayerPaddleTests" runstate="Runnable" seed="1660947366" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000218" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1126" name="PlayerPaddle_HasCorrectInitialScale" fullname="PlayerPaddleTests.PlayerPaddle_HasCorrectInitialScale" methodname="PlayerPaddle_HasCorrectInitialScale" classname="PlayerPaddleTests" runstate="Runnable" seed="118695531" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000405" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1138" name="PlayerPaddle_LaunchAlwaysHasPositiveYVelocity" fullname="PlayerPaddleTests.PlayerPaddle_LaunchAlwaysHasPositiveYVelocity" methodname="PlayerPaddle_LaunchAlwaysHasPositiveYVelocity" classname="PlayerPaddleTests" runstate="Runnable" seed="1389575394" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000436" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1139" name="PlayerPaddle_LaunchCanHaveVariableXVelocity" fullname="PlayerPaddleTests.PlayerPaddle_LaunchCanHaveVariableXVelocity" methodname="PlayerPaddle_LaunchCanHaveVariableXVelocity" classname="PlayerPaddleTests" runstate="Runnable" seed="515426809" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000415" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1134" name="PlayerPaddle_RegistersWithGameManagerForBallSpawning" fullname="PlayerPaddleTests.PlayerPaddle_RegistersWithGameManagerForBallSpawning" methodname="PlayerPaddle_RegistersWithGameManagerForBallSpawning" classname="PlayerPaddleTests" runstate="Runnable" seed="1775646169" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000334" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1137" name="PlayerPaddle_WallCollisionFallbackToClamping" fullname="PlayerPaddleTests.PlayerPaddle_WallCollisionFallbackToClamping" methodname="PlayerPaddle_WallCollisionFallbackToClamping" classname="PlayerPaddleTests" runstate="Runnable" seed="868241225" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000161" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1066" name="WallTests" fullname="WallTests" classname="WallTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.002457" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1072" name="Wall_CanBeInitializedWithDifferentTypes" fullname="WallTests.Wall_CanBeInitializedWithDifferentTypes" methodname="Wall_CanBeInitializedWithDifferentTypes" classname="WallTests" runstate="Runnable" seed="2015990799" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000611" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1069" name="Wall_CanSetWallType" fullname="WallTests.Wall_CanSetWallType" methodname="Wall_CanSetWallType" classname="WallTests" runstate="Runnable" seed="1371755534" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000210" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1068" name="Wall_ColliderIsNotTrigger" fullname="WallTests.Wall_ColliderIsNotTrigger" methodname="Wall_ColliderIsNotTrigger" classname="WallTests" runstate="Runnable" seed="1591492597" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000157" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1070" name="Wall_DefaultTypeIsTop" fullname="WallTests.Wall_DefaultTypeIsTop" methodname="Wall_DefaultTypeIsTop" classname="WallTests" runstate="Runnable" seed="998640006" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000164" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1067" name="Wall_HasRequiredComponents" fullname="WallTests.Wall_HasRequiredComponents" methodname="Wall_HasRequiredComponents" classname="WallTests" runstate="Runnable" seed="1547287263" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000168" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1071" name="Wall_OnCollisionEnterDoesNotThrow" fullname="WallTests.Wall_OnCollisionEnterDoesNotThrow" methodname="Wall_OnCollisionEnterDoesNotThrow" classname="WallTests" runstate="Runnable" seed="1233673081" result="Passed" start-time="2025-08-31 07:07:32Z" end-time="2025-08-31 07:07:32Z" duration="0.000308" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: /home/fave/.config/unity3d/DefaultCompany/Arcade Ascension/TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
