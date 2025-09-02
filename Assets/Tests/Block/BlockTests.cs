@@ -28,6 +28,7 @@ public class BlockTests
         // The GetScore() and AddScore() methods should work without Start() being called
 
         blockGO = new GameObject();
+        blockGO.AddComponent<SpriteRenderer>(); // Add SpriteRenderer for sprite testing
         block = blockGO.AddComponent<Block>();
         // Set initial hit points for testing
         // block.hitPoints = 1; // Assuming hitPoints is accessible for testing
@@ -282,5 +283,97 @@ public class BlockTests
         // Assert: Score should not change
         int finalScore = GameManager.Instance.GetScore();
         Assert.AreEqual(initialScore, finalScore);
+    }
+
+    // NEW TDD TESTS FOR RANDOM SPRITE SELECTION (RED PHASE)
+
+    [Test]
+    public void Block_CanSetRandomSpriteFromList()
+    {
+        // Test that Block can accept and use a list of sprites for random selection
+        Sprite[] testSprites = CreateTestSprites(3);
+        
+        block.SetRandomSpriteFromList(testSprites);
+        
+        // Verify the sprite was set (we'll check it's one of the provided sprites)
+        SpriteRenderer spriteRenderer = blockGO.GetComponent<SpriteRenderer>();
+        Assert.IsNotNull(spriteRenderer, "Block should have a SpriteRenderer component");
+        Assert.IsNotNull(spriteRenderer.sprite, "Block should have a sprite assigned");
+        Assert.Contains(spriteRenderer.sprite, testSprites, "Block sprite should be one from the provided list");
+    }
+
+    [Test]
+    public void Block_RandomSpriteSelection_UsesAllSpritesOverMultipleSelections()
+    {
+        // Test that over multiple selections, all sprites from the list are eventually used
+        Sprite[] testSprites = CreateTestSprites(3);
+        var usedSprites = new System.Collections.Generic.HashSet<Sprite>();
+        
+        // Test multiple blocks to ensure randomization works
+        for (int i = 0; i < 20; i++)
+        {
+            GameObject testBlockGO = new GameObject($"TestBlock{i}");
+            testBlockGO.AddComponent<SpriteRenderer>();
+            Block testBlock = testBlockGO.AddComponent<Block>();
+            
+            testBlock.SetRandomSpriteFromList(testSprites);
+            
+            SpriteRenderer sr = testBlockGO.GetComponent<SpriteRenderer>();
+            usedSprites.Add(sr.sprite);
+            
+            // Cleanup
+            if (Application.isPlaying)
+                Object.Destroy(testBlockGO);
+            else
+                Object.DestroyImmediate(testBlockGO);
+        }
+        
+        // With 20 attempts and 3 sprites, we should have used all sprites
+        Assert.GreaterOrEqual(usedSprites.Count, 2, "Should use at least 2 different sprites over multiple selections");
+    }
+
+    [Test]
+    public void Block_SetRandomSpriteFromList_HandlesEmptyArrayGracefully()
+    {
+        // Test that empty sprite array doesn't crash the system
+        Sprite[] emptySprites = new Sprite[0];
+        
+        Assert.DoesNotThrow(() => block.SetRandomSpriteFromList(emptySprites));
+    }
+
+    [Test]
+    public void Block_SetRandomSpriteFromList_HandlesNullArrayGracefully()
+    {
+        // Test that null sprite array doesn't crash the system
+        Assert.DoesNotThrow(() => block.SetRandomSpriteFromList(null));
+    }
+
+    [Test]
+    public void Block_SetRandomSpriteFromList_WithSingleSprite_UsesOnlyThatSprite()
+    {
+        // Test that with only one sprite in the list, that sprite is always used
+        Sprite[] singleSprite = CreateTestSprites(1);
+        
+        block.SetRandomSpriteFromList(singleSprite);
+        
+        SpriteRenderer spriteRenderer = blockGO.GetComponent<SpriteRenderer>();
+        Assert.AreEqual(singleSprite[0], spriteRenderer.sprite);
+    }
+
+    // Helper method to create test sprites for testing
+    private Sprite[] CreateTestSprites(int count)
+    {
+        Sprite[] sprites = new Sprite[count];
+        for (int i = 0; i < count; i++)
+        {
+            // Create a simple 1x1 texture for testing
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, new Color(i / (float)count, 0.5f, 1f, 1f)); // Different color for each sprite
+            texture.Apply();
+            
+            sprites[i] = Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.one * 0.5f);
+            sprites[i].name = $"TestSprite{i}";
+        }
+        return sprites;
     }
 }

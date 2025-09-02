@@ -8,6 +8,8 @@ public class Block : MonoBehaviour
     private GameObject destructionEffectPrefab; // Particle effect prefab for destruction
     [SerializeField]
     private int pointValue = 10; // Configurable point value for destroying this block
+    [SerializeField]
+    private Sprite[] availableSprites; // List of sprites for random selection
 
     // Public getter for testing
     public int HitPoints { get { return hitPoints; } }
@@ -25,6 +27,36 @@ public class Block : MonoBehaviour
     public void SetPointValue(int newPointValue)
     {
         pointValue = Mathf.Max(0, newPointValue); // Ensure point value never goes below 0
+    }
+
+    // Set a random sprite from a provided list
+    public void SetRandomSpriteFromList(Sprite[] spriteList)
+    {
+        if (spriteList == null || spriteList.Length == 0)
+        {
+            // Handle gracefully - don't change sprite if list is invalid
+            return;
+        }
+
+        // Get or add SpriteRenderer component
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        }
+
+        // Select random sprite from the list
+        int randomIndex = Random.Range(0, spriteList.Length);
+        spriteRenderer.sprite = spriteList[randomIndex];
+        
+        // Store the available sprites for potential future use
+        availableSprites = spriteList;
+    }
+
+    // Get the currently available sprite list
+    public Sprite[] GetAvailableSprites()
+    {
+        return availableSprites;
     }
 
     public void TakeHit()

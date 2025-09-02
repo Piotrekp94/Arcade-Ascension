@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1addcefafdfff1c47af4829fd8edf8ca, type: 3}
   m_Name: Level01
   m_EditorClassIdentifier: Scripts::LevelData
-  levelId: 0
+  levelId: 1
   levelName: 
   levelDescription: 
-  blockRows: 5
+  blockRows: 13
   blockColumns: 8
-  blockSpacing: 0.1
+  blockSpacing: 0
+  blockSpacingX: 0.97
+  blockSpacingY: 0.25
   spawnAreaOffset: {x: 0, y: -1}
   scoreMultiplier: 1
   defaultBlockScore: 10

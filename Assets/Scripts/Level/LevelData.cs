@@ -19,7 +19,13 @@ public class LevelData : ScriptableObject
     [SerializeField]
     private float blockSpacing = 0.1f;
     [SerializeField]
+    private float blockSpacingX = 0.1f;
+    [SerializeField]
+    private float blockSpacingY = 0.1f;
+    [SerializeField]
     private Vector2 spawnAreaOffset = new Vector2(0f, -1f);
+    [SerializeField]
+    private Sprite[] blockSprites; // Array of sprites for random block appearance
     
     [Header("Scoring Configuration")]
     [SerializeField]
@@ -34,7 +40,10 @@ public class LevelData : ScriptableObject
     public int BlockRows => blockRows;
     public int BlockColumns => blockColumns;
     public float BlockSpacing => blockSpacing;
+    public float BlockSpacingX => blockSpacingX;
+    public float BlockSpacingY => blockSpacingY;
     public Vector2 SpawnAreaOffset => spawnAreaOffset;
+    public Sprite[] BlockSprites => blockSprites;
     public float ScoreMultiplier => scoreMultiplier;
     public int DefaultBlockScore => defaultBlockScore;
     
@@ -46,6 +55,8 @@ public class LevelData : ScriptableObject
                blockRows > 0 &&
                blockColumns > 0 &&
                blockSpacing >= 0f &&
+               blockSpacingX >= 0f &&
+               blockSpacingY >= 0f &&
                scoreMultiplier > 0f &&
                defaultBlockScore >= 0;
     }
@@ -60,7 +71,10 @@ public class LevelData : ScriptableObject
         copy.blockRows = this.blockRows;
         copy.blockColumns = this.blockColumns;
         copy.blockSpacing = this.blockSpacing;
+        copy.blockSpacingX = this.blockSpacingX;
+        copy.blockSpacingY = this.blockSpacingY;
         copy.spawnAreaOffset = this.spawnAreaOffset;
+        copy.blockSprites = this.blockSprites; // Copy sprite array reference
         copy.scoreMultiplier = this.scoreMultiplier;
         copy.defaultBlockScore = this.defaultBlockScore;
         return copy;
@@ -73,6 +87,8 @@ public class LevelData : ScriptableObject
         if (blockRows < 1) blockRows = 1;
         if (blockColumns < 1) blockColumns = 1;
         if (blockSpacing < 0f) blockSpacing = 0f;
+        if (blockSpacingX < 0f) blockSpacingX = 0f;
+        if (blockSpacingY < 0f) blockSpacingY = 0f;
         if (scoreMultiplier <= 0f) scoreMultiplier = 1.0f;
         if (defaultBlockScore < 0) defaultBlockScore = 0;
     }

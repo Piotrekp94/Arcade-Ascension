@@ -543,11 +543,233 @@ public class BlockManagerTests
         return levelData;
     }
 
+    // NEW TDD TESTS FOR SEPARATE X AND Y SPACING (RED PHASE)
+
+    [Test]
+    public void BlockManager_HasConfigurableBlockSpacingX()
+    {
+        // Test getting and setting X spacing independently
+        blockManager.SetBlockSpacingX(0.3f);
+        Assert.That(blockManager.GetBlockSpacingX(), Is.EqualTo(0.3f).Within(0.01f));
+    }
+
+    [Test]
+    public void BlockManager_HasConfigurableBlockSpacingY()
+    {
+        // Test getting and setting Y spacing independently  
+        blockManager.SetBlockSpacingY(0.4f);
+        Assert.That(blockManager.GetBlockSpacingY(), Is.EqualTo(0.4f).Within(0.01f));
+    }
+
+    [Test]
+    public void BlockManager_CalculatesCorrectBlockPositionsWithSeparateSpacing()
+    {
+        // Set up test configuration with different X and Y spacing
+        blockManager.SetBlockRows(2);
+        blockManager.SetBlockColumns(3);
+        blockManager.SetBlockSpacingX(0.2f);
+        blockManager.SetBlockSpacingY(0.1f);
+        
+        // Calculate positions
+        Vector2 pos00 = blockManager.CalculateBlockPosition(0, 0); // Top-left
+        Vector2 pos01 = blockManager.CalculateBlockPosition(0, 1); // Top-middle
+        Vector2 pos10 = blockManager.CalculateBlockPosition(1, 0); // Bottom-left
+        
+        // Verify horizontal spacing uses spacingX
+        float horizontalDistance = Mathf.Abs(pos01.x - pos00.x);
+        Assert.Greater(horizontalDistance, 0.2f, "Horizontal spacing should account for spacingX");
+        
+        // Verify vertical spacing uses spacingY
+        float verticalDistance = Mathf.Abs(pos10.y - pos00.y);
+        Assert.Greater(verticalDistance, 0.1f, "Vertical spacing should account for spacingY");
+    }
+
+    [Test]
+    public void BlockManager_ConfigureForLevel_AppliesLevelDataWithSeparateSpacing()
+    {
+        // Test that BlockManager can be configured with LevelData containing separate X and Y spacing
+        LevelData testLevelData = CreateTestLevelDataWithSeparateSpacing(2, 7, 6, 0.15f, 0.25f, 2.5f, 25);
+        
+        blockManager.ConfigureForLevel(testLevelData);
+        
+        Assert.AreEqual(7, blockManager.GetBlockRows());
+        Assert.AreEqual(6, blockManager.GetBlockColumns());
+        Assert.That(blockManager.GetBlockSpacingX(), Is.EqualTo(0.15f).Within(0.01f));
+        Assert.That(blockManager.GetBlockSpacingY(), Is.EqualTo(0.25f).Within(0.01f));
+    }
+
     // Helper method to set private fields via reflection
     private void SetPrivateField(object target, string fieldName, object value)
     {
         var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         Assert.IsNotNull(field, $"Field {fieldName} not found");
         field.SetValue(target, value);
+    }
+
+    // Helper method to create test level data with separate spacing
+    private LevelData CreateTestLevelDataWithSeparateSpacing(int levelId, int rows, int columns, float spacingX, float spacingY, float scoreMultiplier, int blockScore)
+    {
+        LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
+        
+        // Use reflection to set private fields
+        SetPrivateField(levelData, "levelId", levelId);
+        SetPrivateField(levelData, "levelName", $"Test Level {levelId}");
+        SetPrivateField(levelData, "levelDescription", $"Test level {levelId} description");
+        SetPrivateField(levelData, "blockRows", rows);
+        SetPrivateField(levelData, "blockColumns", columns);
+        SetPrivateField(levelData, "blockSpacingX", spacingX);
+        SetPrivateField(levelData, "blockSpacingY", spacingY);
+        SetPrivateField(levelData, "spawnAreaOffset", new Vector2(0f, -1f));
+        SetPrivateField(levelData, "scoreMultiplier", scoreMultiplier);
+        SetPrivateField(levelData, "defaultBlockScore", blockScore);
+        
+        return levelData;
+    }
+
+    // NEW TDD TESTS FOR RANDOM SPRITE SELECTION (RED PHASE)
+
+    [Test]
+    public void BlockManager_CanSetBlockSpriteList()
+    {
+        // Test that BlockManager can accept and store a list of sprites for blocks
+        Sprite[] testSprites = CreateTestSprites(3);
+        
+        blockManager.SetBlockSpriteList(testSprites);
+        
+        Sprite[] retrievedSprites = blockManager.GetBlockSpriteList();
+        Assert.IsNotNull(retrievedSprites);
+        Assert.AreEqual(3, retrievedSprites.Length);
+        Assert.AreEqual(testSprites, retrievedSprites);
+    }
+
+    [Test]
+    public void BlockManager_SpawnsBlocksWithRandomSprites()
+    {
+        // Test that spawned blocks use random sprites from the provided list
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        blockManager.SetBlockRows(2);
+        blockManager.SetBlockColumns(2);
+        
+        Sprite[] testSprites = CreateTestSprites(3);
+        blockManager.SetBlockSpriteList(testSprites);
+        
+        blockManager.SpawnBlocks();
+        
+        List<GameObject> spawnedBlocks = blockManager.GetSpawnedBlocks();
+        Assert.AreEqual(4, spawnedBlocks.Count);
+        
+        // Verify each block has a sprite from our test list
+        foreach (GameObject spawnedBlock in spawnedBlocks)
+        {
+            SpriteRenderer sr = spawnedBlock.GetComponent<SpriteRenderer>();
+            Assert.IsNotNull(sr, "Spawned block should have SpriteRenderer");
+            Assert.IsNotNull(sr.sprite, "Spawned block should have sprite assigned");
+            Assert.Contains(sr.sprite, testSprites, "Block sprite should be from the provided list");
+        }
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    [Test]
+    public void BlockManager_ConfigureForLevel_AppliesLevelSprites()
+    {
+        // Test that BlockManager applies sprite list from LevelData
+        Sprite[] testSprites = CreateTestSprites(2);
+        LevelData testLevelData = CreateTestLevelDataWithSprites(1, 3, 4, 0.1f, 0.1f, 1.0f, 10, testSprites);
+        
+        blockManager.ConfigureForLevel(testLevelData);
+        
+        Sprite[] appliedSprites = blockManager.GetBlockSpriteList();
+        Assert.IsNotNull(appliedSprites);
+        Assert.AreEqual(2, appliedSprites.Length);
+        Assert.AreEqual(testSprites, appliedSprites);
+    }
+
+    [Test]
+    public void BlockManager_HandlesEmptySpriteListGracefully()
+    {
+        // Test that empty sprite list doesn't crash spawning
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        blockManager.SetBlockRows(1);
+        blockManager.SetBlockColumns(1);
+        
+        blockManager.SetBlockSpriteList(new Sprite[0]);
+        
+        Assert.DoesNotThrow(() => blockManager.SpawnBlocks());
+        
+        // Should still spawn blocks even without sprites
+        Assert.AreEqual(1, blockManager.GetSpawnedBlocks().Count);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    [Test]
+    public void BlockManager_HandlesNullSpriteListGracefully()
+    {
+        // Test that null sprite list doesn't crash spawning
+        GameObject blockPrefab = CreateTestBlockPrefab();
+        blockManager.SetBlockPrefab(blockPrefab);
+        blockManager.SetBlockRows(1);
+        blockManager.SetBlockColumns(1);
+        
+        blockManager.SetBlockSpriteList(null);
+        
+        Assert.DoesNotThrow(() => blockManager.SpawnBlocks());
+        
+        // Should still spawn blocks even without sprites
+        Assert.AreEqual(1, blockManager.GetSpawnedBlocks().Count);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(blockPrefab);
+        else
+            Object.DestroyImmediate(blockPrefab);
+    }
+
+    // Helper method to create test sprites
+    private Sprite[] CreateTestSprites(int count)
+    {
+        Sprite[] sprites = new Sprite[count];
+        for (int i = 0; i < count; i++)
+        {
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, new Color(i / (float)count, 0.5f, 1f, 1f));
+            texture.Apply();
+            
+            sprites[i] = Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.one * 0.5f);
+            sprites[i].name = $"TestSprite{i}";
+        }
+        return sprites;
+    }
+
+    // Helper method to create test level data with sprites
+    private LevelData CreateTestLevelDataWithSprites(int levelId, int rows, int columns, float spacingX, float spacingY, float scoreMultiplier, int blockScore, Sprite[] sprites)
+    {
+        LevelData levelData = ScriptableObject.CreateInstance<LevelData>();
+        
+        // Use reflection to set private fields
+        SetPrivateField(levelData, "levelId", levelId);
+        SetPrivateField(levelData, "levelName", $"Test Level {levelId}");
+        SetPrivateField(levelData, "levelDescription", $"Test level {levelId} description");
+        SetPrivateField(levelData, "blockRows", rows);
+        SetPrivateField(levelData, "blockColumns", columns);
+        SetPrivateField(levelData, "blockSpacingX", spacingX);
+        SetPrivateField(levelData, "blockSpacingY", spacingY);
+        SetPrivateField(levelData, "spawnAreaOffset", new Vector2(0f, -1f));
+        SetPrivateField(levelData, "scoreMultiplier", scoreMultiplier);
+        SetPrivateField(levelData, "defaultBlockScore", blockScore);
+        SetPrivateField(levelData, "blockSprites", sprites);
+        
+        return levelData;
     }
 }

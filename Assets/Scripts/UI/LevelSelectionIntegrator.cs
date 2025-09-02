@@ -19,12 +19,12 @@ public class LevelSelectionIntegrator : MonoBehaviour
         // Find components if not assigned
         if (levelSelectionUI == null)
         {
-            levelSelectionUI = FindObjectOfType<LevelSelectionUI>();
+            levelSelectionUI = FindFirstObjectByType<LevelSelectionUI>();
         }
         
         if (gameUIManager == null)
         {
-            gameUIManager = FindObjectOfType<GameUIManager>();
+            gameUIManager = FindFirstObjectByType<GameUIManager>();
         }
         
         // Connect level selection to game start
@@ -76,7 +76,7 @@ public class LevelSelectionIntegrator : MonoBehaviour
         Debug.Log($"LevelSelectionIntegrator: Configuring game for {selectedLevelData.LevelName}");
         
         // Configure BlockManager with selected level
-        BlockManager blockManager = FindObjectOfType<BlockManager>();
+        BlockManager blockManager = FindFirstObjectByType<BlockManager>();
         if (blockManager != null)
         {
             blockManager.ConfigureForLevel(selectedLevelData);

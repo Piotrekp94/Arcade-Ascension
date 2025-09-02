@@ -18,6 +18,8 @@ MonoBehaviour:
   blockRows: 1
   blockColumns: 8
   blockSpacing: 0.1
+  blockSpacingX: 0.1
+  blockSpacingY: 0.1
   spawnAreaOffset: {x: 0, y: -1}
   scoreMultiplier: 1
   defaultBlockScore: 10

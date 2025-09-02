@@ -10,9 +10,15 @@ public class BlockManager : MonoBehaviour
     [SerializeField]
     private float blockSpacing = 0.1f;
     [SerializeField]
+    private float blockSpacingX = 0.1f;
+    [SerializeField]
+    private float blockSpacingY = 0.1f;
+    [SerializeField]
     private GameObject blockPrefab;
     [SerializeField]
     private Vector2 spawnAreaOffset = new Vector2(0f, -1f);
+    [SerializeField]
+    private Sprite[] blockSpriteList; // List of sprites for random block appearance
     
     // Score configuration
     [SerializeField]
@@ -65,6 +71,26 @@ public class BlockManager : MonoBehaviour
         blockSpacing = Mathf.Max(0f, spacing); // Ensure non-negative spacing
     }
 
+    public float GetBlockSpacingX()
+    {
+        return blockSpacingX;
+    }
+
+    public void SetBlockSpacingX(float spacing)
+    {
+        blockSpacingX = Mathf.Max(0f, spacing); // Ensure non-negative spacing
+    }
+
+    public float GetBlockSpacingY()
+    {
+        return blockSpacingY;
+    }
+
+    public void SetBlockSpacingY(float spacing)
+    {
+        blockSpacingY = Mathf.Max(0f, spacing); // Ensure non-negative spacing
+    }
+
     public Vector2 GetSpawnAreaOffset()
     {
         return spawnAreaOffset;
@@ -107,6 +133,16 @@ public class BlockManager : MonoBehaviour
     public void SetDefaultScoreOverride(int score)
     {
         defaultScoreOverride = score;
+    }
+
+    public Sprite[] GetBlockSpriteList()
+    {
+        return blockSpriteList;
+    }
+
+    public void SetBlockSpriteList(Sprite[] sprites)
+    {
+        blockSpriteList = sprites;
     }
 
 
@@ -165,17 +201,17 @@ public class BlockManager : MonoBehaviour
 
     public Vector2 CalculateBlockPosition(int row, int col)
     {
-        // Calculate the total grid dimensions
-        float totalGridWidth = (blockColumns - 1) * (blockSize.x + blockSpacing);
-        float totalGridHeight = (blockRows - 1) * (blockSize.y + blockSpacing);
+        // Calculate the total grid dimensions using separate X and Y spacing
+        float totalGridWidth = (blockColumns - 1) * (blockSize.x + blockSpacingX);
+        float totalGridHeight = (blockRows - 1) * (blockSize.y + blockSpacingY);
         
         // Calculate starting position (top-left of grid)
         float startX = (LEFT_WALL_X + RIGHT_WALL_X) * 0.5f - totalGridWidth * 0.5f + spawnAreaOffset.x;
         float startY = TOP_WALL_Y + spawnAreaOffset.y - blockSize.y * 0.5f;
         
-        // Calculate individual block position
-        float blockX = startX + col * (blockSize.x + blockSpacing);
-        float blockY = startY - row * (blockSize.y + blockSpacing);
+        // Calculate individual block position using separate spacing
+        float blockX = startX + col * (blockSize.x + blockSpacingX);
+        float blockY = startY - row * (blockSize.y + blockSpacingY);
         
         return new Vector2(blockX, blockY);
     }
@@ -214,6 +250,12 @@ public class BlockManager : MonoBehaviour
         {
             int blockScore = GetBaseScore();
             blockComponent.SetPointValue(blockScore);
+            
+            // Apply random sprite from the available list
+            if (blockSpriteList != null && blockSpriteList.Length > 0)
+            {
+                blockComponent.SetRandomSpriteFromList(blockSpriteList);
+            }
         }
         
         return newBlock;
@@ -296,6 +338,8 @@ public class BlockManager : MonoBehaviour
                   $"\n- Block Rows: {blockRows}" +
                   $"\n- Block Columns: {blockColumns}" +
                   $"\n- Block Spacing: {blockSpacing}" +
+                  $"\n- Block Spacing X: {blockSpacingX}" +
+                  $"\n- Block Spacing Y: {blockSpacingY}" +
                   $"\n- Spawn Area Offset: {spawnAreaOffset}" +
                   $"\n- Block Prefab: {(blockPrefab != null ? blockPrefab.name : "NULL")}" +
                   $"\n- Block Size: {blockSize}" +
@@ -319,10 +363,15 @@ public class BlockManager : MonoBehaviour
         SetBlockRows(levelData.BlockRows);
         SetBlockColumns(levelData.BlockColumns);
         SetBlockSpacing(levelData.BlockSpacing);
+        SetBlockSpacingX(levelData.BlockSpacingX);
+        SetBlockSpacingY(levelData.BlockSpacingY);
         SetSpawnAreaOffset(levelData.SpawnAreaOffset);
         
         // Set score override from level data
         SetDefaultScoreOverride(levelData.DefaultBlockScore);
+        
+        // Set sprite list from level data
+        SetBlockSpriteList(levelData.BlockSprites);
         
         // Apply score multiplier to GameManager if available
         if (GameManager.Instance != null)

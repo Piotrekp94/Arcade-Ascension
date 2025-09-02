@@ -254,6 +254,153 @@ public class LevelDataTests
         Assert.IsTrue(testLevelData.IsValid());
     }
 
+    // NEW TDD TESTS FOR SEPARATE X AND Y SPACING (RED PHASE)
+
+    [Test]
+    public void LevelData_HasCorrectBlockSpacingX()
+    {
+        // Test that separate X spacing property exists and works
+        SetPrivateField("blockSpacingX", 0.2f);
+        Assert.That(testLevelData.BlockSpacingX, Is.EqualTo(0.2f).Within(0.01f));
+    }
+
+    [Test]
+    public void LevelData_HasCorrectBlockSpacingY()
+    {
+        // Test that separate Y spacing property exists and works
+        SetPrivateField("blockSpacingY", 0.3f);
+        Assert.That(testLevelData.BlockSpacingY, Is.EqualTo(0.3f).Within(0.01f));
+    }
+
+    [Test]
+    public void LevelData_IsInvalidWithNegativeBlockSpacingX()
+    {
+        SetPrivateField("blockSpacingX", -0.1f);
+        Assert.IsFalse(testLevelData.IsValid());
+    }
+
+    [Test]
+    public void LevelData_IsInvalidWithNegativeBlockSpacingY()
+    {
+        SetPrivateField("blockSpacingY", -0.1f);
+        Assert.IsFalse(testLevelData.IsValid());
+    }
+
+    [Test]
+    public void LevelData_IsValidWithZeroBlockSpacingX()
+    {
+        SetPrivateField("blockSpacingX", 0f);
+        Assert.IsTrue(testLevelData.IsValid());
+    }
+
+    [Test]
+    public void LevelData_IsValidWithZeroBlockSpacingY()
+    {
+        SetPrivateField("blockSpacingY", 0f);
+        Assert.IsTrue(testLevelData.IsValid());
+    }
+
+    [Test]
+    public void LevelData_CreateCopy_CopiesSeparateSpacingValues()
+    {
+        // Set separate spacing values
+        SetPrivateField("blockSpacingX", 0.15f);
+        SetPrivateField("blockSpacingY", 0.25f);
+        
+        LevelData copy = testLevelData.CreateCopy();
+        
+        Assert.IsNotNull(copy);
+        Assert.That(copy.BlockSpacingX, Is.EqualTo(0.15f).Within(0.01f));
+        Assert.That(copy.BlockSpacingY, Is.EqualTo(0.25f).Within(0.01f));
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(copy);
+        else
+            Object.DestroyImmediate(copy);
+    }
+
+    // NEW TDD TESTS FOR SPRITE LISTS (RED PHASE)
+
+    [Test]
+    public void LevelData_HasBlockSpritesProperty()
+    {
+        // Test that LevelData can store and retrieve block sprites
+        Sprite[] testSprites = CreateTestSprites(2);
+        SetPrivateField("blockSprites", testSprites);
+        
+        Sprite[] retrievedSprites = testLevelData.BlockSprites;
+        Assert.AreEqual(testSprites, retrievedSprites);
+        Assert.AreEqual(2, retrievedSprites.Length);
+    }
+
+    [Test]
+    public void LevelData_CreateCopy_CopiesSpriteArray()
+    {
+        // Test that CreateCopy properly copies the sprite array
+        Sprite[] testSprites = CreateTestSprites(3);
+        SetPrivateField("blockSprites", testSprites);
+        
+        LevelData copy = testLevelData.CreateCopy();
+        
+        Assert.IsNotNull(copy);
+        Assert.AreEqual(testSprites, copy.BlockSprites);
+        Assert.AreEqual(3, copy.BlockSprites.Length);
+        
+        // Cleanup
+        if (Application.isPlaying)
+            Object.Destroy(copy);
+        else
+            Object.DestroyImmediate(copy);
+    }
+
+    [Test]
+    public void LevelData_HandlesNullSpriteArrayGracefully()
+    {
+        // Test that null sprite array doesn't break validation
+        SetPrivateField("blockSprites", null);
+        
+        Assert.DoesNotThrow(() => {
+            Sprite[] sprites = testLevelData.BlockSprites;
+            Assert.IsNull(sprites);
+        });
+        
+        // Level should still be valid with null sprites
+        Assert.IsTrue(testLevelData.IsValid());
+    }
+
+    [Test]
+    public void LevelData_HandlesEmptySpriteArrayGracefully()
+    {
+        // Test that empty sprite array doesn't break validation
+        SetPrivateField("blockSprites", new Sprite[0]);
+        
+        Assert.DoesNotThrow(() => {
+            Sprite[] sprites = testLevelData.BlockSprites;
+            Assert.IsNotNull(sprites);
+            Assert.AreEqual(0, sprites.Length);
+        });
+        
+        // Level should still be valid with empty sprite array
+        Assert.IsTrue(testLevelData.IsValid());
+    }
+
+    // Helper method to create test sprites
+    private Sprite[] CreateTestSprites(int count)
+    {
+        Sprite[] sprites = new Sprite[count];
+        for (int i = 0; i < count; i++)
+        {
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, new Color(i / (float)count, 0.5f, 1f, 1f));
+            texture.Apply();
+            
+            sprites[i] = Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.one * 0.5f);
+            sprites[i].name = $"TestSprite{i}";
+        }
+        return sprites;
+    }
+
     // Helper method to set private fields via reflection
     private void SetPrivateField(string fieldName, object value)
     {
