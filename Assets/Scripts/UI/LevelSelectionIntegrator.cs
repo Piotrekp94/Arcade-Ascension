@@ -75,19 +75,30 @@ public class LevelSelectionIntegrator : MonoBehaviour
         
         Debug.Log($"LevelSelectionIntegrator: Configuring game for {selectedLevelData.LevelName}");
         
-        // Configure BlockManager with selected level
-        BlockManager blockManager = FindFirstObjectByType<BlockManager>();
-        if (blockManager != null)
+        // Spawn all level objects using LevelLifecycleManager
+        if (LevelLifecycleManager.Instance != null)
         {
-            blockManager.ConfigureForLevel(selectedLevelData);
-            Debug.Log($"LevelSelectionIntegrator: BlockManager configured for level {levelId}");
+            LevelLifecycleManager.Instance.SpawnLevelObjects(selectedLevelData);
+            Debug.Log($"LevelSelectionIntegrator: Level objects spawned for level {levelId}");
         }
         else
         {
-            Debug.LogError("LevelSelectionIntegrator: BlockManager not found!");
+            Debug.LogError("LevelSelectionIntegrator: LevelLifecycleManager not found!");
+            
+            // Fallback to old BlockManager configuration
+            BlockManager blockManager = FindFirstObjectByType<BlockManager>();
+            if (blockManager != null)
+            {
+                blockManager.ConfigureForLevel(selectedLevelData);
+                Debug.Log($"LevelSelectionIntegrator: Fallback - BlockManager configured for level {levelId}");
+            }
+            else
+            {
+                Debug.LogError("LevelSelectionIntegrator: BlockManager not found either!");
+            }
         }
         
-        // Start the game FIRST to change game state
+        // Start the game AFTER spawning objects
         if (GameManager.Instance != null)
         {
             GameManager.Instance.StartGame();

@@ -15,11 +15,22 @@ MonoBehaviour:
   levelId: 1
   levelName: 
   levelDescription: 
-  blockRows: 13
-  blockColumns: 8
+  blockRows: 1
+  blockColumns: 1
   blockSpacing: 0
   blockSpacingX: 0.97
   blockSpacingY: 0.25
   spawnAreaOffset: {x: 0, y: -1}
+  blockSprites:
+  - {fileID: 5081682757177960776, guid: 9c8690677730e13d4ac01719c2585eaf, type: 3}
+  - {fileID: -2817111301361454551, guid: c406c7731121994a1b9d7932f6420615, type: 3}
+  - {fileID: -8739141643206609207, guid: f005ac58d33dfa9e8a1cc6476d0df742, type: 3}
+  - {fileID: -1351597572376702372, guid: e76b2e3f405a34465af46367518d51ca, type: 3}
+  - {fileID: 9085973037775644253, guid: faad2aa4a7d30b33e811937fc8aaee5f, type: 3}
+  - {fileID: 3914640005973153782, guid: c3165c9a392cc2b199112a42b456894a, type: 3}
+  - {fileID: 5058914831224602607, guid: 56c36d6267a539b5486a98f63c42c580, type: 3}
+  - {fileID: 1337469121395541561, guid: 9b40eff9addbf7e579b86ec74b2c5759, type: 3}
+  - {fileID: -1155663434207367705, guid: f67c1caf08423f95a94a3011ca4a85a2, type: 3}
+  - {fileID: -2394439674498687599, guid: 734e65ed95c014e1fba5c621a91eefdf, type: 3}
   scoreMultiplier: 1
   defaultBlockScore: 10

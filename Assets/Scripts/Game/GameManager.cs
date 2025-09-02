@@ -227,8 +227,24 @@ public class GameManager : MonoBehaviour
         // Start a new game
         SetGameState(GameState.Playing);
         
-        // Spawn initial ball attached to paddle
-        SpawnInitialBallAtPaddle();
+        // Level objects should be spawned by LevelLifecycleManager before calling StartGame
+        // Just ensure we have the required components
+        if (LevelLifecycleManager.Instance != null)
+        {
+            var lifecycleManager = LevelLifecycleManager.Instance;
+            
+            // Update block count from spawned blocks
+            int blockCount = lifecycleManager.GetSpawnedBlockCount();
+            SetBlocksRemaining(blockCount);
+            
+            Debug.Log($"GameManager: Started game with {blockCount} blocks");
+        }
+        else
+        {
+            Debug.LogWarning("GameManager: LevelLifecycleManager not found - falling back to old ball spawning");
+            // Fallback to old method if LevelLifecycleManager not available
+            SpawnInitialBallAtPaddle();
+        }
         
         // Fire game started event for UI updates
         OnGameStarted?.Invoke();
@@ -417,6 +433,14 @@ public class GameManager : MonoBehaviour
         {
             // Change game state to allow level selection UI to show
             CurrentGameState = GameState.Start;
+            
+            // Destroy all level objects using LevelLifecycleManager
+            if (LevelLifecycleManager.Instance != null)
+            {
+                LevelLifecycleManager.Instance.DestroyLevelObjects();
+                Debug.Log("GameManager: Level objects destroyed after completion");
+            }
+            
             OnLevelCompleted?.Invoke();
         }
     }

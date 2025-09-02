@@ -397,4 +397,5 @@ public class BlockManager : MonoBehaviour
             GameManager.Instance.OnBlockDestroyed();
         }
     }
+
 }

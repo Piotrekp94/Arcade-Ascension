@@ -7,7 +7,15 @@ This file tracks the project's current status, including recent changes, current
 
 *   **Complete Level Selection System**: Fully functional 10-level progression system with level selection UI, unlocking mechanics, configurable block spawning, and comprehensive TDD coverage.
 
-## Recent Major Changes (2025-08-31)
+## Recent Major Changes (2025-09-02)
+
+*   **MAJOR**: Random sprite selection system for blocks with visual variety
+*   **MAJOR**: Separate X/Y block spacing for enhanced level design flexibility  
+*   **MAJOR**: Comprehensive TDD test coverage for all sprite and spacing systems
+*   **MAJOR**: Unity API modernization (FindObjectOfType → FindFirstObjectByType)
+*   **MAJOR**: Block sprite assets integration with level-specific sprite lists
+
+## Previous Major Changes (2025-08-31)
 
 *   **MAJOR**: Complete level selection system with 10 levels and sequential unlock progression
 *   **MAJOR**: LevelManager singleton with level data management and progression logic
@@ -22,12 +30,12 @@ This file tracks the project's current status, including recent changes, current
 *   **GameManager**: ✅ Complete - Singleton, game states, score system, level completion detection
 *   **PlayerPaddle**: ✅ Complete - Input handling, ball attachment/launch, boundary clamping
 *   **Ball**: ✅ Complete - Physics movement, attachment state, launch mechanics, wall collision
-*   **Block**: ✅ Complete - Hit points system, destruction awards points
-*   **BlockManager**: ✅ Complete - Configurable block spawning, level-specific parameters
+*   **Block**: ✅ Complete - Hit points system, destruction awards points, random sprite selection
+*   **BlockManager**: ✅ Complete - Configurable block spawning, level-specific parameters, sprite list management, separate X/Y spacing
 *   **LevelManager**: ✅ Complete - Singleton, level data management, progression logic, unlock system
 *   **LevelSelectionUI**: ✅ Complete - Level button grid, lock/unlock states, level selection events
 *   **LevelSelectionIntegrator**: ✅ Complete - Unity Editor integration, level data binding
-*   **Level System**: ✅ Complete - 10 ScriptableObject level data assets with progressive difficulty
+*   **Level System**: ✅ Complete - 10 ScriptableObject level data assets with progressive difficulty, sprite lists, separate X/Y spacing
 *   **Boundary System**: ✅ Complete - Wall components (Top/Left/Right), DeathZone (Bottom)
 *   **GameUIManager**: ✅ Complete - Level selection flow, UI state management, game control
 *   **Respawn System**: ✅ Complete - Configurable timer, paddle attachment, left-click launch
@@ -38,7 +46,8 @@ This file tracks the project's current status, including recent changes, current
 
 *   **Level Progression**: 10 levels with sequential unlock system (Level 1 unlocked by default)
 *   **Level Selection UI**: Interactive button grid showing locked/unlocked states
-*   **Dynamic Block Spawning**: Level-specific block configurations (rows, columns, spacing)
+*   **Dynamic Block Spawning**: Level-specific block configurations (rows, columns, separate X/Y spacing)
+*   **Random Block Sprites**: Each block randomly selects from level-specific sprite collections
 *   **Level Completion**: Automatic detection when all blocks destroyed, unlocks next level
 *   **Configurable Difficulty**: Progressive difficulty scaling through level parameters
 *   **Unity Editor Integration**: ScriptableObject-based level data for easy designer modification
