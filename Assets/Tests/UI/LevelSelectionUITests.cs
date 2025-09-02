@@ -277,4 +277,98 @@ public class LevelSelectionUITests
         Assert.IsNotNull(field, $"Field {fieldName} not found");
         field.SetValue(target, value);
     }
+
+    [Test]
+    public void LevelSelectionUI_ShowLevelSelection_BlockedDuringPlayingState()
+    {
+        // Setup
+        levelSelectionUI.InitializeForTesting();
+        CreateMockUIElements();
+        
+        // Set game state to Playing
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetGameState(GameManager.GameState.Playing);
+        }
+        
+        // Attempt to show level selection
+        levelSelectionUI.ShowLevelSelection();
+        
+        // Verify it doesn't show (blocked by Playing state)
+        Assert.IsFalse(levelSelectionUI.IsVisible(), "Level selection UI should be blocked during Playing state");
+    }
+
+    [Test]
+    public void LevelSelectionUI_ShowLevelSelection_AllowedDuringStartState()
+    {
+        // Setup
+        levelSelectionUI.InitializeForTesting();
+        CreateMockUIElements();
+        
+        // Set game state to Start
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetGameState(GameManager.GameState.Start);
+        }
+        
+        // Show level selection
+        levelSelectionUI.ShowLevelSelection();
+        
+        // Verify it shows (allowed during Start state)
+        Assert.IsTrue(levelSelectionUI.IsVisible(), "Level selection UI should be allowed during Start state");
+    }
+
+    [Test]
+    public void LevelSelectionUI_CanvasGroup_HidesCorrectly()
+    {
+        // Setup
+        levelSelectionUI.InitializeForTesting();
+        CreateMockUIElements();
+        
+        // Show first to ensure CanvasGroup is created
+        levelSelectionUI.ShowLevelSelection();
+        Assert.IsTrue(levelSelectionUI.IsVisible());
+        
+        // Hide the UI
+        levelSelectionUI.HideLevelSelection();
+        
+        // Verify UI is hidden
+        Assert.IsFalse(levelSelectionUI.IsVisible());
+        
+        // Get the CanvasGroup to verify its properties
+        CanvasGroup canvasGroup = levelSelectionUIGO.GetComponentInChildren<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            Assert.AreEqual(0f, canvasGroup.alpha, "CanvasGroup alpha should be 0 when hidden");
+            Assert.IsFalse(canvasGroup.interactable, "CanvasGroup should not be interactable when hidden");
+            Assert.IsFalse(canvasGroup.blocksRaycasts, "CanvasGroup should not block raycasts when hidden");
+        }
+    }
+
+    [Test]
+    public void LevelSelectionUI_CanvasGroup_ShowsCorrectly()
+    {
+        // Setup
+        levelSelectionUI.InitializeForTesting();
+        CreateMockUIElements();
+        
+        // Hide first to ensure starting state
+        levelSelectionUI.HideLevelSelection();
+        Assert.IsFalse(levelSelectionUI.IsVisible());
+        
+        // Show the UI
+        levelSelectionUI.ShowLevelSelection();
+        
+        // Verify UI is visible
+        Assert.IsTrue(levelSelectionUI.IsVisible());
+        
+        // Get the CanvasGroup to verify its properties
+        CanvasGroup canvasGroup = levelSelectionUIGO.GetComponentInChildren<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            Assert.AreEqual(1f, canvasGroup.alpha, "CanvasGroup alpha should be 1 when shown");
+            Assert.IsTrue(canvasGroup.interactable, "CanvasGroup should be interactable when shown");
+            Assert.IsTrue(canvasGroup.blocksRaycasts, "CanvasGroup should block raycasts when shown");
+        }
+    }
 }

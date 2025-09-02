@@ -20,6 +20,7 @@ public class LevelSelectionUI : MonoBehaviour
     private List<Button> levelButtons = new List<Button>();
     private LevelManager levelManager;
     private bool isInitialized = false;
+    private CanvasGroup canvasGroup;
 
     void Start()
     {
@@ -30,6 +31,9 @@ public class LevelSelectionUI : MonoBehaviour
     {
         if (isInitialized)
             return;
+            
+        // Setup CanvasGroup for visibility control
+        SetupCanvasGroup();
             
         levelManager = LevelManager.Instance;
         
@@ -46,8 +50,32 @@ public class LevelSelectionUI : MonoBehaviour
         }
     }
 
+    void SetupCanvasGroup()
+    {
+        // Try to get CanvasGroup from the panel first, then from this GameObject
+        if (levelSelectionPanel != null)
+        {
+            canvasGroup = levelSelectionPanel.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = levelSelectionPanel.AddComponent<CanvasGroup>();
+            }
+        }
+        else
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+    }
+
     public void InitializeForTesting()
     {
+        // Setup CanvasGroup for testing
+        SetupCanvasGroup();
+        
         levelManager = LevelManager.Instance;
         if (levelManager != null)
         {
@@ -236,11 +264,19 @@ public class LevelSelectionUI : MonoBehaviour
         if (GameManager.Instance != null && GameManager.Instance.CurrentGameState == GameManager.GameState.Playing)
         {
             Debug.Log("LevelSelectionUI: Not showing level selection - game is currently playing");
+            // Ensure UI is hidden when blocked by game state
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+            }
             return;
         }
         
         Debug.Log("LevelSelectionUI: Showing level selection");
         
+        // Ensure GameObject is active (needed for first-time setup)
         if (levelSelectionPanel != null)
         {
             levelSelectionPanel.SetActive(true);
@@ -248,6 +284,14 @@ public class LevelSelectionUI : MonoBehaviour
         else
         {
             gameObject.SetActive(true);
+        }
+        
+        // Use CanvasGroup for visibility control
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
         }
         
         // Update button states when showing
@@ -258,18 +302,36 @@ public class LevelSelectionUI : MonoBehaviour
     {
         Debug.Log("LevelSelectionUI: Hiding level selection");
         
-        if (levelSelectionPanel != null)
+        // Use CanvasGroup to hide visually but keep GameObject active
+        if (canvasGroup != null)
         {
-            levelSelectionPanel.SetActive(false);
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
         else
         {
-            gameObject.SetActive(false);
+            // Fallback to old behavior if CanvasGroup isn't available
+            if (levelSelectionPanel != null)
+            {
+                levelSelectionPanel.SetActive(false);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 
     public bool IsVisible()
     {
+        // Check CanvasGroup visibility if available
+        if (canvasGroup != null)
+        {
+            return canvasGroup.alpha > 0f && canvasGroup.interactable;
+        }
+        
+        // Fallback to GameObject active state
         if (levelSelectionPanel != null)
         {
             return levelSelectionPanel.activeSelf;

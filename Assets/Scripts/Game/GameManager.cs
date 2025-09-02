@@ -415,6 +415,8 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentGameState == GameState.Playing)
         {
+            // Change game state to allow level selection UI to show
+            CurrentGameState = GameState.Start;
             OnLevelCompleted?.Invoke();
         }
     }

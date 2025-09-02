@@ -606,6 +606,8 @@ public class GameManagerTests
         gameManager.OnAllBlocksDestroyed();
         
         Assert.IsTrue(levelCompletedTriggered);
+        // Verify game state transitions to Start to allow level selection UI
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
     }
 
     [Test]
