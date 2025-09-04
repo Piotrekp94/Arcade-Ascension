@@ -33,6 +33,10 @@ public class LevelData : ScriptableObject
     [SerializeField]
     private int defaultBlockScore = 10;
     
+    [Header("Timer Configuration")]
+    [SerializeField]
+    private float levelTimeLimit = 120f; // Default 2 minutes per level
+    
     // Public properties for read-only access
     public int LevelId => levelId;
     public string LevelName => levelName;
@@ -46,6 +50,7 @@ public class LevelData : ScriptableObject
     public Sprite[] BlockSprites => blockSprites;
     public float ScoreMultiplier => scoreMultiplier;
     public int DefaultBlockScore => defaultBlockScore;
+    public float LevelTimeLimit => levelTimeLimit;
     
     // Validation method
     public bool IsValid()
@@ -58,7 +63,8 @@ public class LevelData : ScriptableObject
                blockSpacingX >= 0f &&
                blockSpacingY >= 0f &&
                scoreMultiplier > 0f &&
-               defaultBlockScore >= 0;
+               defaultBlockScore >= 0 &&
+               levelTimeLimit > 0f; // Timer must be positive
     }
     
     // Method to create a copy of this level data with modifications
@@ -77,6 +83,7 @@ public class LevelData : ScriptableObject
         copy.blockSprites = this.blockSprites; // Copy sprite array reference
         copy.scoreMultiplier = this.scoreMultiplier;
         copy.defaultBlockScore = this.defaultBlockScore;
+        copy.levelTimeLimit = this.levelTimeLimit;
         return copy;
     }
     
@@ -91,5 +98,6 @@ public class LevelData : ScriptableObject
         if (blockSpacingY < 0f) blockSpacingY = 0f;
         if (scoreMultiplier <= 0f) scoreMultiplier = 1.0f;
         if (defaultBlockScore < 0) defaultBlockScore = 0;
+        if (levelTimeLimit <= 0f) levelTimeLimit = 120f; // Default to 2 minutes if invalid
     }
 }

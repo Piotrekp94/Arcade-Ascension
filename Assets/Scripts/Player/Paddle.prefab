@@ -106,8 +106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Scripts::PlayerPaddle
   _speed: 5
-  minX: -7.5
-  maxX: 7.5
+  minX: -4
+  maxX: 4
   launchForce: 10
   attachmentOffset: 0.5
   launchAngleVariance: 30

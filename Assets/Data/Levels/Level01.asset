@@ -15,8 +15,8 @@ MonoBehaviour:
   levelId: 1
   levelName: 
   levelDescription: 
-  blockRows: 1
-  blockColumns: 1
+  blockRows: 13
+  blockColumns: 8
   blockSpacing: 0
   blockSpacingX: 0.97
   blockSpacingY: 0.25
@@ -34,3 +34,4 @@ MonoBehaviour:
   - {fileID: -2394439674498687599, guid: 734e65ed95c014e1fba5c621a91eefdf, type: 3}
   scoreMultiplier: 1
   defaultBlockScore: 10
+  levelTimeLimit: 10

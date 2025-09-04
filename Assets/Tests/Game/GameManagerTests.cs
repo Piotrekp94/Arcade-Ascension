@@ -669,4 +669,384 @@ public class GameManagerTests
         
         Assert.IsTrue(levelCompletedTriggered);
     }
+
+    // TIMER SYSTEM TESTS (TDD Phase 1 - Red)
+
+    [Test]
+    public void GameManager_HasDefaultTimeLimitConfiguration()
+    {
+        // Test that GameManager has a default time limit setting
+        float defaultTimeLimit = gameManager.GetTimeLimit();
+        Assert.Greater(defaultTimeLimit, 0f, "Time limit should be positive");
+        Assert.AreEqual(120f, defaultTimeLimit, "Default time limit should be 120 seconds");
+    }
+
+    [Test]
+    public void GameManager_SetTimeLimit_UpdatesCorrectly()
+    {
+        // Test that time limit can be configured
+        gameManager.SetTimeLimit(180f);
+        Assert.AreEqual(180f, gameManager.GetTimeLimit());
+        
+        gameManager.SetTimeLimit(60f);
+        Assert.AreEqual(60f, gameManager.GetTimeLimit());
+        
+        gameManager.SetTimeLimit(300f);
+        Assert.AreEqual(300f, gameManager.GetTimeLimit());
+    }
+
+    [Test]
+    public void GameManager_SetTimeLimit_RejectsNegativeValues()
+    {
+        // Test that negative time limits are rejected and clamped to 0
+        gameManager.SetTimeLimit(-30f);
+        Assert.AreEqual(0f, gameManager.GetTimeLimit());
+        
+        gameManager.SetTimeLimit(-120f);
+        Assert.AreEqual(0f, gameManager.GetTimeLimit());
+    }
+
+    [Test]
+    public void GameManager_TimerInitiallyInactive()
+    {
+        // Test that timer starts inactive
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_GetTimeRemaining_ReturnsTimeLimitWhenNotStarted()
+    {
+        // Test that time remaining equals time limit when timer not started
+        gameManager.SetTimeLimit(120f);
+        Assert.AreEqual(120f, gameManager.GetTimeRemaining());
+        
+        gameManager.SetTimeLimit(180f);
+        Assert.AreEqual(180f, gameManager.GetTimeRemaining());
+    }
+
+    [Test]
+    public void GameManager_StartTimer_ActivatesTimer()
+    {
+        // Test that starting timer activates it
+        gameManager.SetTimeLimit(120f);
+        gameManager.StartTimer();
+        Assert.IsTrue(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_StopTimer_DeactivatesTimer()
+    {
+        // Test that stopping timer deactivates it
+        gameManager.SetTimeLimit(120f);
+        gameManager.StartTimer();
+        Assert.IsTrue(gameManager.IsTimerActive());
+        
+        gameManager.StopTimer();
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_TimerCountdown_ReducesTimeRemaining()
+    {
+        // Test that timer counts down over time
+        gameManager.SetTimeLimit(10f);
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.StartTimer();
+        
+        float initialTime = gameManager.GetTimeRemaining();
+        
+        // Manually advance timer by 2 seconds
+        gameManager.UpdateTimer(2f);
+        
+        float currentTime = gameManager.GetTimeRemaining();
+        Assert.AreEqual(initialTime - 2f, currentTime, 0.01f);
+    }
+
+    [Test]
+    public void GameManager_TimerExpiration_TriggersEvent()
+    {
+        // Test that timer expiration triggers event
+        bool timerExpiredTriggered = false;
+        gameManager.OnTimerExpired += () => timerExpiredTriggered = true;
+        
+        gameManager.SetTimeLimit(1f);
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.StartTimer();
+        
+        // Advance timer past expiration
+        gameManager.UpdateTimer(1.1f);
+        
+        Assert.IsTrue(timerExpiredTriggered);
+    }
+
+    [Test]
+    public void GameManager_TimerExpiration_SetsGameStateToStart()
+    {
+        // Test that timer expiration returns to level selection
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetTimeLimit(1f);
+        gameManager.StartTimer();
+        
+        // Advance timer past expiration
+        gameManager.UpdateTimer(1.1f);
+        
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_TimerExpiration_LogsLevelCleanup()
+    {
+        // Test that timer expiration attempts to clean up level objects
+        // We can't easily mock LevelLifecycleManager singleton, but we can verify
+        // the method completes without errors and the game state changes correctly
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetTimeLimit(1f);
+        gameManager.StartTimer();
+        
+        // This should complete without throwing exceptions
+        Assert.DoesNotThrow(() => {
+            gameManager.UpdateTimer(1.1f);
+        });
+        
+        // Verify proper state after timer expiration
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
+        Assert.IsFalse(gameManager.IsTimerActive());
+        Assert.AreEqual(0f, gameManager.GetTimeRemaining());
+    }
+
+    [Test]
+    public void GameManager_TimerExpiration_DeactivatesTimer()
+    {
+        // Test that timer deactivates when expired
+        gameManager.SetTimeLimit(1f);
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.StartTimer();
+        Assert.IsTrue(gameManager.IsTimerActive());
+        
+        // Advance timer past expiration
+        gameManager.UpdateTimer(1.1f);
+        
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_TimerUpdate_TriggersUpdateEvent()
+    {
+        // Test that timer updates trigger events
+        bool updateEventTriggered = false;
+        float lastTimeReported = -1f;
+        
+        gameManager.OnTimerUpdated += (timeRemaining) => {
+            updateEventTriggered = true;
+            lastTimeReported = timeRemaining;
+        };
+        
+        gameManager.SetTimeLimit(10f);
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.StartTimer();
+        gameManager.UpdateTimer(1f);
+        
+        Assert.IsTrue(updateEventTriggered);
+        Assert.AreEqual(9f, lastTimeReported, 0.01f);
+    }
+
+    [Test]
+    public void GameManager_TimerUpdate_DoesNotCountDownWhenInactive()
+    {
+        // Test that timer doesn't count down when not active
+        gameManager.SetTimeLimit(10f);
+        float initialTime = gameManager.GetTimeRemaining();
+        
+        // Don't start timer, just try to update
+        gameManager.UpdateTimer(2f);
+        
+        Assert.AreEqual(initialTime, gameManager.GetTimeRemaining());
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_TimerUpdate_OnlyCountsDownDuringPlayingState()
+    {
+        // Test that timer only counts down during Playing state
+        gameManager.SetTimeLimit(10f);
+        gameManager.StartTimer();
+        
+        // Set to Start state
+        gameManager.SetGameState(GameManager.GameState.Start);
+        float timeBeforeUpdate = gameManager.GetTimeRemaining();
+        gameManager.UpdateTimer(2f);
+        
+        // Time should not have changed in Start state
+        Assert.AreEqual(timeBeforeUpdate, gameManager.GetTimeRemaining());
+        
+        // Switch to Playing state
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.UpdateTimer(2f);
+        
+        // Now time should have decreased
+        Assert.AreEqual(timeBeforeUpdate - 2f, gameManager.GetTimeRemaining(), 0.01f);
+    }
+
+    [Test]
+    public void GameManager_FormatTime_HandlesMinutesAndSeconds()
+    {
+        // Test time formatting method
+        Assert.AreEqual("02:00", gameManager.FormatTime(120f));
+        Assert.AreEqual("01:30", gameManager.FormatTime(90f));
+        Assert.AreEqual("00:45", gameManager.FormatTime(45f));
+        Assert.AreEqual("00:00", gameManager.FormatTime(0f));
+        Assert.AreEqual("10:05", gameManager.FormatTime(605f));
+    }
+
+    [Test]
+    public void GameManager_FormatTime_HandlesNegativeTime()
+    {
+        // Test that negative time formats as 00:00
+        Assert.AreEqual("00:00", gameManager.FormatTime(-10f));
+        Assert.AreEqual("00:00", gameManager.FormatTime(-1f));
+    }
+
+    [Test]
+    public void GameManager_StartGame_StartsTimer()
+    {
+        // Test that starting game starts the timer
+        gameManager.SetTimeLimit(120f);
+        Assert.IsFalse(gameManager.IsTimerActive());
+        
+        gameManager.StartGame();
+        
+        Assert.IsTrue(gameManager.IsTimerActive());
+        Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
+    }
+
+    [Test]
+    public void GameManager_OnAllBlocksDestroyed_StopsTimer()
+    {
+        // Test that completing level stops timer
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetTimeLimit(120f);
+        gameManager.StartTimer();
+        Assert.IsTrue(gameManager.IsTimerActive());
+        
+        gameManager.OnAllBlocksDestroyed();
+        
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [Test]
+    public void GameManager_ResetGame_ResetsTimer()
+    {
+        // Test that resetting game resets timer
+        gameManager.SetTimeLimit(120f);
+        gameManager.SetGameState(GameManager.GameState.Playing); // Required for UpdateTimer to work
+        gameManager.StartTimer();
+        gameManager.UpdateTimer(30f); // Use 30 seconds
+        
+        Assert.AreEqual(90f, gameManager.GetTimeRemaining(), 0.01f);
+        
+        gameManager.ResetGame();
+        
+        Assert.AreEqual(120f, gameManager.GetTimeRemaining());
+        Assert.IsFalse(gameManager.IsTimerActive());
+    }
+
+    [UnityTest]
+    public IEnumerator GameManager_TimerIntegrationWithRespawnSystem()
+    {
+        // Test that timer continues running during ball respawn
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetTimeLimit(10f);
+        gameManager.StartTimer();
+        
+        float timeBeforeBallLoss = gameManager.GetTimeRemaining();
+        
+        // Trigger ball loss (should not stop timer)
+        gameManager.OnBallLost();
+        yield return null;
+        
+        // Advance timer
+        gameManager.UpdateTimer(2f);
+        
+        // Timer should still be active and counting down
+        Assert.IsTrue(gameManager.IsTimerActive());
+        Assert.AreEqual(timeBeforeBallLoss - 2f, gameManager.GetTimeRemaining(), 0.01f);
+    }
+
+    [Test]
+    public void GameManager_HasTimerEvents()
+    {
+        // Test that GameManager has timer events available for subscription
+        bool canSubscribeToTimerUpdated = false;
+        bool canSubscribeToTimerExpired = false;
+        
+        try
+        {
+            gameManager.OnTimerUpdated += (timeRemaining) => { };
+            canSubscribeToTimerUpdated = true;
+            gameManager.OnTimerUpdated -= (timeRemaining) => { };
+        }
+        catch
+        {
+            canSubscribeToTimerUpdated = false;
+        }
+        
+        try
+        {
+            gameManager.OnTimerExpired += () => { };
+            canSubscribeToTimerExpired = true;
+            gameManager.OnTimerExpired -= () => { };
+        }
+        catch
+        {
+            canSubscribeToTimerExpired = false;
+        }
+        
+        Assert.IsTrue(canSubscribeToTimerUpdated, "Should be able to subscribe to OnTimerUpdated event");
+        Assert.IsTrue(canSubscribeToTimerExpired, "Should be able to subscribe to OnTimerExpired event");
+    }
+
+    [Test]
+    public void GameManager_GameStateChanged_EventTriggered()
+    {
+        // Test that game state changes trigger the OnGameStateChanged event
+        bool eventTriggered = false;
+        GameManager.GameState receivedState = GameManager.GameState.Start;
+        
+        gameManager.OnGameStateChanged += (newState) => {
+            eventTriggered = true;
+            receivedState = newState;
+        };
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        
+        Assert.IsTrue(eventTriggered, "OnGameStateChanged event should be triggered");
+        Assert.AreEqual(GameManager.GameState.Playing, receivedState, "Event should pass the correct state");
+    }
+
+    [Test] 
+    public void GameManager_TimerExpiration_TriggersStateChangeEvent()
+    {
+        // Test that timer expiration triggers state change event to Start
+        bool stateChangeEventTriggered = false;
+        GameManager.GameState finalState = GameManager.GameState.Playing;
+        
+        gameManager.OnGameStateChanged += (newState) => {
+            if (newState == GameManager.GameState.Start)
+            {
+                stateChangeEventTriggered = true;
+                finalState = newState;
+            }
+        };
+        
+        gameManager.SetGameState(GameManager.GameState.Playing);
+        gameManager.SetTimeLimit(1f);
+        gameManager.StartTimer();
+        
+        // Advance timer past expiration
+        gameManager.UpdateTimer(1.1f);
+        
+        Assert.IsTrue(stateChangeEventTriggered, "Timer expiration should trigger state change to Start");
+        Assert.AreEqual(GameManager.GameState.Start, finalState, "Final state should be Start");
+    }
 }

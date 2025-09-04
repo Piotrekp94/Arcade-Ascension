@@ -101,8 +101,8 @@ public class LevelSelectionIntegrator : MonoBehaviour
         // Start the game AFTER spawning objects
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.StartGame();
-            Debug.Log($"LevelSelectionIntegrator: Started game for level {levelId}");
+            GameManager.Instance.StartGame(selectedLevelData);
+            Debug.Log($"LevelSelectionIntegrator: Started game for level {levelId} with time limit {selectedLevelData.LevelTimeLimit}s");
         }
         else
         {

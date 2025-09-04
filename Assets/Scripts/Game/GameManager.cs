@@ -26,10 +26,15 @@ public class GameManager : MonoBehaviour
     public event Action OnBallSpawned;
     public event Action OnGameStarted;
     public event Action OnLevelCompleted;
+    public event System.Action<GameState> OnGameStateChanged;
     
     // Score events
     public event System.Action<int> OnScoreChanged;
     public event System.Action<int, int> OnScoreAdded; // (amount added, new total)
+    
+    // Timer events
+    public event System.Action<float> OnTimerUpdated; // (time remaining)
+    public event System.Action OnTimerExpired;
 
     [SerializeField]
     private TextMeshProUGUI _scoreText; // Reference to UI TextMeshPro element
@@ -50,6 +55,12 @@ public class GameManager : MonoBehaviour
     private Transform registeredPaddle; // Paddle reference for ball spawning
     private bool respawnTimerActive = false;
     private float respawnTimer = 0f;
+    
+    // Timer system
+    [SerializeField]
+    private float levelTimeLimit = 120f; // Default 2 minutes per level
+    private float currentTimeRemaining;
+    private bool isTimerActive = false;
     
     // Level completion tracking
     private int blocksRemaining = -1; // -1 means no level active, 0 means level complete
@@ -73,6 +84,11 @@ public class GameManager : MonoBehaviour
     {
         score = 0;
         UpdateScoreUI();
+        
+        // Initialize timer
+        currentTimeRemaining = levelTimeLimit;
+        isTimerActive = false;
+        
         SetGameState(GameState.Start); // Initial game state
     }
 
@@ -86,6 +102,18 @@ public class GameManager : MonoBehaviour
             {
                 SpawnBallAtPaddle();
                 respawnTimerActive = false;
+            }
+        }
+        
+        // Handle level timer
+        if (isTimerActive && CurrentGameState == GameState.Playing)
+        {
+            currentTimeRemaining -= Time.deltaTime;
+            OnTimerUpdated?.Invoke(currentTimeRemaining);
+            
+            if (currentTimeRemaining <= 0f)
+            {
+                OnTimerExpirationCleanup();
             }
         }
     }
@@ -161,6 +189,9 @@ public class GameManager : MonoBehaviour
         GameState previousState = CurrentGameState;
         CurrentGameState = newGameState;
         
+        // Fire general state change event
+        OnGameStateChanged?.Invoke(CurrentGameState);
+        
         switch (CurrentGameState)
         {
             case GameState.Start:
@@ -207,6 +238,10 @@ public class GameManager : MonoBehaviour
         // Stop respawn timer if active
         respawnTimerActive = false;
         respawnTimer = 0f;
+        
+        // Reset timer
+        StopTimer();
+        currentTimeRemaining = levelTimeLimit;
     }
 
     public void RestartGame()
@@ -220,12 +255,27 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        StartGame(null); // Use default time limit
+    }
+    
+    public void StartGame(LevelData levelData)
+    {
         // Only start if in Start state to prevent multiple starts
         if (CurrentGameState != GameState.Start)
             return;
             
+        // Set level-specific time limit if provided
+        if (levelData != null)
+        {
+            SetTimeLimit(levelData.LevelTimeLimit);
+            Debug.Log($"GameManager: Using level time limit of {levelData.LevelTimeLimit} seconds for {levelData.LevelName}");
+        }
+            
         // Start a new game
         SetGameState(GameState.Playing);
+        
+        // Start the level timer
+        StartTimer();
         
         // Level objects should be spawned by LevelLifecycleManager before calling StartGame
         // Just ensure we have the required components
@@ -248,6 +298,105 @@ public class GameManager : MonoBehaviour
         
         // Fire game started event for UI updates
         OnGameStarted?.Invoke();
+    }
+
+    // Timer system methods
+    public float GetTimeLimit()
+    {
+        return levelTimeLimit;
+    }
+    
+    public void SetTimeLimit(float newTimeLimit)
+    {
+        levelTimeLimit = Mathf.Max(0f, newTimeLimit); // Ensure non-negative
+        if (!isTimerActive)
+        {
+            currentTimeRemaining = levelTimeLimit; // Reset current time if timer not active
+        }
+    }
+    
+    public float GetTimeRemaining()
+    {
+        return currentTimeRemaining;
+    }
+    
+    public bool IsTimerActive()
+    {
+        return isTimerActive;
+    }
+    
+    public void StartTimer()
+    {
+        currentTimeRemaining = levelTimeLimit;
+        isTimerActive = true;
+        
+        // Fire initial timer update to ensure UI displays the starting time
+        OnTimerUpdated?.Invoke(currentTimeRemaining);
+    }
+    
+    public void StopTimer()
+    {
+        isTimerActive = false;
+    }
+    
+    public void UpdateTimer(float deltaTime)
+    {
+        // Manual timer update for testing
+        if (isTimerActive && CurrentGameState == GameState.Playing)
+        {
+            currentTimeRemaining -= deltaTime;
+            OnTimerUpdated?.Invoke(currentTimeRemaining);
+            
+            if (currentTimeRemaining <= 0f)
+            {
+                OnTimerExpirationCleanup();
+            }
+        }
+    }
+    
+    public string FormatTime(float timeInSeconds)
+    {
+        if (timeInSeconds < 0f)
+            timeInSeconds = 0f;
+            
+        int minutes = Mathf.FloorToInt(timeInSeconds / 60f);
+        int seconds = Mathf.FloorToInt(timeInSeconds % 60f);
+        
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    
+    private void OnTimerExpirationCleanup()
+    {
+        // Set timer to exactly zero and disable it
+        currentTimeRemaining = 0f;
+        isTimerActive = false;
+        
+        // Fire timer expiration event
+        OnTimerExpired?.Invoke();
+        
+        // Clean up all level objects (same as level completion)
+        if (LevelLifecycleManager.Instance != null)
+        {
+            LevelLifecycleManager.Instance.DestroyLevelObjects();
+            Debug.Log("GameManager: Level objects destroyed after timer expiration");
+        }
+        
+        // Return to level selection
+        SetGameState(GameState.Start);
+        
+        // Directly notify UI as fallback (in case event subscription isn't working)
+        GameUIManager uiManager = FindFirstObjectByType<GameUIManager>();
+        if (uiManager != null)
+        {
+            Debug.Log("GameManager: Directly updating UI to show level selection");
+            uiManager.UpdateUIState();
+        }
+        else
+        {
+            Debug.LogWarning("GameManager: Could not find GameUIManager for direct UI update");
+        }
+        
+        Debug.Log("GameManager: Timer expired - returning to level selection");
     }
 
     // Ball spawning system methods
@@ -431,6 +580,9 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentGameState == GameState.Playing)
         {
+            // Stop the timer on level completion
+            StopTimer();
+            
             // Change game state to allow level selection UI to show
             CurrentGameState = GameState.Start;
             
