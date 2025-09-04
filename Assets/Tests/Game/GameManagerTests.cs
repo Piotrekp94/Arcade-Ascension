@@ -1049,4 +1049,62 @@ public class GameManagerTests
         Assert.IsTrue(stateChangeEventTriggered, "Timer expiration should trigger state change to Start");
         Assert.AreEqual(GameManager.GameState.Start, finalState, "Final state should be Start");
     }
+    
+    [Test]
+    public void GameManager_CleanupAllBalls_RemovesAllBalls()
+    {
+        // Test that CleanupAllBalls removes all balls from the scene
+        
+        // Create test balls
+        GameObject ball1 = new GameObject("Ball1");
+        ball1.tag = "Ball";
+        ball1.AddComponent<Ball>();
+        
+        GameObject ball2 = new GameObject("Ball2");
+        ball2.tag = "Ball";
+        ball2.AddComponent<Ball>();
+        
+        // Verify balls exist
+        Assert.AreEqual(2, GameObject.FindGameObjectsWithTag("Ball").Length);
+        
+        // Clean up balls
+        gameManager.CleanupAllBalls();
+        
+        // Verify balls are gone
+        Assert.AreEqual(0, GameObject.FindGameObjectsWithTag("Ball").Length);
+    }
+    
+    [Test]
+    public void GameManager_CleanupAllBalls_DetachesFromPaddle()
+    {
+        // Test that CleanupAllBalls detaches balls from paddles
+        
+        // Create paddle and register it
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        // Create and attach ball
+        GameObject ballGO = new GameObject("Ball");
+        ballGO.tag = "Ball";
+        Ball ball = ballGO.AddComponent<Ball>();
+        paddle.AttachBall(ball);
+        
+        // Verify ball is attached
+        Assert.IsTrue(paddle.HasAttachedBall());
+        Assert.AreEqual(1, GameObject.FindGameObjectsWithTag("Ball").Length);
+        
+        // Clean up balls
+        gameManager.CleanupAllBalls();
+        
+        // Verify ball is detached and destroyed
+        Assert.IsFalse(paddle.HasAttachedBall());
+        Assert.AreEqual(0, GameObject.FindGameObjectsWithTag("Ball").Length);
+        
+        // Clean up test paddle
+        if (Application.isPlaying)
+            Object.Destroy(paddleGO);
+        else
+            Object.DestroyImmediate(paddleGO);
+    }
 }

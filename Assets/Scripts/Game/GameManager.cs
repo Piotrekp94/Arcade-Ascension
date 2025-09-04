@@ -239,6 +239,9 @@ public class GameManager : MonoBehaviour
         respawnTimerActive = false;
         respawnTimer = 0f;
         
+        // Clean up all balls
+        CleanupAllBalls();
+        
         // Reset timer
         StopTimer();
         currentTimeRemaining = levelTimeLimit;
@@ -374,6 +377,9 @@ public class GameManager : MonoBehaviour
         // Fire timer expiration event
         OnTimerExpired?.Invoke();
         
+        // Clean up all balls first (especially attached ones)
+        CleanupAllBalls();
+        
         // Clean up all level objects (same as level completion)
         if (LevelLifecycleManager.Instance != null)
         {
@@ -397,6 +403,42 @@ public class GameManager : MonoBehaviour
         }
         
         Debug.Log("GameManager: Timer expired - returning to level selection");
+    }
+    
+    public void CleanupAllBalls()
+    {
+        // Find all balls in the scene and destroy them
+        GameObject[] balls = GameObject.FindGameObjectsWithTag("Ball");
+        
+        foreach (GameObject ball in balls)
+        {
+            // If the ball is attached to a paddle, detach it first
+            if (registeredPaddle != null)
+            {
+                PlayerPaddle paddle = registeredPaddle.GetComponent<PlayerPaddle>();
+                if (paddle != null && paddle.HasAttachedBall())
+                {
+                    Ball ballComponent = ball.GetComponent<Ball>();
+                    if (ballComponent != null && paddle.GetAttachedBall() == ballComponent)
+                    {
+                        paddle.DetachBall();
+                        Debug.Log("GameManager: Detached ball from paddle during cleanup");
+                    }
+                }
+            }
+            
+            // Destroy the ball
+            if (Application.isPlaying)
+            {
+                Destroy(ball);
+            }
+            else
+            {
+                DestroyImmediate(ball);
+            }
+        }
+        
+        Debug.Log($"GameManager: Cleaned up {balls.Length} ball(s) during timer expiration");
     }
 
     // Ball spawning system methods
@@ -582,6 +624,9 @@ public class GameManager : MonoBehaviour
         {
             // Stop the timer on level completion
             StopTimer();
+            
+            // Clean up all balls first (especially attached ones)
+            CleanupAllBalls();
             
             // Change game state to allow level selection UI to show
             CurrentGameState = GameState.Start;

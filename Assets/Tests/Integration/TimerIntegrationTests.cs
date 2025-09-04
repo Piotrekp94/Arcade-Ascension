@@ -333,6 +333,54 @@ public class TimerIntegrationTests
         Assert.IsNotNull(field, $"Field {fieldName} not found");
         field.SetValue(obj, value);
     }
+
+    [Test]
+    public void TimerIntegration_ExpirationCleansUpAttachedBalls()
+    {
+        // Test that attached balls are cleaned up when timer expires
+        // This reproduces the bug where balls remain stacked after timer expiration
+        
+        // Set up a short timer
+        testLevelData.SetLevelTimeLimit(2f);
+        gameManager.StartGame(testLevelData);
+        
+        // Create and register a paddle
+        GameObject paddleGO = new GameObject("Paddle");
+        PlayerPaddle paddle = paddleGO.AddComponent<PlayerPaddle>();
+        gameManager.RegisterPaddleForSpawning(paddleGO.transform);
+        
+        // Spawn a ball and attach it to the paddle (simulating initial game state)
+        GameObject ballGO = gameManager.SpawnBallAtPosition(paddleGO.transform.position);
+        Ball ball = ballGO.GetComponent<Ball>();
+        if (ball == null) ball = ballGO.AddComponent<Ball>();
+        
+        paddle.AttachBall(ball);
+        
+        // Verify ball is attached
+        Assert.IsTrue(paddle.HasAttachedBall(), "Ball should be attached to paddle");
+        Assert.IsNotNull(GameObject.FindWithTag("Ball"), "Ball should exist in scene");
+        
+        // Expire the timer
+        gameManager.UpdateTimer(3f);
+        
+        // After timer expiration, ball should be cleaned up
+        Assert.AreEqual(GameManager.GameState.Start, gameManager.CurrentGameState);
+        Assert.IsFalse(gameManager.IsTimerActive());
+        Assert.IsNull(GameObject.FindWithTag("Ball"), "Ball should be cleaned up after timer expiration");
+        Assert.IsFalse(paddle.HasAttachedBall(), "Paddle should no longer have attached ball");
+        
+        // Clean up test objects
+        if (Application.isPlaying)
+        {
+            Object.Destroy(paddleGO);
+            if (ballGO != null) Object.Destroy(ballGO);
+        }
+        else
+        {
+            Object.DestroyImmediate(paddleGO);
+            if (ballGO != null) Object.DestroyImmediate(ballGO);
+        }
+    }
 }
 
 // Extension method for easier testing
