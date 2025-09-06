@@ -7,17 +7,26 @@ using TMPro; // Required for TextMeshProUGUI
 public class GameManagerTests
 {
     private GameManager gameManager;
+    private GlobalGameConfig testGlobalConfig;
     private TextMeshProUGUI scoreText;
 
     [SetUp]
     public void Setup()
     {
+        // Create global config for testing
+        testGlobalConfig = ScriptableObject.CreateInstance<GlobalGameConfig>();
+        SetGlobalTimeLimit(120f); // Default for most tests
+        GlobalGameConfig.SetInstanceForTesting(testGlobalConfig);
+
         // Create a new GameObject for GameManager
         GameObject gameManagerGO = new GameObject();
         gameManager = gameManagerGO.AddComponent<GameManager>();
         
         // Set up singleton for testing
         GameManager.SetInstanceForTesting(gameManager);
+        
+        // Initialize the GameManager properly (this calls Start internally or mimics its behavior)
+        gameManager.ResetGame();
 
         // Create mock TextMeshProUGUI components
         GameObject scoreTextGO = new GameObject();
@@ -29,17 +38,20 @@ public class GameManagerTests
     {
         // Clean up singleton
         GameManager.SetInstanceForTesting(null);
+        GlobalGameConfig.SetInstanceForTesting(null);
         
         // Clean up GameObjects after each test
         if (Application.isPlaying)
         {
             if (gameManager != null && gameManager.gameObject != null) Object.Destroy(gameManager.gameObject);
             if (scoreText != null && scoreText.gameObject != null) Object.Destroy(scoreText.gameObject);
+            if (testGlobalConfig != null) Object.Destroy(testGlobalConfig);
         }
         else
         {
             if (gameManager != null && gameManager.gameObject != null) Object.DestroyImmediate(gameManager.gameObject);
             if (scoreText != null && scoreText.gameObject != null) Object.DestroyImmediate(scoreText.gameObject);
+            if (testGlobalConfig != null) Object.DestroyImmediate(testGlobalConfig);
         }
     }
 
@@ -682,28 +694,33 @@ public class GameManagerTests
     }
 
     [Test]
-    public void GameManager_SetTimeLimit_UpdatesCorrectly()
+    public void GameManager_GlobalTimeLimit_UpdatesCorrectly()
     {
-        // Test that time limit can be configured
-        gameManager.SetTimeLimit(180f);
+        // Test that GameManager uses global time limit configuration
+        SetGlobalTimeLimit(180f);
         Assert.AreEqual(180f, gameManager.GetTimeLimit());
         
-        gameManager.SetTimeLimit(60f);
+        SetGlobalTimeLimit(60f);
         Assert.AreEqual(60f, gameManager.GetTimeLimit());
         
-        gameManager.SetTimeLimit(300f);
+        SetGlobalTimeLimit(300f);
         Assert.AreEqual(300f, gameManager.GetTimeLimit());
     }
 
     [Test]
-    public void GameManager_SetTimeLimit_RejectsNegativeValues()
+    public void GameManager_GlobalTimeLimit_RejectsNegativeValues()
     {
-        // Test that negative time limits are rejected and clamped to 0
-        gameManager.SetTimeLimit(-30f);
-        Assert.AreEqual(0f, gameManager.GetTimeLimit());
+        // Test that global config validates negative time limits (OnValidate fixes them to default)
+        SetGlobalTimeLimit(-30f);
+        // Call OnValidate via reflection to simulate Unity's behavior
+        var onValidateMethod = typeof(GlobalGameConfig).GetMethod("OnValidate", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        onValidateMethod?.Invoke(testGlobalConfig, null);
+        Assert.AreEqual(120f, gameManager.GetTimeLimit());
         
-        gameManager.SetTimeLimit(-120f);
-        Assert.AreEqual(0f, gameManager.GetTimeLimit());
+        SetGlobalTimeLimit(-120f);
+        // Call OnValidate via reflection to simulate Unity's behavior
+        onValidateMethod?.Invoke(testGlobalConfig, null);
+        Assert.AreEqual(120f, gameManager.GetTimeLimit());
     }
 
     [Test]
@@ -717,10 +734,12 @@ public class GameManagerTests
     public void GameManager_GetTimeRemaining_ReturnsTimeLimitWhenNotStarted()
     {
         // Test that time remaining equals time limit when timer not started
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
+        gameManager.ResetGame(); // Update GameManager's internal state
         Assert.AreEqual(120f, gameManager.GetTimeRemaining());
         
-        gameManager.SetTimeLimit(180f);
+        SetGlobalTimeLimit(180f);
+        gameManager.ResetGame(); // Update GameManager's internal state
         Assert.AreEqual(180f, gameManager.GetTimeRemaining());
     }
 
@@ -728,7 +747,7 @@ public class GameManagerTests
     public void GameManager_StartTimer_ActivatesTimer()
     {
         // Test that starting timer activates it
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         gameManager.StartTimer();
         Assert.IsTrue(gameManager.IsTimerActive());
     }
@@ -737,7 +756,7 @@ public class GameManagerTests
     public void GameManager_StopTimer_DeactivatesTimer()
     {
         // Test that stopping timer deactivates it
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         gameManager.StartTimer();
         Assert.IsTrue(gameManager.IsTimerActive());
         
@@ -749,7 +768,7 @@ public class GameManagerTests
     public void GameManager_TimerCountdown_ReducesTimeRemaining()
     {
         // Test that timer counts down over time
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.StartTimer();
         
@@ -769,7 +788,7 @@ public class GameManagerTests
         bool timerExpiredTriggered = false;
         gameManager.OnTimerExpired += () => timerExpiredTriggered = true;
         
-        gameManager.SetTimeLimit(1f);
+        SetGlobalTimeLimit(1f);
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.StartTimer();
         
@@ -784,7 +803,7 @@ public class GameManagerTests
     {
         // Test that timer expiration returns to level selection
         gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.SetTimeLimit(1f);
+        SetGlobalTimeLimit(1f);
         gameManager.StartTimer();
         
         // Advance timer past expiration
@@ -801,7 +820,7 @@ public class GameManagerTests
         // the method completes without errors and the game state changes correctly
         
         gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.SetTimeLimit(1f);
+        SetGlobalTimeLimit(1f);
         gameManager.StartTimer();
         
         // This should complete without throwing exceptions
@@ -819,7 +838,7 @@ public class GameManagerTests
     public void GameManager_TimerExpiration_DeactivatesTimer()
     {
         // Test that timer deactivates when expired
-        gameManager.SetTimeLimit(1f);
+        SetGlobalTimeLimit(1f);
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.StartTimer();
         Assert.IsTrue(gameManager.IsTimerActive());
@@ -842,7 +861,7 @@ public class GameManagerTests
             lastTimeReported = timeRemaining;
         };
         
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.StartTimer();
         gameManager.UpdateTimer(1f);
@@ -855,7 +874,7 @@ public class GameManagerTests
     public void GameManager_TimerUpdate_DoesNotCountDownWhenInactive()
     {
         // Test that timer doesn't count down when not active
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         float initialTime = gameManager.GetTimeRemaining();
         
         // Don't start timer, just try to update
@@ -869,7 +888,7 @@ public class GameManagerTests
     public void GameManager_TimerUpdate_OnlyCountsDownDuringPlayingState()
     {
         // Test that timer only counts down during Playing state
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         gameManager.StartTimer();
         
         // Set to Start state
@@ -911,7 +930,7 @@ public class GameManagerTests
     public void GameManager_StartGame_StartsTimer()
     {
         // Test that starting game starts the timer
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         Assert.IsFalse(gameManager.IsTimerActive());
         
         gameManager.StartGame();
@@ -925,7 +944,7 @@ public class GameManagerTests
     {
         // Test that completing level stops timer
         gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         gameManager.StartTimer();
         Assert.IsTrue(gameManager.IsTimerActive());
         
@@ -938,7 +957,7 @@ public class GameManagerTests
     public void GameManager_ResetGame_ResetsTimer()
     {
         // Test that resetting game resets timer
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         gameManager.SetGameState(GameManager.GameState.Playing); // Required for UpdateTimer to work
         gameManager.StartTimer();
         gameManager.UpdateTimer(30f); // Use 30 seconds
@@ -956,7 +975,7 @@ public class GameManagerTests
     {
         // Test that timer continues running during ball respawn
         gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         gameManager.StartTimer();
         
         float timeBeforeBallLoss = gameManager.GetTimeRemaining();
@@ -1040,7 +1059,7 @@ public class GameManagerTests
         };
         
         gameManager.SetGameState(GameManager.GameState.Playing);
-        gameManager.SetTimeLimit(1f);
+        SetGlobalTimeLimit(1f);
         gameManager.StartTimer();
         
         // Advance timer past expiration
@@ -1106,5 +1125,18 @@ public class GameManagerTests
             Object.Destroy(paddleGO);
         else
             Object.DestroyImmediate(paddleGO);
+    }
+    
+    // Helper method to set global time limit for testing
+    private void SetGlobalTimeLimit(float timeLimit)
+    {
+        SetPrivateField(testGlobalConfig, "globalTimeLimit", timeLimit);
+    }
+    
+    private void SetPrivateField(object obj, string fieldName, object value)
+    {
+        var field = obj.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Assert.IsNotNull(field, $"Field {fieldName} not found");
+        field.SetValue(obj, value);
     }
 }

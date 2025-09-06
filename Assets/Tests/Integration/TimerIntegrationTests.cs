@@ -9,6 +9,7 @@ public class TimerIntegrationTests
     private GameManager gameManager;
     private GameUIManager uiManager;
     private LevelData testLevelData;
+    private GlobalGameConfig testGlobalConfig;
     private GameObject gameManagerGO;
     private GameObject uiManagerGO;
     private TextMeshProUGUI timerText;
@@ -16,6 +17,11 @@ public class TimerIntegrationTests
     [SetUp]
     public void Setup()
     {
+        // Create global config for testing
+        testGlobalConfig = ScriptableObject.CreateInstance<GlobalGameConfig>();
+        SetGlobalConfigDefaults(testGlobalConfig);
+        GlobalGameConfig.SetInstanceForTesting(testGlobalConfig);
+
         // Create GameManager
         gameManagerGO = new GameObject("GameManager");
         gameManager = gameManagerGO.AddComponent<GameManager>();
@@ -45,6 +51,7 @@ public class TimerIntegrationTests
         // Clean up GameObjects
         uiManager?.CleanupTimerSubscriptions();
         GameManager.SetInstanceForTesting(null);
+        GlobalGameConfig.SetInstanceForTesting(null);
 
         if (Application.isPlaying)
         {
@@ -52,6 +59,7 @@ public class TimerIntegrationTests
             if (uiManagerGO != null) Object.Destroy(uiManagerGO);
             if (timerText != null && timerText.gameObject != null) Object.Destroy(timerText.gameObject);
             if (testLevelData != null) Object.Destroy(testLevelData);
+            if (testGlobalConfig != null) Object.Destroy(testGlobalConfig);
         }
         else
         {
@@ -59,19 +67,20 @@ public class TimerIntegrationTests
             if (uiManagerGO != null) Object.DestroyImmediate(uiManagerGO);
             if (timerText != null && timerText.gameObject != null) Object.DestroyImmediate(timerText.gameObject);
             if (testLevelData != null) Object.DestroyImmediate(testLevelData);
+            if (testGlobalConfig != null) Object.DestroyImmediate(testGlobalConfig);
         }
     }
 
     [Test]
     public void TimerIntegration_LevelDataToGameManagerToUI()
     {
-        // Test complete integration: LevelData -> GameManager -> UI
-        testLevelData.SetLevelTimeLimit(90f);
+        // Test complete integration: GlobalConfig -> GameManager -> UI
+        SetGlobalTimeLimit(90f);
         
         // Start game with level data
         gameManager.StartGame(testLevelData);
         
-        // GameManager should use level's time limit
+        // GameManager should use global time limit
         Assert.AreEqual(90f, gameManager.GetTimeLimit());
         Assert.AreEqual(90f, gameManager.GetTimeRemaining());
         
@@ -84,7 +93,7 @@ public class TimerIntegrationTests
     public void TimerIntegration_CountdownUpdatesUI()
     {
         // Test that timer countdown updates UI correctly
-        testLevelData.SetLevelTimeLimit(60f);
+        SetGlobalTimeLimit(60f);
         gameManager.StartGame(testLevelData);
         
         // Initial state
@@ -117,7 +126,7 @@ public class TimerIntegrationTests
         bool timerExpiredEventFired = false;
         gameManager.OnTimerExpired += () => timerExpiredEventFired = true;
         
-        testLevelData.SetLevelTimeLimit(5f);
+        SetGlobalTimeLimit(5f);
         gameManager.StartGame(testLevelData);
         
         Assert.AreEqual(GameManager.GameState.Playing, gameManager.CurrentGameState);
@@ -138,7 +147,7 @@ public class TimerIntegrationTests
     public void TimerIntegration_LevelCompletionStopsTimer()
     {
         // Test that completing level stops timer
-        testLevelData.SetLevelTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         gameManager.StartGame(testLevelData);
         
         Assert.IsTrue(gameManager.IsTimerActive());
@@ -161,7 +170,7 @@ public class TimerIntegrationTests
     public void TimerIntegration_MultipleGameCycles()
     {
         // Test timer through multiple game start/reset cycles
-        testLevelData.SetLevelTimeLimit(60f);
+        SetGlobalTimeLimit(60f);
         
         // First game
         gameManager.StartGame(testLevelData);
@@ -174,7 +183,7 @@ public class TimerIntegrationTests
         Assert.AreEqual(60f, gameManager.GetTimeRemaining(), 0.1f);
         
         // Second game with different level
-        testLevelData.SetLevelTimeLimit(45f);
+        SetGlobalTimeLimit(45f);
         gameManager.StartGame(testLevelData);
         Assert.AreEqual(45f, gameManager.GetTimeRemaining(), 0.1f);
         Assert.IsTrue(gameManager.IsTimerActive());
@@ -184,7 +193,7 @@ public class TimerIntegrationTests
     public void TimerIntegration_BallRespawnDoesNotAffectTimer()
     {
         // Test that ball respawn system doesn't interfere with timer
-        testLevelData.SetLevelTimeLimit(30f);
+        SetGlobalTimeLimit(30f);
         gameManager.StartGame(testLevelData);
         
         gameManager.UpdateTimer(10f);
@@ -205,42 +214,42 @@ public class TimerIntegrationTests
     }
 
     [Test]
-    public void TimerIntegration_DifferentLevelTimeLimits()
+    public void TimerIntegration_GlobalTimeLimitForAllLevels()
     {
-        // Test multiple levels with different time limits
+        // Test that all levels use the same global time limit
         LevelData level1 = ScriptableObject.CreateInstance<LevelData>();
         LevelData level2 = ScriptableObject.CreateInstance<LevelData>();
         
         SetLevelDataFields(level1);
-        level1.SetLevelTimeLimit(180f); // 3 minutes
-        
         SetLevelDataFields(level2);
-        level2.SetLevelTimeLimit(60f); // 1 minute
+        
+        // Set global time limit to 120 seconds
+        SetGlobalTimeLimit(120f);
         
         // Start with level 1
         gameManager.StartGame(level1);
-        Assert.AreEqual(180f, gameManager.GetTimeLimit());
-        Assert.AreEqual("03:00", timerText.text);
+        Assert.AreEqual(120f, gameManager.GetTimeLimit());
+        Assert.AreEqual("02:00", timerText.text);
         Assert.AreEqual(Color.green, timerText.color);
         
-        // Reset and start with level 2
+        // Reset and start with level 2 - should use same global time limit
         gameManager.ResetGame();
         gameManager.StartGame(level2);
-        Assert.AreEqual(60f, gameManager.GetTimeLimit());
-        Assert.AreEqual("01:00", timerText.text);
-        Assert.AreEqual(Color.green, timerText.color); // 60s out of 60s (100%) should be green
+        Assert.AreEqual(120f, gameManager.GetTimeLimit());
+        Assert.AreEqual("02:00", timerText.text);
+        Assert.AreEqual(Color.green, timerText.color); // 120s out of 120s (100%) should be green
         
-        // Test percentage-based coloring with level 2 (60s total)
-        gameManager.UpdateTimer(30f); // 30s remaining out of 60s = 50%
-        Assert.AreEqual("00:30", timerText.text);
+        // Test percentage-based coloring with global limit (120s total)
+        gameManager.UpdateTimer(60f); // 60s remaining out of 120s = 50%
+        Assert.AreEqual("01:00", timerText.text);
         Assert.AreEqual(Color.yellow, timerText.color); // 50% should be yellow (at boundary)
         
-        gameManager.UpdateTimer(15f); // 15s remaining out of 60s = 25% 
-        Assert.AreEqual("00:15", timerText.text);
+        gameManager.UpdateTimer(30f); // 30s remaining out of 120s = 25% 
+        Assert.AreEqual("00:30", timerText.text);
         Assert.AreEqual(Color.yellow, timerText.color); // 25% should be yellow (at boundary)
         
-        gameManager.UpdateTimer(10f); // 5s remaining out of 60s = 8.3%
-        Assert.AreEqual("00:05", timerText.text);
+        gameManager.UpdateTimer(20f); // 10s remaining out of 120s = 8.3%
+        Assert.AreEqual("00:10", timerText.text);
         Assert.AreEqual(Color.red, timerText.color); // <25% should be red
         
         // Cleanup
@@ -260,7 +269,7 @@ public class TimerIntegrationTests
     public IEnumerator TimerIntegration_UIUpdatesInRealTime()
     {
         // Test UI updates during real-time timer countdown
-        testLevelData.SetLevelTimeLimit(5f);
+        SetGlobalTimeLimit(5f);
         gameManager.StartGame(testLevelData);
         
         Assert.AreEqual("00:05", timerText.text);
@@ -297,7 +306,7 @@ public class TimerIntegrationTests
         gameManager.OnTimerUpdated += (time) => timerUpdateEventCount++;
         uiManager.OnTimerDisplayUpdated += () => displayUpdateEventCount++;
         
-        testLevelData.SetLevelTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         gameManager.StartGame(testLevelData);
         
         // Update timer multiple times
@@ -324,7 +333,18 @@ public class TimerIntegrationTests
         SetPrivateField(levelData, "spawnAreaOffset", Vector2.zero);
         SetPrivateField(levelData, "scoreMultiplier", 1.0f);
         SetPrivateField(levelData, "defaultBlockScore", 10);
-        SetPrivateField(levelData, "levelTimeLimit", 120f);
+    }
+    
+    // Helper method to set up global config defaults
+    private void SetGlobalConfigDefaults(GlobalGameConfig config)
+    {
+        SetPrivateField(config, "globalTimeLimit", 120f);
+    }
+    
+    // Helper method to set global time limit for testing
+    private void SetGlobalTimeLimit(float timeLimit)
+    {
+        SetPrivateField(testGlobalConfig, "globalTimeLimit", timeLimit);
     }
 
     private void SetPrivateField(object obj, string fieldName, object value)
@@ -341,7 +361,7 @@ public class TimerIntegrationTests
         // This reproduces the bug where balls remain stacked after timer expiration
         
         // Set up a short timer
-        testLevelData.SetLevelTimeLimit(2f);
+        SetGlobalTimeLimit(2f);
         gameManager.StartGame(testLevelData);
         
         // Create and register a paddle
@@ -380,15 +400,5 @@ public class TimerIntegrationTests
             Object.DestroyImmediate(paddleGO);
             if (ballGO != null) Object.DestroyImmediate(ballGO);
         }
-    }
-}
-
-// Extension method for easier testing
-public static class LevelDataTestExtensions
-{
-    public static void SetLevelTimeLimit(this LevelData levelData, float timeLimit)
-    {
-        var field = typeof(LevelData).GetField("levelTimeLimit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        field?.SetValue(levelData, timeLimit);
     }
 }

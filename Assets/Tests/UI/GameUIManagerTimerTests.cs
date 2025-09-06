@@ -8,6 +8,7 @@ public class GameUIManagerTimerTests
 {
     private GameUIManager uiManager;
     private GameManager gameManager;
+    private GlobalGameConfig testGlobalConfig;
     private GameObject uiManagerGO;
     private GameObject gameManagerGO;
     private TextMeshProUGUI timerText;
@@ -15,6 +16,11 @@ public class GameUIManagerTimerTests
     [SetUp]
     public void Setup()
     {
+        // Create global config for testing
+        testGlobalConfig = ScriptableObject.CreateInstance<GlobalGameConfig>();
+        SetGlobalTimeLimit(120f); // Default for most tests
+        GlobalGameConfig.SetInstanceForTesting(testGlobalConfig);
+
         // Create UI Manager GameObject
         uiManagerGO = new GameObject("GameUIManager");
         uiManager = uiManagerGO.AddComponent<GameUIManager>();
@@ -38,18 +44,21 @@ public class GameUIManagerTimerTests
     {
         // Clean up GameObjects
         GameManager.SetInstanceForTesting(null);
+        GlobalGameConfig.SetInstanceForTesting(null);
         
         if (Application.isPlaying)
         {
             if (uiManagerGO != null) Object.Destroy(uiManagerGO);
             if (gameManagerGO != null) Object.Destroy(gameManagerGO);
             if (timerText != null && timerText.gameObject != null) Object.Destroy(timerText.gameObject);
+            if (testGlobalConfig != null) Object.Destroy(testGlobalConfig);
         }
         else
         {
             if (uiManagerGO != null) Object.DestroyImmediate(uiManagerGO);
             if (gameManagerGO != null) Object.DestroyImmediate(gameManagerGO);
             if (timerText != null && timerText.gameObject != null) Object.DestroyImmediate(timerText.gameObject);
+            if (testGlobalConfig != null) Object.DestroyImmediate(testGlobalConfig);
         }
     }
 
@@ -144,7 +153,7 @@ public class GameUIManagerTimerTests
         uiManager.OnTimerDisplayUpdated += () => eventHandled = true;
         
         // Trigger timer update from GameManager
-        gameManager.SetTimeLimit(60f);
+        SetGlobalTimeLimit(60f);
         gameManager.SetGameState(GameManager.GameState.Playing); // Required for UpdateTimer to work
         gameManager.StartTimer();
         gameManager.UpdateTimer(1f);
@@ -223,8 +232,8 @@ public class GameUIManagerTimerTests
     public IEnumerator GameUIManager_TimerIntegrationWithGameManager()
     {
         // Test integration between GameManager and UI timer display
+        SetGlobalTimeLimit(5f); // Set global time limit for this test
         uiManager.InitializeTimerSubscriptions(); // Ensure UI is subscribed to timer events
-        gameManager.SetTimeLimit(5f);
         gameManager.SetGameState(GameManager.GameState.Playing);
         gameManager.StartTimer();
         
@@ -249,7 +258,7 @@ public class GameUIManagerTimerTests
         uiManager.InitializeTimerSubscriptions();
         
         // Verify subscription by checking if timer updates affect display
-        gameManager.SetTimeLimit(30f);
+        SetGlobalTimeLimit(30f);
         gameManager.SetGameState(GameManager.GameState.Playing); // Required for UpdateTimer to work
         gameManager.StartTimer();
         gameManager.UpdateTimer(1f);
@@ -269,7 +278,7 @@ public class GameUIManagerTimerTests
         
         // After cleanup, timer updates should not affect display
         string textBeforeUpdate = timerText.text;
-        gameManager.SetTimeLimit(60f);
+        SetGlobalTimeLimit(60f);
         gameManager.StartTimer();
         gameManager.UpdateTimer(1f);
         
@@ -281,7 +290,7 @@ public class GameUIManagerTimerTests
     public void GameUIManager_TimerColor_PercentageBased_Green()
     {
         // Test green color for > 50% time remaining
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         
         // 70% remaining (84 seconds out of 120)
         uiManager.UpdateTimerDisplay(84f);
@@ -293,7 +302,7 @@ public class GameUIManagerTimerTests
     public void GameUIManager_TimerColor_PercentageBased_Yellow()
     {
         // Test yellow color for 25%-50% time remaining
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         
         // 35% remaining (42 seconds out of 120)
         uiManager.UpdateTimerDisplay(42f);
@@ -305,7 +314,7 @@ public class GameUIManagerTimerTests
     public void GameUIManager_TimerColor_PercentageBased_Red()
     {
         // Test red color for < 25% time remaining
-        gameManager.SetTimeLimit(120f);
+        SetGlobalTimeLimit(120f);
         
         // 15% remaining (18 seconds out of 120)
         uiManager.UpdateTimerDisplay(18f);
@@ -319,18 +328,31 @@ public class GameUIManagerTimerTests
         // Test that percentage works correctly with different level time limits
         
         // Level 1: 180 seconds, 60% remaining = 108 seconds (should be green)
-        gameManager.SetTimeLimit(180f);
+        SetGlobalTimeLimit(180f);
         uiManager.UpdateTimerDisplay(108f);
         Assert.AreEqual(Color.green, timerText.color);
         
         // Level 10: 90 seconds, 30% remaining = 27 seconds (should be yellow)
-        gameManager.SetTimeLimit(90f);
+        SetGlobalTimeLimit(90f);
         uiManager.UpdateTimerDisplay(27f);
         Assert.AreEqual(Color.yellow, timerText.color);
         
         // Short level: 10 seconds, 10% remaining = 1 second (should be red)
-        gameManager.SetTimeLimit(10f);
+        SetGlobalTimeLimit(10f);
         uiManager.UpdateTimerDisplay(1f);
         Assert.AreEqual(Color.red, timerText.color);
+    }
+    
+    // Helper method to set global time limit for testing
+    private void SetGlobalTimeLimit(float timeLimit)
+    {
+        SetPrivateField(testGlobalConfig, "globalTimeLimit", timeLimit);
+    }
+    
+    private void SetPrivateField(object obj, string fieldName, object value)
+    {
+        var field = obj.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Assert.IsNotNull(field, $"Field {fieldName} not found");
+        field.SetValue(obj, value);
     }
 }

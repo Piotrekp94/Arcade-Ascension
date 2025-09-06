@@ -102,7 +102,7 @@ public class LevelSelectionIntegrator : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.StartGame(selectedLevelData);
-            Debug.Log($"LevelSelectionIntegrator: Started game for level {levelId} with time limit {selectedLevelData.LevelTimeLimit}s");
+            Debug.Log($"LevelSelectionIntegrator: Started game for level {levelId} with global time limit {GlobalGameConfig.Instance.GlobalTimeLimit}s");
         }
         else
         {

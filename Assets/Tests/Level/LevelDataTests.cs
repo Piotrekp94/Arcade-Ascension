@@ -21,7 +21,6 @@ public class LevelDataTests
         SetPrivateField("spawnAreaOffset", new Vector2(0f, -1f));
         SetPrivateField("scoreMultiplier", 1.0f);
         SetPrivateField("defaultBlockScore", 10);
-        SetPrivateField("levelTimeLimit", 120f); // Default time limit
     }
 
     [TearDown]
@@ -386,108 +385,6 @@ public class LevelDataTests
         Assert.IsTrue(testLevelData.IsValid());
     }
 
-    // TIMER SYSTEM TESTS (TDD Phase - Red)
-
-    [Test]
-    public void LevelData_HasDefaultTimeLimitConfiguration()
-    {
-        // Test that LevelData has a default time limit setting
-        Assert.Greater(testLevelData.LevelTimeLimit, 0f, "Level time limit should be positive");
-        Assert.AreEqual(120f, testLevelData.LevelTimeLimit, "Default level time limit should be 120 seconds");
-    }
-
-    [Test]
-    public void LevelData_TimeLimitConfigurable()
-    {
-        // Test that time limit can be configured
-        SetPrivateField("levelTimeLimit", 180f);
-        Assert.AreEqual(180f, testLevelData.LevelTimeLimit);
-        
-        SetPrivateField("levelTimeLimit", 60f);
-        Assert.AreEqual(60f, testLevelData.LevelTimeLimit);
-        
-        SetPrivateField("levelTimeLimit", 300f);
-        Assert.AreEqual(300f, testLevelData.LevelTimeLimit);
-    }
-
-    [Test]
-    public void LevelData_IsValidWithPositiveTimeLimit()
-    {
-        // Test that positive time limits are considered valid
-        SetPrivateField("levelTimeLimit", 30f);
-        Assert.IsTrue(testLevelData.IsValid());
-        
-        SetPrivateField("levelTimeLimit", 600f);
-        Assert.IsTrue(testLevelData.IsValid());
-    }
-
-    [Test]
-    public void LevelData_IsInvalidWithZeroTimeLimit()
-    {
-        // Test that zero time limit is invalid
-        SetPrivateField("levelTimeLimit", 0f);
-        Assert.IsFalse(testLevelData.IsValid());
-    }
-
-    [Test]
-    public void LevelData_IsInvalidWithNegativeTimeLimit()
-    {
-        // Test that negative time limits are invalid
-        SetPrivateField("levelTimeLimit", -30f);
-        Assert.IsFalse(testLevelData.IsValid());
-        
-        SetPrivateField("levelTimeLimit", -1f);
-        Assert.IsFalse(testLevelData.IsValid());
-    }
-
-    [Test]
-    public void LevelData_CreateCopy_CopiesTimeLimit()
-    {
-        // Test that CreateCopy properly copies the time limit
-        SetPrivateField("levelTimeLimit", 150f);
-        
-        LevelData copy = testLevelData.CreateCopy();
-        
-        Assert.IsNotNull(copy);
-        Assert.AreEqual(150f, copy.LevelTimeLimit);
-        
-        // Cleanup
-        if (Application.isPlaying)
-            Object.Destroy(copy);
-        else
-            Object.DestroyImmediate(copy);
-    }
-
-    [Test]
-    public void LevelData_HandlesEdgeCaseTimeLimits()
-    {
-        // Test with edge case but valid time limit values
-        SetPrivateField("levelTimeLimit", 1f); // Very short time limit
-        Assert.IsTrue(testLevelData.IsValid());
-        
-        SetPrivateField("levelTimeLimit", 3600f); // One hour time limit
-        Assert.IsTrue(testLevelData.IsValid());
-        
-        SetPrivateField("levelTimeLimit", 0.1f); // Very short but valid
-        Assert.IsTrue(testLevelData.IsValid());
-    }
-
-    [Test]
-    public void LevelData_OnValidate_FixesNegativeTimeLimit()
-    {
-        // Test that OnValidate fixes negative time limits
-        // This test verifies the OnValidate behavior indirectly through IsValid
-        SetPrivateField("levelTimeLimit", -100f);
-        
-        // Simulate OnValidate by calling it via reflection if it exists
-        var onValidateMethod = typeof(LevelData).GetMethod("OnValidate", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (onValidateMethod != null)
-        {
-            onValidateMethod.Invoke(testLevelData, null);
-            // After OnValidate, negative time limit should be fixed
-            Assert.Greater(testLevelData.LevelTimeLimit, 0f);
-        }
-    }
 
     // Helper method to create test sprites
     private Sprite[] CreateTestSprites(int count)

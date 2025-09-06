@@ -57,8 +57,6 @@ public class GameManager : MonoBehaviour
     private float respawnTimer = 0f;
     
     // Timer system
-    [SerializeField]
-    private float levelTimeLimit = 120f; // Default 2 minutes per level
     private float currentTimeRemaining;
     private bool isTimerActive = false;
     
@@ -85,8 +83,8 @@ public class GameManager : MonoBehaviour
         score = 0;
         UpdateScoreUI();
         
-        // Initialize timer
-        currentTimeRemaining = levelTimeLimit;
+        // Initialize timer using global config
+        currentTimeRemaining = GlobalGameConfig.Instance.GlobalTimeLimit;
         isTimerActive = false;
         
         SetGameState(GameState.Start); // Initial game state
@@ -242,9 +240,9 @@ public class GameManager : MonoBehaviour
         // Clean up all balls
         CleanupAllBalls();
         
-        // Reset timer
+        // Reset timer using global config
         StopTimer();
-        currentTimeRemaining = levelTimeLimit;
+        currentTimeRemaining = GlobalGameConfig.Instance.GlobalTimeLimit;
     }
 
     public void RestartGame()
@@ -267,11 +265,16 @@ public class GameManager : MonoBehaviour
         if (CurrentGameState != GameState.Start)
             return;
             
-        // Set level-specific time limit if provided
+        // Use global time limit for all levels
+        float globalTimeLimit = GlobalGameConfig.Instance.GlobalTimeLimit;
+        SetTimeLimit(globalTimeLimit);
         if (levelData != null)
         {
-            SetTimeLimit(levelData.LevelTimeLimit);
-            Debug.Log($"GameManager: Using level time limit of {levelData.LevelTimeLimit} seconds for {levelData.LevelName}");
+            Debug.Log($"GameManager: Using global time limit of {globalTimeLimit} seconds for {levelData.LevelName}");
+        }
+        else
+        {
+            Debug.Log($"GameManager: Using global time limit of {globalTimeLimit} seconds");
         }
             
         // Start a new game
@@ -306,15 +309,16 @@ public class GameManager : MonoBehaviour
     // Timer system methods
     public float GetTimeLimit()
     {
-        return levelTimeLimit;
+        return GlobalGameConfig.Instance.GlobalTimeLimit;
     }
     
     public void SetTimeLimit(float newTimeLimit)
     {
-        levelTimeLimit = Mathf.Max(0f, newTimeLimit); // Ensure non-negative
+        // Time limit is now managed globally, this method is kept for compatibility
+        // The actual time limit comes from GlobalGameConfig
         if (!isTimerActive)
         {
-            currentTimeRemaining = levelTimeLimit; // Reset current time if timer not active
+            currentTimeRemaining = GlobalGameConfig.Instance.GlobalTimeLimit;
         }
     }
     
@@ -330,7 +334,7 @@ public class GameManager : MonoBehaviour
     
     public void StartTimer()
     {
-        currentTimeRemaining = levelTimeLimit;
+        currentTimeRemaining = GlobalGameConfig.Instance.GlobalTimeLimit;
         isTimerActive = true;
         
         // Fire initial timer update to ensure UI displays the starting time

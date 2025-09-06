@@ -34,4 +34,3 @@ MonoBehaviour:
   - {fileID: -2394439674498687599, guid: 734e65ed95c014e1fba5c621a91eefdf, type: 3}
   scoreMultiplier: 1
   defaultBlockScore: 10
-  levelTimeLimit: 10

@@ -106,3 +106,17 @@ Implementation Details:
 - Unity Editor integration via LevelSelectionIntegrator for seamless level data binding
 - Comprehensive TDD coverage for ALL level system components following strict RED-GREEN-REFACTOR methodology
 - Progressive difficulty scaling through configurable level parameters for enhanced gameplay experience
+
+2025-09-06 - Decision: Global Timer System Implementation
+Rationale: User requested centralized timer management where all levels use the same configurable time limit instead of per-level timing.
+Implementation Details:
+- Created GlobalGameConfig ScriptableObject for centralized timer configuration with singleton access pattern
+- Removed levelTimeLimit field from LevelData class to eliminate per-level timer complexity
+- Updated GameManager to use GlobalGameConfig.Instance.GlobalTimeLimit for all timer operations
+- Modified all level asset files to remove individual time limit settings
+- Enhanced GameUIManager timer display with percentage-based color coding (Green >50%, Yellow 25-50%, Red <25%)
+- Updated LevelSelectionIntegrator to log global time limit instead of per-level limits
+- Comprehensive test suite updates: TimerIntegrationTests, GameUIManagerTimerTests, GameManagerTests
+- Added proper test infrastructure with GlobalGameConfig setup/teardown and helper methods
+- Implemented proper state synchronization between global config changes and GameManager internal state
+- Created GlobalGameConfig asset in Resources folder for easy Unity Editor configuration

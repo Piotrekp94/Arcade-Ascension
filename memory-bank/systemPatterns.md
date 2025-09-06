@@ -16,18 +16,20 @@ This project follows STRICT Test-Driven Development practices:
 
 ## Coding Patterns
 
-*   **Singleton Pattern:** Used for core managers like `GameManager` and `LevelManager` to ensure a single instance throughout the game, providing global access and state management.
+*   **Singleton Pattern:** Used for core managers like `GameManager`, `LevelManager`, and `GlobalGameConfig` to ensure a single instance throughout the game, providing global access and state management.
 *   **Component-Based Design:** Unity's component-based architecture with game objects composed of focused scripts (`PlayerPaddle`, `Ball`, `Block`, `BlockManager`, `Wall`, `DeathZone`, `LevelSelectionUI`) each handling specific behaviors.
 *   **State Machine Pattern:** GameManager uses clear state transitions (Start → Playing → GameOver) with event-driven state changes.
 *   **Event-Driven Architecture:** Components communicate via C# Actions/Events (e.g., `OnGameOver`, `OnBallLost`, `OnWallHit`, `OnLevelCompleted`, `OnLevelSelected`, `OnLevelUnlocked`) for loose coupling.
-*   **ScriptableObject Pattern:** Level data stored as ScriptableObjects for designer-friendly configuration and runtime data management.
+*   **ScriptableObject Pattern:** Level data and global configuration stored as ScriptableObjects for designer-friendly configuration and runtime data management.
+*   **Global Configuration Pattern:** Centralized configuration system using `GlobalGameConfig` for settings that apply uniformly across all levels (e.g., timer limits).
 *   **Progressive System Design:** Level progression with configurable difficulty scaling through data-driven parameters.
 
 ## Architectural Patterns
 
 *   **Unity's New Input System:** Player input handled via `Keyboard.current` and `Mouse.current` for modern input management.
 *   **Physics-Based Movement:** Ball movement uses Unity's Rigidbody2D with `linearVelocity` for realistic physics simulation.
-*   **Timer Systems:** Configurable timer pattern for respawn delay using manual update methods for testability.
+*   **Timer Systems:** Global timer configuration with percentage-based visual feedback and proper state management.
+*   **Centralized Configuration:** Resources-based loading pattern for global configuration with singleton access and validation.
 *   **Attachment System:** Ball-to-paddle attachment using kinematic state switching and position tracking.
 
 ## Testing Patterns
@@ -38,6 +40,8 @@ This project follows STRICT Test-Driven Development practices:
     - Integration tests for system interactions
     - Both Edit Mode and Play Mode test coverage
 *   **Test Lifecycle Management:** Proper Setup/TearDown with GameObject creation/destruction handling for both runtime and edit mode.
+*   **Global Configuration Testing:** Test infrastructure for GlobalGameConfig with proper singleton setup/teardown and helper methods.
+*   **State Synchronization Testing:** Tests ensure proper synchronization between global config changes and component internal states.
 *   **Deterministic Testing:** Separate deterministic methods (e.g., `SimulateLeftClickDeterministic()`) for reliable test results.
 *   **Manual Timer Testing:** `UpdateRespawnTimer()` method for testing timer-based systems without relying on Unity's Update() cycle.
 
