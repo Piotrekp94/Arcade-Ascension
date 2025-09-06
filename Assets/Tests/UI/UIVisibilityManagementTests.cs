@@ -42,6 +42,10 @@ public class UIVisibilityManagementTests
         // Create LevelSelectionUI
         levelSelectionObject = new GameObject("LevelSelectionUI");
         levelSelectionUI = levelSelectionObject.AddComponent<LevelSelectionUI>();
+        
+        // Initialize LevelSelectionUI so it sets up its CanvasGroup
+        levelSelectionUI.InitializeForTesting();
+        
         tabSystemUI.SetLevelSelectionUI(levelSelectionUI);
 
         // Create GameUIManager with timer text
