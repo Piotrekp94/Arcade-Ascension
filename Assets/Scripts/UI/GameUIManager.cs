@@ -125,85 +125,14 @@ public class GameUIManager : MonoBehaviour
 
     private void UpdateUIForGameState(GameManager.GameState state)
     {
-        Debug.Log($"GameUIManager: Updating UI for state {state}");
-        Debug.Log($"GameUIManager: startPanel = {(startPanel != null ? startPanel.name : "null")}");
-        Debug.Log($"GameUIManager: gameplayPanel = {(gameplayPanel != null ? gameplayPanel.name : "null")}");
+        Debug.Log($"GameUIManager: Updating UI for state {state} - NOTE: Panel management is now handled by UICoordinator");
         
-        // Hide all panels first
-        if (startPanel != null) startPanel.SetActive(false);
-        if (gameplayPanel != null) gameplayPanel.SetActive(false);
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
-
-        // Check for shared panel scenario (common in current scene setup)
-        bool hasSharedPanel = (startPanel != null && gameplayPanel != null && startPanel == gameplayPanel);
+        // GameUIManager now focuses only on timer display and events
+        // Panel visibility is managed by UICoordinator
+        // This method is kept for backward compatibility and timer updates
         
-        if (hasSharedPanel)
-        {
-            Debug.Log("GameUIManager: Detected shared start/gameplay panel");
-            // For shared panel, we manage it differently - always keep it active
-            if (startPanel != null)
-            {
-                startPanel.SetActive(true);
-                
-                // Use LevelSelectionUI component to show/hide level selection
-                LevelSelectionUI levelSelectionUI = startPanel.GetComponent<LevelSelectionUI>();
-                if (levelSelectionUI != null)
-                {
-                    switch (state)
-                    {
-                        case GameManager.GameState.Start:
-                            Debug.Log("GameUIManager: Showing level selection UI");
-                            levelSelectionUI.ShowLevelSelection();
-                            break;
-                        case GameManager.GameState.Playing:
-                            Debug.Log("GameUIManager: Hiding level selection UI for gameplay");
-                            levelSelectionUI.HideLevelSelection();
-                            break;
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("GameUIManager: No LevelSelectionUI component found on shared panel");
-                }
-            }
-        }
-        else
-        {
-            // Original separate panel logic
-            Debug.Log("GameUIManager: Using separate panel logic");
-            
-            // Show appropriate panel based on state
-            switch (state)
-            {
-                case GameManager.GameState.Start:
-                    if (startPanel != null) 
-                    {
-                        startPanel.SetActive(true);
-                        Debug.Log("GameUIManager: Activated start panel (level selection)");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("GameUIManager: Start panel is null!");
-                    }
-                    break;
-
-                case GameManager.GameState.Playing:
-                    if (gameplayPanel != null) 
-                    {
-                        gameplayPanel.SetActive(true);
-                        Debug.Log("GameUIManager: Activated gameplay panel");
-                    }
-                    break;
-
-                case GameManager.GameState.GameOver:
-                    if (gameOverPanel != null) 
-                    {
-                        gameOverPanel.SetActive(true);
-                        Debug.Log("GameUIManager: Activated game over panel");
-                    }
-                    break;
-            }
-        }
+        // Timer visibility is handled by UICoordinator through the timer text reference
+        // No need to manage panel visibility here anymore
     }
 
     // Public method to manually update UI (useful for testing)
