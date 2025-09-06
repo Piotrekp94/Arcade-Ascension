@@ -94,6 +94,7 @@ public class LevelSelectionUI : MonoBehaviour
     {
         // Simpler method just for CanvasGroup setup
         SetupCanvasGroup();
+        isInitialized = true; // Mark as initialized so blocking logic works
     }
 
     void CreateLevelButtons()

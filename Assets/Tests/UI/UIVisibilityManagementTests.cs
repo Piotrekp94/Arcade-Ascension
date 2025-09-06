@@ -104,11 +104,13 @@ public class UIVisibilityManagementTests
         gameManager.SetGameState(GameManager.GameState.Start);
         tabSystemUI.ShowTabSystem();
         levelSelectionUI.ShowLevelSelection();
+        Assert.IsTrue(levelSelectionUI.IsVisible(), "LevelSelectionUI should be visible initially");
 
-        // Act - transition to playing
+        // Act - transition to playing and attempt to show level selection
         gameManager.SetGameState(GameManager.GameState.Playing);
+        levelSelectionUI.ShowLevelSelection(); // This should block itself
 
-        // Assert - TabSystemUI should be hidden, game UI visible
+        // Assert - LevelSelectionUI should block itself when trying to show during Playing state
         Assert.IsFalse(levelSelectionUI.IsVisible(), "LevelSelectionUI should block itself when game is playing");
 
         // Timer and score should be available for display
