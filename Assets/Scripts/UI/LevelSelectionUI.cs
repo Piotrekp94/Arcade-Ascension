@@ -76,8 +76,17 @@ public class LevelSelectionUI : MonoBehaviour
         // Setup CanvasGroup for testing
         SetupCanvasGroup();
         
-        // For testing, we don't need LevelManager or level buttons
-        // Just ensure the CanvasGroup is set up for visibility testing
+        // Try to initialize with LevelManager if available
+        levelManager = LevelManager.Instance;
+        if (levelManager != null)
+        {
+            if (levelButtons.Count == 0)
+            {
+                CreateLevelButtons();
+            }
+            SubscribeToEvents();
+        }
+        
         isInitialized = true;
     }
 

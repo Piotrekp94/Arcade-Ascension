@@ -43,8 +43,8 @@ public class UIVisibilityManagementTests
         levelSelectionObject = new GameObject("LevelSelectionUI");
         levelSelectionUI = levelSelectionObject.AddComponent<LevelSelectionUI>();
         
-        // Initialize LevelSelectionUI so it sets up its CanvasGroup
-        levelSelectionUI.InitializeForTesting();
+        // Initialize LevelSelectionUI CanvasGroup for visibility testing (no LevelManager needed)
+        levelSelectionUI.SetupCanvasGroupForTesting();
         
         tabSystemUI.SetLevelSelectionUI(levelSelectionUI);
 
