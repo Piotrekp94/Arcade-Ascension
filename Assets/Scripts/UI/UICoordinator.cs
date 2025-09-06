@@ -30,9 +30,18 @@ public class UICoordinator : MonoBehaviour
         else
         {
             Debug.LogWarning("Multiple UICoordinator instances found. Destroying duplicate.");
-            Destroy(gameObject);
+            if (Application.isPlaying)
+                Destroy(gameObject);
+            else
+                DestroyImmediate(gameObject);
             return;
         }
+    }
+
+    // Method to manually set instance for testing
+    public static void SetInstanceForTesting(UICoordinator testInstance)
+    {
+        Instance = testInstance;
     }
 
     void Start()

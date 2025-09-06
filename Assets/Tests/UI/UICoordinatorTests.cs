@@ -45,6 +45,9 @@ public class UICoordinatorTests
         coordinatorObject = new GameObject("UICoordinator");
         coordinator = coordinatorObject.AddComponent<UICoordinator>();
 
+        // Set instance for testing (since Awake() doesn't run automatically in edit mode)
+        UICoordinator.SetInstanceForTesting(coordinator);
+
         // Setup UICoordinator for testing
         coordinator.SetupForTesting(tabSystemUI, gameUIManager, timerText, scoreText, gameManager);
     }
@@ -52,6 +55,10 @@ public class UICoordinatorTests
     [TearDown]
     public void TearDown()
     {
+        // Clean up singleton instance
+        UICoordinator.SetInstanceForTesting(null);
+        GameManager.SetInstanceForTesting(null);
+
         if (coordinatorObject != null)
             Object.DestroyImmediate(coordinatorObject);
         if (gameManagerObject != null)

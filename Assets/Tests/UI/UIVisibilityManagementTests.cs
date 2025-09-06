@@ -57,6 +57,9 @@ public class UIVisibilityManagementTests
     [TearDown]
     public void TearDown()
     {
+        // Clean up singleton instances
+        GameManager.SetInstanceForTesting(null);
+
         if (gameManagerObject != null)
             Object.DestroyImmediate(gameManagerObject);
         if (tabSystemObject != null)
