@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level01
   m_EditorClassIdentifier: Scripts::LevelData
   levelId: 1
-  levelName: 
+  levelName: Level 1
   levelDescription: 
   blockRows: 13
   blockColumns: 8

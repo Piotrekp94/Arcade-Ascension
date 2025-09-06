@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class LevelSelectionUITests
 {
@@ -174,13 +175,31 @@ public class LevelSelectionUITests
     [Test]
     public void LevelSelectionUI_DisplaysCorrectLevelInformation()
     {
+        // Set up the button container reference so normal button creation works
+        GameObject buttonContainer = new GameObject("ButtonContainer");
+        buttonContainer.transform.SetParent(levelSelectionUIGO.transform);
+        
+        var containerField = typeof(LevelSelectionUI).GetField("buttonContainer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (containerField != null)
+        {
+            containerField.SetValue(levelSelectionUI, buttonContainer.transform);
+        }
+        
+        // Clear any existing mock buttons so CreateLevelButtons will run
+        var levelButtonsField = typeof(LevelSelectionUI).GetField("levelButtons", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (levelButtonsField != null)
+        {
+            levelButtonsField.SetValue(levelSelectionUI, new List<Button>());
+        }
+        
+        // Initialize - this should create buttons with proper level names
         levelSelectionUI.InitializeForTesting();
         
         string level1Text = levelSelectionUI.GetLevelButtonText(1);
-        Assert.AreEqual("1", level1Text);
+        Assert.AreEqual("Level 1", level1Text);
         
         string level2Text = levelSelectionUI.GetLevelButtonText(2);
-        Assert.AreEqual("2", level2Text);
+        Assert.AreEqual("Level 2", level2Text);
     }
 
     [Test]
@@ -251,7 +270,7 @@ public class LevelSelectionUITests
         GameObject panel = new GameObject("LevelSelectionPanel");
         panel.transform.SetParent(canvas.transform);
         
-        // Create mock level buttons
+        // Create mock level buttons with TextMeshPro components
         List<Button> mockButtons = new List<Button>();
         for (int i = 1; i <= 3; i++)
         {
@@ -259,11 +278,11 @@ public class LevelSelectionUITests
             buttonGO.transform.SetParent(panel.transform);
             Button button = buttonGO.AddComponent<Button>();
             
-            // Add text component
-            GameObject textGO = new GameObject("Text");
+            // Add TextMeshPro text component to match production setup
+            GameObject textGO = new GameObject("Text (TMP)");
             textGO.transform.SetParent(buttonGO.transform);
-            Text text = textGO.AddComponent<Text>();
-            text.text = i.ToString();
+            TextMeshProUGUI tmpText = textGO.AddComponent<TextMeshProUGUI>();
+            tmpText.text = i.ToString(); // Legacy mock behavior for other tests
             
             mockButtons.Add(button);
         }

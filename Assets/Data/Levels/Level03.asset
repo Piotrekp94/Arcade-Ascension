@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level03
   m_EditorClassIdentifier: Scripts::LevelData
   levelId: 3
-  levelName: 
+  levelName: Level 3
   levelDescription: 
   blockRows: 1
   blockColumns: 8
@@ -21,5 +21,6 @@ MonoBehaviour:
   blockSpacingX: 0.12
   blockSpacingY: 0.08
   spawnAreaOffset: {x: 0, y: -1}
+  blockSprites: []
   scoreMultiplier: 1
   defaultBlockScore: 10

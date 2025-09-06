@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level04
   m_EditorClassIdentifier: Scripts::LevelData
   levelId: 4
-  levelName: 
+  levelName: Level 4
   levelDescription: 
   blockRows: 1
   blockColumns: 8
@@ -21,5 +21,6 @@ MonoBehaviour:
   blockSpacingX: 0.15
   blockSpacingY: 0.1
   spawnAreaOffset: {x: 0, y: -1}
+  blockSprites: []
   scoreMultiplier: 1
   defaultBlockScore: 10

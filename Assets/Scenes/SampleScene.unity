@@ -1688,7 +1688,6 @@ MonoBehaviour:
   defaultBlockScore: 10
   ballPrefab: {fileID: 2781435364310628669, guid: 68fc289ac02683e8398d2d0e5da7286c, type: 3}
   respawnDelay: 3
-  levelTimeLimit: 120
 --- !u!4 &1136595787
 Transform:
   m_ObjectHideFlags: 0
@@ -2098,9 +2097,9 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 30, y: 50}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: {x: 10, y: 10}
+  m_Constraint: 1
+  m_ConstraintCount: 5
 --- !u!1 &1378605376
 GameObject:
   m_ObjectHideFlags: 0

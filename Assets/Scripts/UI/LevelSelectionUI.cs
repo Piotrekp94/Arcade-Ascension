@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using TMPro;
 
 public class LevelSelectionUI : MonoBehaviour
 {
@@ -127,6 +128,17 @@ public class LevelSelectionUI : MonoBehaviour
             // Create from prefab
             buttonGO = Instantiate(levelButtonPrefab.gameObject, buttonContainer);
             button = buttonGO.GetComponent<Button>();
+            
+            // Set proper name for the button GameObject
+            LevelData levelData = levelManager.GetLevelData(levelId);
+            if (levelData != null && !string.IsNullOrEmpty(levelData.LevelName))
+            {
+                buttonGO.name = levelData.LevelName;
+            }
+            else
+            {
+                buttonGO.name = $"Level {levelId}";
+            }
         }
         else if (levelButtons.Count < levelId)
         {
@@ -143,7 +155,17 @@ public class LevelSelectionUI : MonoBehaviour
             GameObject textGO = new GameObject("Text");
             textGO.transform.SetParent(buttonGO.transform);
             Text text = textGO.AddComponent<Text>();
-            text.text = levelId.ToString();
+            
+            // Set text using level name from LevelData
+            LevelData levelData = levelManager.GetLevelData(levelId);
+            if (levelData != null && !string.IsNullOrEmpty(levelData.LevelName))
+            {
+                text.text = levelData.LevelName;
+            }
+            else
+            {
+                text.text = $"Level {levelId}";
+            }
         }
         
         if (button != null)
@@ -152,11 +174,38 @@ public class LevelSelectionUI : MonoBehaviour
             int capturedLevelId = levelId; // Capture for closure
             button.onClick.AddListener(() => OnLevelButtonClicked(capturedLevelId));
             
-            // Set button text
-            Text buttonText = button.GetComponentInChildren<Text>();
-            if (buttonText != null)
+            // Set button text using level name from LevelData
+            LevelData levelData = levelManager.GetLevelData(levelId);
+            string levelName;
+            if (levelData != null && !string.IsNullOrEmpty(levelData.LevelName))
             {
-                buttonText.text = levelId.ToString();
+                levelName = levelData.LevelName;
+            }
+            else
+            {
+                levelName = $"Level {levelId}";
+            }
+            
+            // Try TextMeshPro first (more common in modern UI)
+            TextMeshProUGUI tmpText = button.GetComponentInChildren<TextMeshProUGUI>();
+            if (tmpText != null)
+            {
+                Debug.Log($"Setting TMP button text for level {levelId}: '{levelName}' (was: '{tmpText.text}')");
+                tmpText.text = levelName;
+            }
+            else
+            {
+                // Fallback to legacy Text component
+                Text buttonText = button.GetComponentInChildren<Text>();
+                if (buttonText != null)
+                {
+                    Debug.Log($"Setting Text button text for level {levelId}: '{levelName}' (was: '{buttonText.text}')");
+                    buttonText.text = levelName;
+                }
+                else
+                {
+                    Debug.LogWarning($"No Text or TextMeshPro component found for level button {levelId}");
+                }
             }
         }
         
@@ -239,10 +288,18 @@ public class LevelSelectionUI : MonoBehaviour
         button.colors = colors;
         
         // Update text color if available
-        Text buttonText = button.GetComponentInChildren<Text>();
-        if (buttonText != null)
+        TextMeshProUGUI tmpText = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (tmpText != null)
         {
-            buttonText.color = isUnlocked ? Color.black : Color.darkGray;
+            tmpText.color = isUnlocked ? Color.black : Color.darkGray;
+        }
+        else
+        {
+            Text buttonText = button.GetComponentInChildren<Text>();
+            if (buttonText != null)
+            {
+                buttonText.color = isUnlocked ? Color.black : Color.darkGray;
+            }
         }
     }
 
@@ -368,6 +425,12 @@ public class LevelSelectionUI : MonoBehaviour
         if (button == null)
             return null;
             
+        // Try TextMeshPro first
+        TextMeshProUGUI tmpText = button.GetComponentInChildren<TextMeshProUGUI>();
+        if (tmpText != null)
+            return tmpText.text;
+            
+        // Fallback to legacy Text component
         Text buttonText = button.GetComponentInChildren<Text>();
         return buttonText?.text;
     }
