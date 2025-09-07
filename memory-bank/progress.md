@@ -76,3 +76,5 @@ This file tracks the project's progress using a task list format.
 *   **Unity Best Practices**: Singleton patterns, proper MonoBehaviour lifecycle management
 *   **Comprehensive Testing**: Both unit and integration test coverage
 *   **Git Best Practices**: Proper commit messages, branching, and version control
+[2025-09-06 20:22:58] - Encountered CS0246 error: 'DG' namespace not found. This indicates DOTween is missing.
+[2025-09-06 20:25:51] - User requested to remove external library (DOTween) dependency. Will refactor LevelButtonHoverEffect.cs to use Unity's built-in Coroutines for animations.
