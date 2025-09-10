@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e0185c36cdbdb2a83c774a9d4467ee, type: 3}
+  m_Name: ScoreMultiplierUpgrade
+  m_EditorClassIdentifier: 
+  upgradeType: 3
+  upgradeName: Score Multiplier
+  description: 
+  icon: {fileID: 0}
+  levels:
+  - level: 0
+    cost: 25
+    effectValue: 1
+    description: 
+  effectUnit: '%'
+  showAsMultiplier: 1

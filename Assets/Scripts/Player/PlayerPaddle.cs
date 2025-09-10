@@ -265,6 +265,16 @@ public class PlayerPaddle : MonoBehaviour
         attachmentOffset = offset;
     }
     
+    public float GetSpeed()
+    {
+        return _speed;
+    }
+    
+    public void SetSpeed(float speed)
+    {
+        _speed = speed;
+    }
+    
     // Wall collision configuration methods
     public void SetUseWallCollision(bool useCollision)
     {

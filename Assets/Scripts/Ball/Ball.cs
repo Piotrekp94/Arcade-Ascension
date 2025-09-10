@@ -229,4 +229,22 @@ public class Ball : MonoBehaviour
             rb.linearVelocity = direction.normalized * force;
         }
     }
+    
+    public void ApplySpeedMultiplier(float multiplier)
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+            
+        if (rb != null && !isAttached)
+        {
+            // Apply speed multiplier to current velocity
+            Vector2 currentVelocity = rb.linearVelocity;
+            rb.linearVelocity = currentVelocity.normalized * (_initialSpeed * multiplier);
+        }
+    }
+    
+    public void SetInitialSpeed(float newSpeed)
+    {
+        _initialSpeed = newSpeed;
+    }
 }
