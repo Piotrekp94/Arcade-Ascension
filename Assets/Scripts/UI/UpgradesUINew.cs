@@ -10,11 +10,15 @@ public class UpgradesUINew : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pointsDisplayText;
     [SerializeField] private Transform upgradeCardsContainer;
     [SerializeField] private GameObject upgradeCardPrefab;
+
+    // For testing - store GameObject reference to avoid Transform issues
+    private GameObject upgradeCardsContainerObject;
     
     [Header("Upgrade System")]
     [SerializeField] private UpgradeEffectManager upgradeManager;
     
     private bool isInitialized = false;
+    private bool isTestMode = false;
     private CanvasGroup canvasGroup;
     private List<UpgradeCardUI> upgradeCards = new List<UpgradeCardUI>();
     private PlayerUpgradeProgress playerProgress;
@@ -23,21 +27,25 @@ public class UpgradesUINew : MonoBehaviour
     
     void Start()
     {
-        Initialize();
+        if (!isTestMode)
+        {
+            Initialize();
+        }
     }
     
     public void Initialize()
     {
         if (isInitialized)
             return;
-            
+
         // Setup CanvasGroup for visibility control
         SetupCanvasGroup();
-        
+
         // Find or set upgrade manager
         if (upgradeManager == null)
         {
             upgradeManager = UpgradeEffectManager.Instance;
+            Debug.LogWarning($"UpgradesUI: upgradeManager was null, trying to get Instance: {(upgradeManager == null ? "FAILED" : "SUCCESS")}");
         }
         
         // Get player progress from manager
@@ -57,7 +65,6 @@ public class UpgradesUINew : MonoBehaviour
         UpdateAllCards();
         
         isInitialized = true;
-        Debug.Log("UpgradesUI: Initialized with upgrade system");
     }
     
     void SetupCanvasGroup()
@@ -83,22 +90,46 @@ public class UpgradesUINew : MonoBehaviour
     
     void SetupUpgradeCards()
     {
+        string containerName = "NULL";
+        try
+        {
+            if (upgradeCardsContainer != null && upgradeCardsContainer.gameObject != null)
+            {
+                containerName = upgradeCardsContainer.name;
+            }
+        }
+        catch (System.Exception)
+        {
+            containerName = "DESTROYED";
+        }
+        Debug.Log($"SetupUpgradeCards called: upgradeCardsContainer={upgradeCardsContainer}, upgradeCardsContainer.name={containerName}");
+
+        // If Transform reference is null but GameObject reference exists, get the transform
+        if (upgradeCardsContainer == null && upgradeCardsContainerObject != null)
+        {
+            upgradeCardsContainer = upgradeCardsContainerObject.transform;
+            Debug.Log($"Restored upgradeCardsContainer from GameObject reference: {upgradeCardsContainer.name}");
+        }
+
         if (upgradeManager == null || upgradeCardsContainer == null || upgradeCardPrefab == null)
         {
-            Debug.LogWarning("UpgradesUI: Missing references for upgrade card setup");
+            Debug.LogWarning($"UpgradesUI: Missing references for upgrade card setup. upgradeManager: {(upgradeManager == null ? "NULL" : "OK")}, upgradeCardsContainer: {(upgradeCardsContainer == null ? "NULL" : "OK")}, upgradeCardPrefab: {(upgradeCardPrefab == null ? "NULL" : "OK")}");
             return;
         }
-        
+
         // Clear existing cards
         ClearUpgradeCards();
-        
+
         // Create card for each available upgrade
         UpgradeData[] availableUpgrades = upgradeManager.GetAvailableUpgrades();
         if (availableUpgrades != null)
         {
             foreach (UpgradeData upgradeData in availableUpgrades)
             {
-                CreateUpgradeCard(upgradeData);
+                if (upgradeData != null)
+                {
+                    CreateUpgradeCard(upgradeData);
+                }
             }
         }
     }
@@ -166,8 +197,6 @@ public class UpgradesUINew : MonoBehaviour
         UpdatePointsDisplay();
         UpdateAllCards();
         OnUpgradePurchased?.Invoke();
-        
-        Debug.Log($"UpgradesUI: Upgrade purchased - {upgradeType} to level {newLevel}");
     }
     
     void OnUpgradeCardPurchaseRequested(UpgradeData upgradeData)
@@ -205,8 +234,6 @@ public class UpgradesUINew : MonoBehaviour
     // Public methods for showing/hiding
     public void ShowUpgrades()
     {
-        Debug.Log("UpgradesUI: Showing upgrades panel");
-        
         // Ensure GameObject is active
         if (upgradesPanel != null)
         {
@@ -232,8 +259,6 @@ public class UpgradesUINew : MonoBehaviour
     
     public void HideUpgrades()
     {
-        Debug.Log("UpgradesUI: Hiding upgrades panel");
-        
         // Use CanvasGroup to hide visually but keep GameObject active
         if (canvasGroup != null)
         {
@@ -279,18 +304,73 @@ public class UpgradesUINew : MonoBehaviour
     // Testing and setup methods
     public void SetupForTesting(GameObject panel, TextMeshProUGUI points, Transform container, GameObject cardPrefab, UpgradeEffectManager manager)
     {
+        isTestMode = true;
         upgradesPanel = panel;
         pointsDisplayText = points;
         upgradeCardsContainer = container;
+        // Store GameObject reference for stability - check if Transform is valid first
+        if (container != null && container.gameObject != null)
+        {
+            upgradeCardsContainerObject = container.gameObject;
+        }
+        else
+        {
+            upgradeCardsContainerObject = null;
+        }
         upgradeCardPrefab = cardPrefab;
         upgradeManager = manager;
-        
+
+        string containerInfo = "NULL";
+        try
+        {
+            if (container != null && container.gameObject != null)
+            {
+                containerInfo = container.name;
+            }
+        }
+        catch (System.Exception)
+        {
+            containerInfo = "DESTROYED";
+        }
+        Debug.Log($"SetupForTesting: container={container}, container.name={containerInfo}");
+
         if (upgradeManager != null)
         {
             playerProgress = upgradeManager.GetPlayerProgress();
         }
-        
+
         SetupCanvasGroup();
+
+        // Reset initialization flag to allow re-initialization
+        isInitialized = false;
+
+        // Verify the references were set correctly
+        string finalContainerInfo = "NULL";
+        try
+        {
+            if (upgradeCardsContainer != null && upgradeCardsContainer.gameObject != null)
+            {
+                finalContainerInfo = upgradeCardsContainer.name;
+            }
+        }
+        catch (System.Exception)
+        {
+            finalContainerInfo = "DESTROYED";
+        }
+        Debug.Log($"SetupForTesting complete: upgradeCardsContainer={upgradeCardsContainer}, upgradeCardsContainer.name={finalContainerInfo}");
+    }
+
+    public void ClearTestReferences()
+    {
+        isTestMode = false;
+        upgradesPanel = null;
+        pointsDisplayText = null;
+        upgradeCardsContainer = null;
+        upgradeCardsContainerObject = null;
+        upgradeCardPrefab = null;
+        upgradeManager = null;
+        playerProgress = null;
+        isInitialized = false;
     }
     
     public List<UpgradeCardUI> GetUpgradeCards()
@@ -303,41 +383,13 @@ public class UpgradesUINew : MonoBehaviour
         return playerProgress;
     }
     
-    // Context menu methods for debugging
-    [ContextMenu("Show Upgrades")]
-    void DebugShowUpgrades()
+    // Testing helper to force re-initialization
+    public void ForceReInitialize()
     {
-        ShowUpgrades();
+        isInitialized = false;
+        Initialize();
     }
     
-    [ContextMenu("Hide Upgrades")]
-    void DebugHideUpgrades()
-    {
-        HideUpgrades();
-    }
-    
-    [ContextMenu("Update Points Display")]
-    void DebugUpdatePointsDisplay()
-    {
-        UpdatePointsDisplay();
-    }
-    
-    [ContextMenu("Refresh All Cards")]
-    void DebugRefreshAllCards()
-    {
-        UpdateAllCards();
-    }
-    
-    [ContextMenu("Log Upgrade State")]
-    void DebugLogUpgradeState()
-    {
-        if (playerProgress != null)
-        {
-            Debug.Log($"UpgradesUI State: {playerProgress.GetProgressSummary()}");
-            Debug.Log($"Card Count: {upgradeCards.Count}");
-            Debug.Log($"Is Visible: {IsVisible()}");
-        }
-    }
     
     void OnDestroy()
     {

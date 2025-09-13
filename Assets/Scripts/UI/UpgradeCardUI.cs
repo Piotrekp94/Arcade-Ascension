@@ -29,9 +29,22 @@ public class UpgradeCardUI : MonoBehaviour
     
     void Start()
     {
+        SetupButtonListener();
+    }
+    
+    void SetupButtonListener()
+    {
         if (purchaseButton != null)
         {
+            // Clear any existing listeners first
+            purchaseButton.onClick.RemoveAllListeners();
+            
+            // Add our listener
             purchaseButton.onClick.AddListener(OnPurchaseButtonClicked);
+        }
+        else
+        {
+            Debug.LogError("UpgradeCardUI: purchaseButton is null in SetupButtonListener!");
         }
     }
     
@@ -39,6 +52,9 @@ public class UpgradeCardUI : MonoBehaviour
     {
         upgradeData = data;
         playerProgress = progress;
+        
+        // Ensure button listener is set up
+        SetupButtonListener();
         
         if (upgradeData != null)
         {
@@ -48,7 +64,17 @@ public class UpgradeCardUI : MonoBehaviour
     
     public void UpdateDisplay()
     {
-        if (upgradeData == null || playerProgress == null) return;
+        if (upgradeData == null)
+        {
+            Debug.LogError("UpgradeCardUI: upgradeData is null!");
+            return;
+        }
+        
+        if (playerProgress == null)
+        {
+            Debug.LogError("UpgradeCardUI: playerProgress is null!");
+            return;
+        }
         
         currentLevel = playerProgress.GetUpgradeLevel(upgradeData.upgradeType);
         isMaxLevel = currentLevel >= upgradeData.GetMaxLevel();
@@ -82,7 +108,8 @@ public class UpgradeCardUI : MonoBehaviour
         // Set description
         if (descriptionText != null)
         {
-            descriptionText.text = upgradeData.description;
+            string desc = string.IsNullOrEmpty(upgradeData.description) ? upgradeData.upgradeName + " upgrade" : upgradeData.description;
+            descriptionText.text = desc;
         }
     }
     
@@ -121,6 +148,12 @@ public class UpgradeCardUI : MonoBehaviour
         {
             // Show next level cost and effect
             int nextLevelIndex = currentLevel;
+            
+            if (nextLevelIndex >= upgradeData.GetMaxLevel())
+            {
+                return;
+            }
+            
             int cost = upgradeData.GetCostForLevel(nextLevelIndex);
             
             if (costText != null)
@@ -231,26 +264,6 @@ public class UpgradeCardUI : MonoBehaviour
         return isMaxLevel;
     }
     
-    // Context menu for debugging
-    [ContextMenu("Force Update Display")]
-    void DebugUpdateDisplay()
-    {
-        UpdateDisplay();
-    }
-    
-    [ContextMenu("Log Card State")]
-    void DebugLogCardState()
-    {
-        if (upgradeData != null && playerProgress != null)
-        {
-            Debug.Log($"UpgradeCard State:" +
-                      $"\n- Upgrade: {upgradeData.upgradeName}" +
-                      $"\n- Current Level: {currentLevel}/{upgradeData.GetMaxLevel()}" +
-                      $"\n- Is Max Level: {isMaxLevel}" +
-                      $"\n- Can Afford: {playerProgress.CanPurchaseUpgrade(upgradeData)}" +
-                      $"\n- Available Points: {playerProgress.GetAvailablePoints()}");
-        }
-    }
     
     void OnDestroy()
     {

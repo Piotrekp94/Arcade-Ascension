@@ -50,20 +50,12 @@ public class UpgradeEffectManager : MonoBehaviour
             GameManager.Instance.OnScoreAdded += OnScoreAdded;
         }
         
-        if (enableDebugLogging)
-        {
-            Debug.Log("UpgradeEffectManager: Initialized");
-        }
     }
     
     private void OnScoreAdded(int amountAdded, int newTotal)
     {
         playerProgress.AddPoints(amountAdded);
         
-        if (enableDebugLogging)
-        {
-            Debug.Log($"UpgradeEffectManager: Added {amountAdded} points, total available: {playerProgress.GetAvailablePoints()}");
-        }
     }
     
     private void OnUpgradePurchased(UpgradeType upgradeType, int newLevel)
@@ -93,10 +85,6 @@ public class UpgradeEffectManager : MonoBehaviour
                 break;
         }
         
-        if (enableDebugLogging)
-        {
-            Debug.Log($"UpgradeEffectManager: Applied {upgradeType} upgrade to level {level}");
-        }
     }
     
     private void ApplyPaddleSpeedUpgrade(int level)
@@ -110,10 +98,6 @@ public class UpgradeEffectManager : MonoBehaviour
             float newSpeed = baseSpeed * (1f + effectValue);
             paddle.SetSpeed(newSpeed);
             
-            if (enableDebugLogging)
-            {
-                Debug.Log($"UpgradeEffectManager: Paddle speed set to {newSpeed} (base: {baseSpeed}, multiplier: {effectValue})");
-            }
         }
     }
     
@@ -129,10 +113,6 @@ public class UpgradeEffectManager : MonoBehaviour
             paddle.transform.localScale = newScale;
             paddle.CalculatePaddleWidth();
             
-            if (enableDebugLogging)
-            {
-                Debug.Log($"UpgradeEffectManager: Paddle size set to {newScale.x} (base: {baseScale.x}, multiplier: {effectValue})");
-            }
         }
     }
     
@@ -146,10 +126,6 @@ public class UpgradeEffectManager : MonoBehaviour
             ball.ApplySpeedMultiplier(1f + effectValue);
         }
         
-        if (enableDebugLogging)
-        {
-            Debug.Log($"UpgradeEffectManager: Ball speed multiplier set to {1f + effectValue}");
-        }
     }
     
     private void ApplyScoreMultiplierUpgrade(int level)
@@ -160,10 +136,6 @@ public class UpgradeEffectManager : MonoBehaviour
         {
             GameManager.Instance.SetScoreMultiplier(1f + effectValue);
             
-            if (enableDebugLogging)
-            {
-                Debug.Log($"UpgradeEffectManager: Score multiplier set to {1f + effectValue}");
-            }
         }
     }
     
@@ -180,10 +152,6 @@ public class UpgradeEffectManager : MonoBehaviour
             }
         }
         
-        if (enableDebugLogging)
-        {
-            Debug.Log("UpgradeEffectManager: Applied all upgrade effects");
-        }
     }
     
     public PlayerUpgradeProgress GetPlayerProgress()
@@ -212,30 +180,6 @@ public class UpgradeEffectManager : MonoBehaviour
         availableUpgrades = upgrades;
     }
     
-    [ContextMenu("Apply All Upgrades")]
-    public void DebugApplyAllUpgrades()
-    {
-        ApplyAllUpgradeEffects();
-    }
-    
-    [ContextMenu("Reset All Upgrades")]
-    public void DebugResetUpgrades()
-    {
-        if (playerProgress != null)
-        {
-            playerProgress.ResetProgress();
-            Debug.Log("UpgradeEffectManager: Reset all upgrades");
-        }
-    }
-    
-    [ContextMenu("Log Progress")]
-    public void DebugLogProgress()
-    {
-        if (playerProgress != null)
-        {
-            Debug.Log($"UpgradeEffectManager Progress: {playerProgress.GetProgressSummary()}");
-        }
-    }
     
     void OnDestroy()
     {
